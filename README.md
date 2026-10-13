@@ -42,6 +42,11 @@ Sign in at `/admin`. Sessions last eight hours, are hashed in D1, and use HTTP-o
 
 ## Configuration and integrations
 
+For the Git-connected Cloudflare Pages build and the missing-homepage fix,
+see `docs/PAGES_DEPLOYMENT.md`. `npm run build:web` now includes a Pages
+advanced-mode Worker, not only frontend assets. Database and provider setup
+are still required for forms and administrator access.
+
 Use `.env.example` as the server configuration reference. Production requires a real D1 database ID, HTTPS public URL, Cloudflare account authorization, Turnstile site/secret keys, and optionally a Resend API key and verified sender. No actual keys are supplied. Forms fail closed when production security verification is unavailable. Successful persistence never claims that an email was delivered.
 
 Notification records are placed in `email_outbox`. Missing email configuration records `blocked`; configured records are queued. Scheduled Worker execution retries with a stable provider idempotency key, exponential backoff and a bounded attempt count. Administrators can inspect delivery states. Real provider delivery is currently unverified. Resume uploads and analytics are not enabled.

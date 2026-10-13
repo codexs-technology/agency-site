@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "npm run build:web && wrangler dev --local",
-    "build:web": "vite build",
+    "build:web": "vite build && vite build --config vite.pages.config.ts",
     "build": "npm run typecheck && npm run build:web && wrangler deploy --dry-run --outdir worker-build",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",

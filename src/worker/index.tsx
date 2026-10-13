@@ -45,6 +45,19 @@ app.use("*", async (c, next) => {
     );
   await next();
 });
+app.use("/api/*", async (c, next) => {
+  if (!c.env.DB) {
+    c.header("Cache-Control", "no-store");
+    return c.json(
+      {
+        error:
+          "Online services are not configured yet. Please contact codexstechnology@gmail.com.",
+      },
+      503,
+    );
+  }
+  await next();
+});
 app.route("/api", api);
 app.get("/robots.txt", (c) =>
   c.text(
@@ -71,6 +84,7 @@ app.get("/sitemap.xml", async (c) => {
     ["portfolio_projects", "portfolio"],
     ["services", "services"],
   ]) {
+    if (!c.env.DB) continue;
     const rows = await c.env.DB.prepare(
       `SELECT slug FROM ${table} WHERE status='published'`,
     ).all<{ slug: string }>();
@@ -85,23 +99,33 @@ app.get("*", async (c) => {
   const path = new URL(c.req.url).pathname;
   if (path.startsWith("/assets/") || path.startsWith("/images/"))
     return c.env.ASSETS.fetch(c.req.raw);
+  if (path === "/admin" && !c.env.DB)
+    return c.html(
+      '<!doctype html><html lang="en"><head><meta name="robots" content="noindex"><title>Administration unavailable | CodesBoxs</title></head><body><main><h1>Administration is not configured yet</h1><p>A production database must be connected before administrator access is available.</p><a href="/">Return to the website</a></main></body></html>',
+      503,
+    );
   if (path !== "/" && path.endsWith("/"))
     return c.redirect(path.slice(0, -1), 308);
-  const query = async (table: string) =>
-    (
-      await c.env.DB.prepare(
-        `SELECT * FROM ${table} WHERE status='published' ORDER BY created_at DESC LIMIT 200`,
-      ).all<ContentRecord>()
-    ).results;
+  const query = async (table: string): Promise<ContentRecord[]> =>
+    c.env.DB
+      ? (
+          await c.env.DB.prepare(
+            `SELECT * FROM ${table} WHERE status='published' ORDER BY created_at DESC LIMIT 200`,
+          ).all<ContentRecord>()
+        ).results
+      : [];
   const [posts, projects, jobs, serviceContent] = await Promise.all([
     query("blog_posts"),
     query("portfolio_projects"),
     query("job_openings"),
     query("services"),
   ]);
-  const settingRows = await c.env.DB.prepare(
-    "SELECT key,value FROM site_settings",
-  ).all<{ key: string; value: string }>();
+  const settingRows = c.env.DB
+    ? await c.env.DB.prepare("SELECT key,value FROM site_settings").all<{
+        key: string;
+        value: string;
+      }>()
+    : { results: [] };
   const data: SiteData = {
     path,
     posts,
