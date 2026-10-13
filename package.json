@@ -1,0 +1,51 @@
+{
+  "name": "codesboxs-site",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "npm run build:web && wrangler dev --local",
+    "build:web": "vite build",
+    "build": "npm run typecheck && npm run build:web && wrangler deploy --dry-run --outdir worker-build",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "format:check": "prettier --check src tests e2e",
+    "format": "prettier --write src tests e2e",
+    "test": "vitest run",
+    "test:e2e": "node scripts/run-e2e.mjs",
+    "db:migrate": "wrangler d1 migrations apply codesboxs --local",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.9.1",
+    "@noble/hashes": "^2.4.0",
+    "hono": "^4.13.13",
+    "lucide-react": "^1.56.0",
+    "motion": "^14.1.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-hook-form": "^7.90.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@cloudflare/workers-types": "^5.20261013.1",
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.64.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "eslint": "^10.12.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "lighthouse": "^13.5.0",
+    "prettier": "^3.9.10",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.71.2",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.4",
+    "wrangler": "^4.149.0"
+  }
+}
