@@ -1,7 +1,1 @@
-import { chromium } from '@playwright/test';
-const browser = await chromium.launch(process.env.PLAYWRIGHT_CHANNEL ? { channel: process.env.PLAYWRIGHT_CHANNEL } : {});
-try {
-  const page = await browser.newPage({ viewport: { width: 1200, height: 630 }, deviceScaleFactor: 1 });
-  await page.setContent(`<!doctype html><html lang="en"><style>*{box-sizing:border-box}body{margin:0;background:#070b16;color:#f8fafc;font-family:Arial,sans-serif;width:1200px;height:630px;padding:74px;background-image:radial-gradient(ellipse at 90% 10%,#18325d,transparent 65%)}.brand{font-size:28px;letter-spacing:2px;color:#67e8f9}.line{height:4px;width:100px;background:#3b82f6;margin:60px 0 30px}h1{font-size:70px;line-height:1.12;letter-spacing:-3px;margin:0;max-width:900px}p{font-size:24px;color:#b0bfd4;margin-top:30px}.tag{position:absolute;bottom:45px;color:#94a3b8;font-size:18px}</style><body><div class="brand">CODESBOXS</div><div class="line"></div><h1>We Build Intelligent<br>Digital Experiences.</h1><p>Engineering Digital Excellence.</p><div class="tag">Software · Artificial Intelligence · Digital Transformation</div></body></html>`);
-  await page.screenshot({ path: 'public/images/social-preview.png' });
-} finally { await browser.close(); }
+import './luxury-social.mjs';

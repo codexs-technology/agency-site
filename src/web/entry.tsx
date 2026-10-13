@@ -1,6 +1,7 @@
 import { hydrateRoot } from "react-dom/client";
 import type { SiteData } from "../shared/content";
 import "./styles.css";
+import "./luxury.css";
 
 const node = document.getElementById("site-data");
 const root = document.getElementById("root");

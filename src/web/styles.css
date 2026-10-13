@@ -1,10 +1,10 @@
 @import "tailwindcss";
 .process-tabs button span {
-  color: #8aaee6 !important;
+  color: #c5a46d !important;
 }
 @theme {
-  --color-background: #070b16;
-  --color-accent: #3b82f6;
+  --color-background: #171512;
+  --color-accent: #c5a46d;
 }
 :root {
   font-family:
@@ -16,7 +16,7 @@
     "Segoe UI",
     sans-serif;
   color: #f8fafc;
-  background: #070b16;
+  background: #171512;
   font-synthesis: none;
   color-scheme: dark;
 }
@@ -50,7 +50,7 @@ input:focus-visible,
 select:focus-visible,
 textarea:focus-visible,
 summary:focus-visible {
-  outline: 2px solid #67e8f9;
+  outline: 2px solid #f5f2ec;
 }
 button,
 summary {
@@ -66,7 +66,7 @@ img {
   height: auto;
 }
 p {
-  color: #a5b4ca;
+  color: #c5a46d;
   line-height: 1.8;
   margin: 0 0 20px;
 }
@@ -98,26 +98,26 @@ svg {
   top: -100px;
   left: 10px;
   padding: 12px;
-  background: #164bc0;
+  background: #504a40;
   z-index: 100;
 }
 .skip-link:focus {
   top: 10px;
 }
 .announcement {
-  background: linear-gradient(90deg, #12182d, #142548, #12182d);
+  background: linear-gradient(90deg, #171512, #171512, #171512);
   padding: 10px 20px;
   text-align: center;
   font-size: 11px;
   letter-spacing: 0.03em;
-  color: #c6d2e4;
+  color: #f5f2ec;
 }
 .announcement a {
   display: inline-flex;
   align-items: center;
   gap: 5px;
   margin-left: 12px;
-  color: #9ac5ff;
+  color: #c5a46d;
 }
 .header {
   height: 86px;
@@ -129,7 +129,7 @@ svg {
   top: 0;
   z-index: 30;
   border-bottom: 1px solid #ffffff0d;
-  background: #070b16ed;
+  background: #171512ed;
   backdrop-filter: blur(18px);
 }
 .brand {
@@ -141,7 +141,7 @@ svg {
   white-space: nowrap;
 }
 .brand > span:not(.brand-mark) {
-  color: #81adff;
+  color: #c5a46d;
 }
 .brand-mark {
   width: 35px;
@@ -149,9 +149,9 @@ svg {
   border-radius: 10px;
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg, #347dff, #7c4ce8);
+  background: linear-gradient(135deg, #c5a46d, #504a40);
   margin-right: 9px;
-  box-shadow: 0 0 25px #3b82f633;
+  box-shadow: 0 0 25px #c5a46d33;
   color: white;
 }
 .desktop-nav {
@@ -160,7 +160,7 @@ svg {
   align-items: center;
   margin: auto;
   font-size: 12px;
-  color: #b5c2d8;
+  color: #c5a46d;
 }
 .desktop-nav > a:hover,
 .nav-dropdown summary:hover {
@@ -178,8 +178,8 @@ svg {
 .mega-menu,
 .resource-menu {
   position: absolute;
-  background: #0d1426;
-  border: 1px solid #283450;
+  background: #171512;
+  border: 1px solid #27231d;
   box-shadow: 0 25px 80px #0008;
   padding: 28px;
   border-radius: 15px;
@@ -206,7 +206,7 @@ svg {
   gap: 20px;
 }
 .mega-links svg {
-  color: #7eacff;
+  color: #c5a46d;
 }
 .resource-menu {
   display: grid;
@@ -215,8 +215,8 @@ svg {
 }
 .header-cta {
   padding: 11px 16px;
-  border: 1px solid #395888;
-  background: #132347;
+  border: 1px solid #504a40;
+  background: #171512;
   border-radius: 7px;
   display: flex;
   align-items: center;
@@ -254,7 +254,7 @@ svg {
   top: -50px;
   width: 80%;
   height: 650px;
-  background: radial-gradient(ellipse, #19397b33, transparent 65%);
+  background: radial-gradient(ellipse, #27231d33, transparent 65%);
   z-index: -1;
   pointer-events: none;
 }
@@ -262,7 +262,7 @@ svg {
   font-size: 10px;
   letter-spacing: 0.18em;
   font-weight: 700;
-  color: #8fb7ff;
+  color: #c5a46d;
   text-transform: uppercase;
   display: flex;
   gap: 10px;
@@ -273,8 +273,8 @@ svg {
   height: 6px;
   width: 6px;
   border-radius: 50%;
-  background: #7dd3fc;
-  box-shadow: 0 0 12px #38bdf8;
+  background: #c5a46d;
+  box-shadow: 0 0 12px #c5a46d;
   display: inline-block;
 }
 .hero-description {
@@ -290,8 +290,8 @@ svg {
   align-items: center;
 }
 .button {
-  border: 1px solid #5b98fa;
-  background: linear-gradient(110deg, #347def, #3d65e3);
+  border: 1px solid #c5a46d;
+  background: linear-gradient(110deg, #c5a46d, #504a40);
   padding: 15px 22px;
   border-radius: 7px;
   display: inline-flex;
@@ -301,7 +301,7 @@ svg {
   color: white;
   font-size: 12px;
   font-weight: 600;
-  box-shadow: 0 7px 26px #2158d62b;
+  box-shadow: 0 7px 26px #504a402b;
   transition:
     transform 0.2s,
     background 0.2s;
@@ -309,19 +309,19 @@ svg {
 }
 .button:hover {
   transform: translateY(-2px);
-  background: #3779ed;
+  background: #c5a46d;
 }
 .button-secondary {
-  background: #0c1424;
-  border-color: #2b3750;
+  background: #171512;
+  border-color: #27231d;
   box-shadow: none;
-  color: #d1dcec;
+  color: #f5f2ec;
 }
 .hero-note {
   display: flex;
   flex-wrap: wrap;
   gap: 24px;
-  color: #94a3b8;
+  color: #c5a46d;
   font-size: 10px;
   margin-top: 35px;
 }
@@ -335,15 +335,15 @@ svg {
 }
 .hero-art .art {
   width: 100%;
-  filter: drop-shadow(0 30px 50px #2454bf25);
+  filter: drop-shadow(0 30px 50px #504a4025);
   animation: float 8s ease-in-out infinite;
 }
 .orbital-label {
   position: absolute;
   z-index: 1;
-  background: #111c30e8;
+  background: #171512e8;
   backdrop-filter: blur(10px);
-  border: 1px solid #344b734f;
+  border: 1px solid #504a404f;
   border-radius: 8px;
   padding: 12px 15px;
   display: flex;
@@ -365,7 +365,7 @@ svg {
 }
 .code-label {
   font-size: 20px;
-  color: #7caeff;
+  color: #c5a46d;
   font-family: monospace;
 }
 .page-hero {
@@ -391,7 +391,7 @@ svg {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  color: #a5c5ff;
+  color: #c5a46d;
   font-size: 12px;
   margin: 15px 0;
   white-space: nowrap;
@@ -407,7 +407,7 @@ svg {
   padding: 28px 0;
   font-size: 10px;
   letter-spacing: 0.14em;
-  color: #7284a3;
+  color: #c5a46d;
 }
 .service-grid {
   display: grid;
@@ -417,7 +417,7 @@ svg {
 }
 .service-card {
   padding: 30px;
-  background: linear-gradient(145deg, #10182a, #0a1120);
+  background: linear-gradient(145deg, #171512, #171512);
   border: 1px solid #ffffff0c;
   border-radius: 12px;
   position: relative;
@@ -427,17 +427,17 @@ svg {
 }
 .service-card:hover {
   transform: translateY(-5px);
-  border-color: #4878cf7d;
+  border-color: #c5a46d7d;
 }
 .icon-box {
   width: 46px;
   height: 46px;
   display: grid;
   place-items: center;
-  background: #14274c;
-  border: 1px solid #2d4c78;
+  background: #171512;
+  border: 1px solid #504a40;
   border-radius: 10px;
-  color: #8db8ff;
+  color: #c5a46d;
   margin-bottom: 30px;
 }
 .card-number {
@@ -445,7 +445,7 @@ svg {
   right: 25px;
   top: 30px;
   font-size: 11px;
-  color: #536380;
+  color: #504a40;
 }
 .service-card p {
   font-size: 12px;
@@ -469,7 +469,7 @@ svg {
 .bento {
   padding: 32px;
   border: 1px solid #ffffff0e;
-  background: #0c1425;
+  background: #171512;
   border-radius: 14px;
   overflow: hidden;
 }
@@ -489,12 +489,12 @@ svg {
 .bento-icon {
   width: 44px;
   height: 44px;
-  color: #83adff;
+  color: #c5a46d;
   margin: 25px 0 70px;
 }
 .compact-bento {
   background:
-    radial-gradient(at right top, #20377066, transparent 60%), #0c1425;
+    radial-gradient(at right top, #27231d66, transparent 60%), #171512;
 }
 .technology-pills {
   display: flex;
@@ -507,11 +507,11 @@ svg {
   align-items: center;
   gap: 10px;
   padding: 12px 18px;
-  border: 1px solid #2a3650;
+  border: 1px solid #27231d;
   border-radius: 7px;
   font-size: 12px;
-  background: #0d1729;
-  color: #c9d7eb;
+  background: #171512;
+  color: #f5f2ec;
 }
 .ai-demo {
   display: grid;
@@ -519,9 +519,9 @@ svg {
   gap: 55px;
   align-items: center;
   padding: 36px;
-  border: 1px solid #2c3650;
+  border: 1px solid #27231d;
   border-radius: 16px;
-  background: radial-gradient(at right, #17295188, transparent 70%), #0a1120;
+  background: radial-gradient(at right, #27231d88, transparent 70%), #171512;
 }
 .ai-demo h3 {
   font-size: 34px;
@@ -530,8 +530,8 @@ svg {
   font-size: 13px;
 }
 .demo-output {
-  background: #080e1b;
-  border: 1px solid #2e3a56;
+  background: #171512;
+  border: 1px solid #27231d;
   border-radius: 12px;
   overflow: hidden;
 }
@@ -543,11 +543,11 @@ svg {
   font-size: 8px;
   letter-spacing: 0.1em;
   border-bottom: 1px solid #ffffff10;
-  color: #c5d7ef;
+  color: #f5f2ec;
 }
 .demo-toolbar > span:last-child {
   margin-left: auto;
-  color: #8594ac;
+  color: #c5a46d;
 }
 .demo-output .art {
   height: 230px;
@@ -556,12 +556,12 @@ svg {
 .sample-answer {
   margin: 0 20px 20px;
   padding: 18px;
-  background: #132341;
-  border: 1px solid #284777;
+  background: #171512;
+  border: 1px solid #27231d;
   border-radius: 8px;
   font-size: 12px;
   line-height: 1.8;
-  color: #d4e2f7;
+  color: #f5f2ec;
   min-height: 95px;
 }
 .demo-tags {
@@ -569,7 +569,7 @@ svg {
   gap: 15px;
   padding: 15px 20px;
   font-size: 9px;
-  color: #85a8d9;
+  color: #c5a46d;
   border-top: 1px solid #ffffff0d;
 }
 .process {
@@ -587,27 +587,27 @@ svg {
   gap: 16px;
   text-align: left;
   background: transparent;
-  color: #9dacc4;
+  color: #c5a46d;
   border: 1px solid transparent;
   border-radius: 7px;
   padding: 17px;
   font-size: 13px;
 }
 .process-tabs button span {
-  color: #5374a9;
+  color: #c5a46d;
   font-size: 10px;
 }
 .process-tabs button svg {
   margin-left: auto;
 }
 .process-tabs button[aria-selected="true"] {
-  background: #142342;
-  border-color: #2d4670;
+  background: #171512;
+  border-color: #27231d;
   color: #f8fafc;
 }
 .process-panel {
   position: relative;
-  background: #0c1426;
+  background: #171512;
   border: 1px solid #ffffff10;
   padding: 38px;
   border-radius: 14px;
@@ -618,7 +618,7 @@ svg {
   right: 28px;
   top: 15px;
   font-size: 95px;
-  color: #7183a3;
+  color: #c5a46d;
   font-weight: 800;
   pointer-events: none;
 }
@@ -659,19 +659,19 @@ svg {
 }
 .project-card {
   border: 1px solid #ffffff10;
-  background: #0c1425;
+  background: #171512;
   border-radius: 12px;
   overflow: hidden;
   transition: border-color 0.2s;
 }
 .project-card:hover {
-  border-color: #416496;
+  border-color: #504a40;
 }
 .project-card > img {
   width: 100%;
   aspect-ratio: 4/3;
   object-fit: cover;
-  background: #101a30;
+  background: #171512;
 }
 .project-card > div {
   padding: 25px;
@@ -695,8 +695,8 @@ svg {
   gap: 7px;
 }
 .tags span {
-  background: #17233a;
-  color: #a0b7d8;
+  background: #171512;
+  color: #c5a46d;
   font-size: 9px;
   padding: 5px 8px;
   border-radius: 4px;
@@ -712,7 +712,7 @@ svg {
 }
 .industry-card {
   padding: 28px;
-  background: #0a1120;
+  background: #171512;
 }
 .industry-card h3 {
   display: flex;
@@ -726,7 +726,7 @@ svg {
 .panel {
   border: 1px solid #ffffff12;
   border-radius: 12px;
-  background: #0d1426;
+  background: #171512;
   padding: 30px;
 }
 .panel p {
@@ -747,7 +747,7 @@ svg {
   max-width: 940px;
 }
 .faq-list details {
-  border-bottom: 1px solid #273147;
+  border-bottom: 1px solid #27231d;
   padding: 23px 0;
 }
 .faq-list summary {
@@ -758,7 +758,7 @@ svg {
   gap: 15px;
 }
 .faq-list summary span {
-  color: #84aef7;
+  color: #c5a46d;
 }
 .faq-list p {
   font-size: 13px;
@@ -768,11 +768,11 @@ svg {
 .cta-section {
   text-align: center;
   position: relative;
-  border: 1px solid #273655;
+  border: 1px solid #27231d;
   border-radius: 17px;
   padding: 70px 30px;
   background:
-    radial-gradient(ellipse at bottom, #294d9733, transparent 70%), #0c1426;
+    radial-gradient(ellipse at bottom, #504a4033, transparent 70%), #171512;
   overflow: hidden;
 }
 .cta-section .eyebrow,
@@ -793,7 +793,7 @@ svg {
   width: 220px;
   height: 220px;
   border-radius: 50%;
-  background: #6f4cee22;
+  background: #504a4022;
   filter: blur(50px);
   pointer-events: none;
 }
@@ -810,15 +810,15 @@ svg {
   align-items: center;
   gap: 15px;
   font-size: 17px;
-  color: #9fc1ff;
+  color: #c5a46d;
   overflow-wrap: anywhere;
   margin: 22px 0;
 }
 .newsletter {
   padding: 28px;
-  border: 1px solid #26334d;
+  border: 1px solid #27231d;
   border-radius: 12px;
-  background: #0c1425;
+  background: #171512;
 }
 .newsletter h3 {
   font-size: 23px;
@@ -833,16 +833,16 @@ svg {
   display: grid;
   gap: 9px;
   font-size: 12px;
-  color: #c4d2e8;
+  color: #f5f2ec;
   margin: 0 0 20px;
 }
 .field input,
 .field textarea,
 .field select {
   width: 100%;
-  background: #080f1d;
-  border: 1px solid #33405b;
-  color: #e7eef8;
+  background: #171512;
+  border: 1px solid #27231d;
+  color: #f5f2ec;
   border-radius: 6px;
   padding: 13px 14px;
   min-height: 46px;
@@ -852,10 +852,10 @@ svg {
 }
 .field input[aria-invalid="true"],
 .field textarea[aria-invalid="true"] {
-  border-color: #fda4af;
+  border-color: #c5a46d;
 }
 .field-error {
-  color: #fda4af;
+  color: #c5a46d;
   font-size: 11px;
 }
 .checkbox {
@@ -863,7 +863,7 @@ svg {
   align-items: start;
   gap: 10px;
   font-size: 11px;
-  color: #a5b4ca;
+  color: #c5a46d;
   line-height: 1.8;
   margin: 20px 0;
   flex-wrap: wrap;
@@ -871,43 +871,43 @@ svg {
 .checkbox input {
   width: 18px;
   height: 18px;
-  accent-color: #3b82f6;
+  accent-color: #c5a46d;
 }
 .checkbox a {
   text-decoration: underline;
-  color: #b2ceff;
+  color: #f5f2ec;
 }
 .notice {
   padding: 16px;
-  border: 1px solid #665633;
+  border: 1px solid #504a40;
   border-radius: 7px;
-  background: #30271655;
-  color: #f0d6a0;
+  background: #27231d55;
+  color: #f5f2ec;
   font-size: 12px;
   line-height: 1.8;
   margin: 20px 0;
 }
 .error-message {
-  color: #fecdd3;
-  background: #52182955;
-  border: 1px solid #883344;
+  color: #f5f2ec;
+  background: #17151255;
+  border: 1px solid #504a40;
   border-radius: 6px;
   padding: 15px;
   font-size: 13px;
 }
 .success-panel {
   padding: 40px;
-  border: 1px solid #24634f;
+  border: 1px solid #504a40;
   border-radius: 12px;
-  background: #0f302333;
+  background: #27231d33;
 }
 .success-panel svg {
-  color: #6ee7b7;
+  color: #f5f2ec;
   margin-bottom: 25px;
 }
 .form-panel {
-  border: 1px solid #2a3650;
-  background: #0d1426;
+  border: 1px solid #27231d;
+  background: #171512;
   border-radius: 15px;
   padding: 35px;
 }
@@ -946,7 +946,7 @@ svg {
   padding: 0;
   gap: 20px;
   justify-content: space-between;
-  border-bottom: 1px solid #29344b;
+  border-bottom: 1px solid #27231d;
   padding-bottom: 25px;
 }
 .stepper li {
@@ -954,22 +954,22 @@ svg {
   gap: 10px;
   align-items: center;
   font-size: 11px;
-  color: #91a0b8;
+  color: #c5a46d;
 }
 .stepper span {
   width: 29px;
   height: 29px;
   display: grid;
   place-items: center;
-  border: 1px solid #34425e;
+  border: 1px solid #27231d;
   border-radius: 50%;
 }
 .stepper .active {
-  color: #c8dfff;
+  color: #f5f2ec;
 }
 .stepper .active span {
-  background: #214780;
-  border-color: #4978c4;
+  background: #27231d;
+  border-color: #c5a46d;
 }
 .step-content {
   padding: 25px 0;
@@ -985,14 +985,14 @@ svg {
   gap: 10px;
   align-items: center;
   padding: 18px;
-  border: 1px solid #34425a;
+  border: 1px solid #27231d;
   border-radius: 8px;
   font-size: 12px;
   cursor: pointer;
 }
 .selection-grid label.selected {
-  background: #18335d;
-  border-color: #4f81cf;
+  background: #27231d;
+  border-color: #c5a46d;
 }
 .form-navigation {
   display: flex;
@@ -1002,13 +1002,13 @@ svg {
 .review-list > div {
   display: grid;
   grid-template-columns: 140px 1fr;
-  border-bottom: 1px solid #26334b;
+  border-bottom: 1px solid #27231d;
   padding: 15px 0;
   font-size: 13px;
 }
 .review-list dt {
   text-transform: capitalize;
-  color: #92a8c9;
+  color: #c5a46d;
 }
 .review-list dd {
   margin: 0;
@@ -1034,15 +1034,15 @@ svg {
 .filter-chips button {
   padding: 10px 16px;
   border-radius: 6px;
-  border: 1px solid #2d3a54;
-  background: #0e1728;
-  color: #b8c8df;
+  border: 1px solid #27231d;
+  background: #171512;
+  color: #c5a46d;
   font-size: 11px;
   min-height: 44px;
 }
 .filter-chips button.active {
-  background: #1c3b6c;
-  border-color: #5688cf;
+  background: #27231d;
+  border-color: #c5a46d;
   color: white;
 }
 .breadcrumbs {
@@ -1051,16 +1051,16 @@ svg {
   gap: 12px;
   flex-wrap: wrap;
   font-size: 11px;
-  color: #a8bad5;
+  color: #c5a46d;
 }
 .breadcrumbs a {
-  color: #9abfff;
+  color: #c5a46d;
 }
 .large-copy {
   font-size: clamp(18px, 2vw, 25px);
   line-height: 1.7;
   max-width: 950px;
-  color: #bdcbe0;
+  color: #f5f2ec;
 }
 .check-list {
   list-style: none;
@@ -1068,21 +1068,21 @@ svg {
   display: grid;
   gap: 20px;
   font-size: 14px;
-  color: #b7c8df;
+  color: #c5a46d;
 }
 .check-list li {
   display: flex;
   gap: 12px;
 }
 .check-list svg {
-  color: #7cb5ff;
+  color: #c5a46d;
 }
 .detail-image {
   width: 100%;
   max-height: 550px;
   object-fit: cover;
   border-radius: 14px;
-  background: #0e192d;
+  background: #171512;
   margin-bottom: 35px;
 }
 .prose {
@@ -1099,17 +1099,17 @@ svg {
 }
 .empty-state {
   padding: 50px;
-  border: 1px dashed #35425b;
+  border: 1px dashed #27231d;
   border-radius: 12px;
 }
 .muted {
-  color: #94a3b8;
+  color: #c5a46d;
   font-size: 13px;
 }
 footer {
   border-top: 1px solid #ffffff0e;
   padding: 65px max(32px, calc((100vw - 1240px) / 2)) 25px;
-  background: #080e1a;
+  background: #171512;
 }
 .footer-top {
   display: grid;
@@ -1124,7 +1124,7 @@ footer {
 .footer-top a:not(.brand) {
   display: block;
   font-size: 10px;
-  color: #93a4be;
+  color: #c5a46d;
   margin: 12px 0;
   line-height: 1.7;
 }
@@ -1133,7 +1133,7 @@ footer {
   margin-top: 22px;
 }
 .footer-top .footer-booking {
-  color: #adcaff !important;
+  color: #c5a46d !important;
 }
 .footer-bottom {
   display: flex;
@@ -1143,7 +1143,7 @@ footer {
   margin-top: 50px;
   padding-top: 25px;
   font-size: 9px;
-  color: #788ba8;
+  color: #c5a46d;
 }
 @keyframes float {
   0%,
@@ -1248,8 +1248,8 @@ footer {
     top: 0;
     bottom: 0;
     width: min(400px, 100%);
-    background: #0c1426;
-    border-left: 1px solid #283a58;
+    background: #171512;
+    border-left: 1px solid #27231d;
     padding: 65px 28px 28px;
     overflow-y: auto;
     display: flex;
@@ -1521,8 +1521,8 @@ footer {
   min-height: 100vh;
 }
 .admin-sidebar {
-  background: #0b1324;
-  border-right: 1px solid #293650;
+  background: #171512;
+  border-right: 1px solid #27231d;
   padding: 30px 20px;
   position: sticky;
   top: 0;
@@ -1542,15 +1542,15 @@ footer {
   align-items: center;
   border: 0;
   background: transparent;
-  color: #a9bbd6;
+  color: #c5a46d;
   padding: 13px 12px;
   border-radius: 6px;
   text-align: left;
   font-size: 12px;
 }
 .admin-sidebar nav button.active {
-  background: #19325b;
-  color: #d8e9ff;
+  background: #27231d;
+  color: #f5f2ec;
 }
 .admin-email {
   overflow-wrap: anywhere;
@@ -1576,7 +1576,7 @@ footer {
 }
 .admin-stats button {
   text-align: left;
-  color: #b7c8df;
+  color: #c5a46d;
 }
 .admin-stats strong {
   display: block;
@@ -1599,9 +1599,9 @@ footer {
 }
 .admin-table-wrap {
   overflow-x: auto;
-  border: 1px solid #2b3751;
+  border: 1px solid #27231d;
   border-radius: 10px;
-  background: #0c1425;
+  background: #171512;
 }
 .admin-table {
   width: 100%;
@@ -1612,23 +1612,23 @@ footer {
 .admin-table caption {
   text-align: left;
   padding: 20px;
-  color: #9fb4d5;
+  color: #c5a46d;
 }
 .admin-table th {
   padding: 15px 20px;
-  background: #14213a;
-  color: #c7d9f5;
+  background: #171512;
+  color: #f5f2ec;
 }
 .admin-table td {
   padding: 20px;
   vertical-align: top;
-  border-top: 1px solid #253149;
+  border-top: 1px solid #27231d;
   min-width: 150px;
 }
 .admin-table td small {
   display: block;
   font-size: 9px;
-  color: #8298bc;
+  color: #c5a46d;
   margin-top: 9px;
   max-width: 200px;
   overflow-wrap: anywhere;
@@ -1638,7 +1638,7 @@ footer {
   font-size: 12px;
 }
 .record-detail summary {
-  color: #a5c5ff;
+  color: #c5a46d;
   font-size: 11px;
   margin-bottom: 8px;
 }
@@ -1652,9 +1652,9 @@ footer {
   margin-top: 15px;
 }
 .table-actions button {
-  background: #1b3053;
-  color: #bfd8ff;
-  border: 1px solid #426292;
+  background: #27231d;
+  color: #f5f2ec;
+  border: 1px solid #504a40;
   border-radius: 5px;
   padding: 10px;
 }
@@ -1664,17 +1664,17 @@ footer {
   gap: 20px;
   margin: 25px 0;
   font-size: 12px;
-  color: #a9bddc;
+  color: #c5a46d;
 }
 .admin-editor {
   margin-bottom: 30px;
 }
 .admin-notice {
   padding: 15px;
-  background: #163828;
-  border: 1px solid #38674c;
+  background: #27231d;
+  border: 1px solid #504a40;
   border-radius: 7px;
-  color: #a8e1bc;
+  color: #f5f2ec;
   font-size: 13px;
 }
 @media (max-width: 1000px) {
@@ -1696,7 +1696,7 @@ footer {
     position: static;
     height: auto;
     border-right: 0;
-    border-bottom: 1px solid #293650;
+    border-bottom: 1px solid #27231d;
   }
   .admin-sidebar nav {
     grid-template-columns: repeat(3, 1fr);

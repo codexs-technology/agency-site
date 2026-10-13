@@ -101,8 +101,8 @@ export function Art({
     <img
       className="art"
       src={`/images/${name}.svg`}
-      width={800}
-      height={600}
+      width={1200}
+      height={1000}
       alt={alt}
       loading={eager ? "eager" : "lazy"}
       decoding="async"
@@ -168,18 +168,20 @@ export function Header({ announcement }: { announcement?: string }) {
       <a className="skip-link" href="#main">
         Skip to content
       </a>
-      <div className="announcement">
-        {announcement || "From bold ideas to intelligent digital products."}{" "}
-        <a href={business.booking}>
-          Let’s talk <ArrowUpRight size={13} />
-        </a>
-      </div>
+      {announcement && (
+        <div className="announcement">
+          {announcement}{" "}
+          <a href={business.booking}>
+            Let’s talk <ArrowUpRight size={13} />
+          </a>
+        </div>
+      )}
       <header className="header">
         <a href="/" className="brand" aria-label="CodesBoxs home">
           <span className="brand-mark">
             <Code2 size={22} />
           </span>
-          codes<span>boxs</span>
+          Codes<span>Boxs</span>
           <span className="brand-dot">.</span>
         </a>
         <nav className="desktop-nav" aria-label="Main navigation">
@@ -232,8 +234,8 @@ export function Header({ announcement }: { announcement?: string }) {
           </details>
           <a href="/contact">Contact</a>
         </nav>
-        <a href="/start-project" className="header-cta">
-          Start Your Project <ArrowUpRight size={15} />
+        <a href="/contact" className="header-cta">
+          Let’s talk <ArrowUpRight size={15} />
         </a>
         <button
           ref={trigger}
@@ -318,13 +320,16 @@ export function Footer({ note }: { note?: string }) {
   };
   return (
     <footer>
+      <div className="footer-wordmark" aria-hidden="true">
+        CodesBoxs<span>®</span>
+      </div>
       <div className="footer-top">
         <div>
           <a className="brand" href="/">
             <span className="brand-mark">
               <Code2 size={22} />
             </span>
-            codes<span>boxs</span>.
+            Codes<span>Boxs</span>.
           </a>
           <p>Engineering Digital Excellence.</p>
           <p className="muted">
@@ -375,12 +380,12 @@ export function ServiceCards({
     ),
   ];
   return (
-    <div className="service-grid">
+    <div className="service-grid editorial-services">
       {entries.slice(0, limit).map((s, i) => {
         const Icon = icons[i] || Code2;
         return (
           <a className="service-card" href={`/services/${s.slug}`} key={s.slug}>
-            <span className="icon-box">
+            <span className="icon-box" aria-hidden="true">
               <Icon size={24} />
             </span>
             <span className="card-number">
@@ -388,6 +393,14 @@ export function ServiceCards({
             </span>
             <h3>{s.title}</h3>
             <p>{s.summary}</p>
+            <img
+              className="service-preview"
+              src={`/images/${services[i % services.length].image}.svg`}
+              width={1200}
+              height={1000}
+              alt=""
+              loading="lazy"
+            />
             <span className="text-link">
               Explore capability <ArrowUpRight size={16} />
             </span>

@@ -5,7 +5,6 @@ import {
   Sparkles,
   Command,
   ShieldCheck,
-  Workflow,
 } from "lucide-react";
 import {
   business,
@@ -28,8 +27,9 @@ import {
   ServiceCards,
   Turnstile,
 } from "./components";
-import { ContactForm, Newsletter, ProjectForm, request } from "./forms";
+import { ContactForm, ProjectForm, request } from "./forms";
 import { applicationSchema } from "../shared/validation";
+import { LuxuryHome } from "./LuxuryHome";
 
 class ErrorBoundary extends Component<
   { children: ReactNode },
@@ -95,7 +95,7 @@ function Hero({
           </div>
           <Art
             name={image}
-            alt="Original layered digital architecture illustration with connected blue and violet components"
+            alt="Original architectural geometry in titanium and warm charcoal"
             eager
           />
           <div className="orbital-label label-bottom">
@@ -405,164 +405,6 @@ function Collection({
           {type === "blog" ? "published articles" : "concept projects"}.
         </p>
       )}
-    </>
-  );
-}
-function Home({ data }: { data: SiteData }) {
-  return (
-    <>
-      <Hero title={pages["/"][0]} description={pages["/"][1]} image="hero" />
-      <div className="capability-strip">
-        <span>PRODUCT THINKING</span>
-        <span>SOFTWARE ENGINEERING</span>
-        <span>ARTIFICIAL INTELLIGENCE</span>
-        <span>CLOUD FOUNDATIONS</span>
-      </div>
-      <Section
-        eyebrow="CAPABILITIES, CONNECTED"
-        title="Big ambitions deserve better engineering."
-      >
-        <div className="section-intro">
-          <p>
-            One thoughtful partner across product, design and technology. Choose
-            the expertise you need—connect it as your ambitions grow.
-          </p>
-          <a className="text-link" href="/services">
-            All capabilities <ArrowUpRight size={16} />
-          </a>
-        </div>
-        <ServiceCards limit={6} />
-      </Section>
-      <Section
-        className="bento-section"
-        eyebrow="THE CODESBOXS APPROACH"
-        title="Built with purpose. Not just built."
-      >
-        <div className="bento-grid">
-          <div className="bento bento-wide">
-            <Art name="cloud" alt="Original connected infrastructure layers" />
-            <h3>Architecture that serves the product.</h3>
-            <p>
-              We connect the user experience to the systems underneath it, with
-              explicit decisions about scale, reliability and ownership.
-            </p>
-          </div>
-          <div className="bento">
-            <ShieldCheck className="bento-icon" />
-            <h3>Trust through transparency.</h3>
-            <p>
-              Reviewable milestones. Documented decisions. No invented promises.
-            </p>
-          </div>
-          <div className="bento">
-            <Workflow className="bento-icon" />
-            <h3>Designed for real workflows.</h3>
-            <p>
-              Useful interfaces built around the work people actually need to
-              do.
-            </p>
-          </div>
-          <div className="bento bento-wide compact-bento">
-            <p className="eyebrow">OUR TOOLKIT</p>
-            <h3>
-              Modern tools.
-              <br />
-              Deliberate choices.
-            </h3>
-            <div className="technology-pills">
-              {[
-                "React",
-                "TypeScript",
-                "Python",
-                "Cloudflare",
-                "PostgreSQL",
-                "LLMs",
-              ].map((t) => (
-                <span key={t}>{t}</span>
-              ))}
-            </div>
-            <a className="text-link" href="/technologies">
-              Explore the stack <ArrowUpRight size={16} />
-            </a>
-          </div>
-        </div>
-      </Section>
-      <Section
-        eyebrow="INTELLIGENCE IN CONTEXT"
-        title="AI that does useful work."
-      >
-        <AIShowcase />
-        <a className="text-link" href="/ai-solutions">
-          Explore AI solutions <ArrowUpRight size={16} />
-        </a>
-      </Section>
-      <Section eyebrow="FROM IDEA TO IMPACT" title="A process you can see.">
-        <Process compact />
-      </Section>
-      <Section
-        eyebrow="PRODUCT POSSIBILITIES"
-        title="Explore what we could build."
-      >
-        <p>
-          Original illustrative concepts—not completed client engagements or
-          verified business outcomes.
-        </p>
-        <Collection items={data.projects.slice(0, 3)} type="portfolio" />
-      </Section>
-      <Section
-        eyebrow="INDUSTRIES"
-        title="Different contexts. Shared ambition."
-      >
-        <div className="industry-grid">
-          {industries.slice(0, 6).map(([name, description]) => (
-            <a href="/industries" className="industry-card" key={name}>
-              <h3>
-                {name}
-                <ArrowUpRight size={17} />
-              </h3>
-              <p>{description}</p>
-            </a>
-          ))}
-        </div>
-      </Section>
-      <Section
-        eyebrow="WORKING TOGETHER"
-        title="The right shape of partnership."
-      >
-        <div className="three-grid">
-          {engagementModels.slice(0, 3).map(([title, subtitle, text]) => (
-            <a className="panel" href="/engagement-models" key={title}>
-              <p className="eyebrow">{subtitle}</p>
-              <h3>{title}</h3>
-              <p>{text}</p>
-            </a>
-          ))}
-        </div>
-      </Section>
-      <Section eyebrow="QUESTIONS, ANSWERED" title="Let’s make things clear.">
-        <FAQ preview />
-      </Section>
-      <ConsultationCTA />
-      <Section className="contact-preview">
-        <div>
-          <p className="eyebrow">OPEN A CONVERSATION</p>
-          <h2>
-            Your idea deserves
-            <br />a thoughtful first step.
-          </h2>
-          <a href={`mailto:${business.email}`} className="contact-email">
-            {business.email}
-            <ArrowUpRight size={20} />
-          </a>
-          <p>
-            Share your goals through our inquiry form, or book a consultation.
-          </p>
-          <Button secondary href="/contact">
-            Get in touch
-          </Button>
-        </div>
-        <Newsletter data={data} />
-      </Section>
     </>
   );
 }
@@ -1088,7 +930,7 @@ function Unsubscribe() {
 }
 function PublicPage({ data }: { data: SiteData }) {
   const path = data.path;
-  if (path === "/") return <Home data={data} />;
+  if (path === "/") return <LuxuryHome data={data} />;
   if (path.startsWith("/services/"))
     return <ServicePage slug={path.split("/")[2]} data={data} />;
   if (path.startsWith("/blog/") || path.startsWith("/portfolio/")) {
@@ -1107,7 +949,9 @@ function PublicPage({ data }: { data: SiteData }) {
   return (
     <>
       <Hero
-        title={title}
+        title={
+          path === "/contact" ? "LET’S BUILD\nSOMETHING\nEXTRAORDINARY." : title
+        }
         description={description}
         eyebrow={path.slice(1).replaceAll("-", " ").toUpperCase()}
       />

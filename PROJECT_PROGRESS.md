@@ -2,6 +2,16 @@
 
 Last updated: 2026-10-13. Status: IN PROGRESS, not approved for production.
 
+## Luxury redesign — current authoritative checkpoint (2026-10-13)
+- Inspected clean Git status/diff, public components/forms, Worker routes, D1 integration, admin/outbox and tests before editing.
+- Previous GitHub push and real supplied D1 UUID are now present; historical statements below about absent remote/UUID are superseded. Remote database migrations are not verified.
+- Implemented Engineered Objects visual direction: obsidian/ivory/champagne palette, self-hosted Space Grotesk/Newsreader OFL fonts, oversized typography, original metallic geometry and product mockups.
+- New distinct homepage compositions, editorial service rows/previews, asymmetric portfolio, contact split, fullscreen mobile navigation, mega menu and oversized footer.
+- Preserved API contracts, authentication/CSRF, database schema, admin CRUD, lead management, contact/project/newsletter submission and email outbox.
+- Verification completed: TypeScript, ESLint, production client/Pages build, Worker dry-run, 20 unit tests and 15 Playwright tests passed. Browser tests include isolated local D1 persistence, authentication/CSRF/content/logout, successful contact/project submission, genuine failure handling, route/image/link checks, accessibility, keyboard/reduced motion, responsive widths and console checks.
+- Reviewed desktop/mobile homepage and services/portfolio/contact screenshots. Captured files are in `D:\Tech Website\artifacts\luxury`; the successful Playwright capture is authoritative. A separate standalone capture attempt after the test server stopped returned connection refused and did not invalidate the existing captures.
+- No live Cloudflare deployment, remote migrations, production email delivery or exhaustive cross-browser/manual accessibility certification claimed. GitHub commit/push is the final delivery step; production configuration gates remain.
+
 ## Inspection
 - Workspace was empty; no README, package manifest, frontend, backend, or Git repository existed.
 - Local tools: Node 24.21.0, npm 11.19.0, Git 2.56.0.

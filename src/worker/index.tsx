@@ -97,7 +97,11 @@ app.get("/sitemap.xml", async (c) => {
 });
 app.get("*", async (c) => {
   const path = new URL(c.req.url).pathname;
-  if (path.startsWith("/assets/") || path.startsWith("/images/"))
+  if (
+    path.startsWith("/assets/") ||
+    path.startsWith("/images/") ||
+    path.startsWith("/fonts/")
+  )
     return c.env.ASSETS.fetch(c.req.raw);
   if (path === "/admin" && !c.env.DB)
     return c.html(
@@ -204,7 +208,7 @@ app.get("*", async (c) => {
         };
   c.header("Cache-Control", "no-store");
   return c.html(
-    `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${escape(title)} | CodesBoxs</title><meta name="description" content="${escape(description)}"><link rel="canonical" href="${escape(canonical)}"><meta property="og:title" content="${escape(title)}"><meta property="og:description" content="${escape(description)}"><meta property="og:url" content="${escape(canonical)}"><meta property="og:type" content="${post ? "article" : "website"}"><meta property="og:image" content="${escape(c.env.PUBLIC_SITE_URL)}/images/social-preview.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="CodesBoxs — We Build Intelligent Digital Experiences"><meta name="twitter:image" content="${escape(c.env.PUBLIC_SITE_URL)}/images/social-preview.png"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${escape(title)}"><meta name="twitter:description" content="${escape(description)}"><meta name="theme-color" content="#070B16">${!found || path === "/admin" || path.includes("policy") || path === "/terms-of-service" ? '<meta name="robots" content="noindex,follow">' : ""}<link rel="icon" href="/images/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/entry.css"><script type="application/ld+json">${safeJson(schema)}</script></head><body><div id="root">${renderToString(path === "/admin" ? <Admin /> : <App data={data} />)}</div><script id="site-data" type="application/json">${safeJson(data)}</script><script type="module" src="/assets/app.js"></script>${data.turnstileSiteKey ? '<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>' : ""}</body></html>`,
+    `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${escape(title)} | CodesBoxs</title><meta name="description" content="${escape(description)}"><link rel="canonical" href="${escape(canonical)}"><meta property="og:title" content="${escape(title)}"><meta property="og:description" content="${escape(description)}"><meta property="og:url" content="${escape(canonical)}"><meta property="og:type" content="${post ? "article" : "website"}"><meta property="og:image" content="${escape(c.env.PUBLIC_SITE_URL)}/images/social-preview.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="CodesBoxs — We Build Intelligent Digital Experiences"><meta name="twitter:image" content="${escape(c.env.PUBLIC_SITE_URL)}/images/social-preview.png"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${escape(title)}"><meta name="twitter:description" content="${escape(description)}"><meta name="theme-color" content="#0B0A09">${!found || path === "/admin" || path.includes("policy") || path === "/terms-of-service" ? '<meta name="robots" content="noindex,follow">' : ""}<link rel="icon" href="/images/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/entry.css"><script type="application/ld+json">${safeJson(schema)}</script></head><body><div id="root">${renderToString(path === "/admin" ? <Admin /> : <App data={data} />)}</div><script id="site-data" type="application/json">${safeJson(data)}</script><script type="module" src="/assets/app.js"></script>${data.turnstileSiteKey ? '<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>' : ""}</body></html>`,
     found ? 200 : 404,
   );
 });

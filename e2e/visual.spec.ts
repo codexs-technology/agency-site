@@ -1,9 +1,11 @@
 import { test, expect } from "@playwright/test";
+import { mkdir, copyFile } from "node:fs/promises";
 
 test("capture desktop and mobile layouts without console errors", async ({
   page,
 }, testInfo) => {
   const errors: string[] = [];
+  await mkdir("artifacts/luxury", { recursive: true });
   page.on("pageerror", (error) => errors.push(error.message));
   for (const [name, width, height] of [
     ["desktop", 1440, 1000],
@@ -39,11 +41,38 @@ test("capture desktop and mobile layouts without console errors", async ({
       fullPage: true,
       animations: "disabled",
     });
+    await copyFile(
+      testInfo.outputPath(`home-${name}.png`),
+      `artifacts/luxury/home-${name}.png`,
+    );
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= innerWidth,
       ),
     ).toBe(true);
+  }
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  for (const path of ["services", "portfolio", "contact"]) {
+    await page.goto(`/${path}`);
+    await page.locator("h1").waitFor();
+    await page.locator("img").evaluateAll(async (images) => {
+      await Promise.all(
+        images.map(async (image) => {
+          const img = image as HTMLImageElement;
+          img.loading = "eager";
+          await img.decode();
+        }),
+      );
+    });
+    await page.screenshot({
+      path: testInfo.outputPath(`${path}-desktop.png`),
+      fullPage: true,
+      animations: "disabled",
+    });
+    await copyFile(
+      testInfo.outputPath(`${path}-desktop.png`),
+      `artifacts/luxury/${path}-desktop.png`,
+    );
   }
   expect(errors).toEqual([]);
 });
