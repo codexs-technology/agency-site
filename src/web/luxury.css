@@ -12,13 +12,17 @@
   font-display: swap;
 }
 :root {
-  --ink: #0b0a09;
-  --charcoal: #171512;
-  --ivory: #f3f0e9;
-  --text: #f5f2ec;
-  --muted: #a9a39a;
-  --gold: #c5a46d;
-  --silver: #c7c4bf;
+  --ink: #10100f;
+  --charcoal: #292722;
+  --ivory: #e9e5dc;
+  --text: #e9e5dc;
+  --muted: #a5a39f;
+  --gold: #b49b75;
+  --silver: #a5a39f;
+  --space-section: clamp(64px, 8vw, 128px);
+  --space-gutter: clamp(20px, 6vw, 100px);
+  --rule: #a5a39f38;
+  --ease-signature: cubic-bezier(0.2, 0.7, 0.2, 1);
   font-family: "Space Grotesk", Arial, sans-serif;
   background: var(--ink);
   color: var(--text);

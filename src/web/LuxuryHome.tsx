@@ -4,11 +4,15 @@ import {
   business,
   industries,
   services,
-  stages,
   type SiteData,
 } from "../shared/content";
 import { Art, Button, Section, ServiceCards } from "./components";
 import { Newsletter } from "./forms";
+import {
+  SignatureEngagements,
+  SignatureProcess,
+  SignatureWorkflow,
+} from "./SignatureSystems";
 
 const disciplines = [
   [
@@ -80,7 +84,7 @@ export function LuxuryHome({ data }: { data: SiteData }) {
         <div className="sculpture-stage">
           <Art
             name="hero"
-            alt="Original polished titanium trefoil sculpture with interwoven reflective surfaces"
+            alt="Original titanium ribbon sculpture with depth-projected reflective surfaces"
             eager
           />
           <span className="object-caption">
@@ -90,6 +94,7 @@ export function LuxuryHome({ data }: { data: SiteData }) {
         <div className="hero-editorial">
           <p className="eyebrow">CODESBOXS / ENGINEERING STUDIO</p>
           <h1>
+            <span>WE DON’T JUST BUILD.</span>
             <span>WE ENGINEER</span>
             <span>
               WHAT’S <em>NEXT.</em>
@@ -99,9 +104,8 @@ export function LuxuryHome({ data }: { data: SiteData }) {
         <div className="hero-baseline">
           <div>
             <p>
-              Intelligent software. Exceptional digital experiences.
-              <br />
-              Built for ambitious businesses.
+              Custom software, intelligent automation, and exceptional digital
+              products for businesses ready to lead.
             </p>
             <div className="button-row">
               <Button href="/start-project">Start Your Project</Button>
@@ -147,9 +151,9 @@ export function LuxuryHome({ data }: { data: SiteData }) {
       <Section className="luxury-services" eyebrow="02 / WHAT WE MAKE POSSIBLE">
         <div className="section-heading-row">
           <h2>
-            Expertise,
+            Engineering depth,
             <br />
-            <em>without limits.</em>
+            <em>with intention.</em>
           </h2>
           <p>
             From the first useful question to the last critical detail. A
@@ -182,9 +186,7 @@ export function LuxuryHome({ data }: { data: SiteData }) {
             Explore applied AI
           </Button>
         </div>
-        <span className="scene-caption">
-          RETRIEVAL / AUTOMATION / HUMAN OVERSIGHT
-        </span>
+        <SignatureWorkflow />
       </section>
       <Section
         className="featured-concepts ivory"
@@ -262,21 +264,7 @@ export function LuxuryHome({ data }: { data: SiteData }) {
             Our complete process <ArrowUpRight size={18} />
           </a>
         </div>
-        <div
-          className="process-track"
-          tabIndex={0}
-          role="region"
-          aria-label="Delivery process, horizontally scrollable"
-        >
-          {stages.map(([title, subtitle, text], i) => (
-            <article key={title}>
-              <span className="process-index">0{i + 1}</span>
-              <h3>{title}</h3>
-              <p className="process-subtitle">{subtitle}</p>
-              <p>{text}</p>
-            </article>
-          ))}
-        </div>
+        <SignatureProcess />
       </Section>
       <Section
         className="industry-editorial ivory"
@@ -322,20 +310,27 @@ export function LuxuryHome({ data }: { data: SiteData }) {
           </p>
         </div>
       </Section>
+      <SignatureEngagements />
       <Section
         className="luxury-contact ivory"
         eyebrow="10 / YOUR NEXT CHAPTER"
       >
-        <a href="/contact" className="contact-statement">
+        <a href="/start-project" className="contact-statement">
           <h2>
-            LET’S BUILD
+            YOUR NEXT BIG IDEA
             <br />
-            SOMETHING
+            DESERVES EXCEPTIONAL
             <br />
-            <em>EXTRAORDINARY.</em>
+            <em>ENGINEERING.</em>
           </h2>
           <ArrowUpRight aria-hidden="true" />
         </a>
+        <div className="button-row">
+          <Button href="/start-project">Start a Project</Button>
+          <Button secondary href={business.booking}>
+            Book a Consultation
+          </Button>
+        </div>
         <div className="contact-baseline">
           <a href={`mailto:${business.email}`}>{business.email}</a>
           <a href={business.booking} className="text-link">

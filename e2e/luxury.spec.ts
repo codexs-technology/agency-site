@@ -4,6 +4,7 @@ test("luxury compositions, capabilities and self-hosted fonts", async ({
   page,
 }) => {
   await page.goto("/");
+  await expect(page.locator("h1")).toContainText("WE DON’T JUST BUILD.");
   await expect(page.locator("h1")).toContainText("WE ENGINEER");
   await expect(page.locator("h1")).toContainText("WHAT’S NEXT.");
   await expect(page.locator(".cinematic-hero")).toHaveCount(1);
@@ -12,7 +13,7 @@ test("luxury compositions, capabilities and self-hosted fonts", async ({
   await expect(page.locator(".capability-copy")).toContainText("human review");
   expect(
     await page.evaluate(() => getComputedStyle(document.body).backgroundColor),
-  ).toBe("rgb(11, 10, 9)");
+  ).toBe("rgb(16, 16, 15)");
   await page.evaluate(() => document.fonts.ready);
   expect(
     await page.evaluate(() => document.fonts.check('16px "Space Grotesk"')),

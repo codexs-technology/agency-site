@@ -30,6 +30,7 @@ import {
 import { ContactForm, ProjectForm, request } from "./forms";
 import { applicationSchema } from "../shared/validation";
 import { LuxuryHome } from "./LuxuryHome";
+import { SignatureProcess, SignatureWorkflow } from "./SignatureSystems";
 
 class ErrorBoundary extends Component<
   { children: ReactNode },
@@ -239,7 +240,7 @@ function Process({ compact = false }: { compact?: boolean }) {
           </p>
         )}
         <Art
-          name="engineering"
+          name={active % 2 === 0 ? "engineering" : "cloud"}
           alt="Layered software components linked through a shared engineering workflow"
         />
       </div>
@@ -307,10 +308,7 @@ function AIShowcase() {
           <span className="status-dot" />
           WORKFLOW SANDBOX<span>sample.json</span>
         </div>
-        <Art
-          name="ai"
-          alt="Original AI network illustration with bounded interconnected nodes"
-        />
+        <SignatureWorkflow />
         <div className="sample-answer" role="status">
           {answer ||
             "Choose a workflow and run the sample to see how an explicit, bounded response can look."}
@@ -1117,7 +1115,7 @@ function PublicPage({ data }: { data: SiteData }) {
       )}
       {path === "/process" && (
         <Section>
-          <Process />
+          <SignatureProcess />
         </Section>
       )}
       {path === "/technologies" && (
@@ -1245,7 +1243,10 @@ export function App({ data }: { data: SiteData }) {
   return (
     <ErrorBoundary>
       <Header announcement={data.settings.announcement} />
-      <main id="main">
+      <main
+        id="main"
+        className={`signature-page page-${data.path.split("/")[1] || "home"}`}
+      >
         <PublicPage data={data} />
       </main>
       <Footer note={data.settings.footer_note} />

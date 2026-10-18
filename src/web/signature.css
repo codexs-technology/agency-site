@@ -1,0 +1,626 @@
+/* Signature V3: public page compositions. Admin structure and API contracts stay independent. */
+.signature-page {
+  --page-rule: var(--rule);
+}
+.header {
+  background: #10100ff5;
+}
+.cinematic-hero {
+  min-height: max(840px, calc(100svh - 86px));
+  padding-inline: var(--space-gutter);
+}
+.hero-editorial {
+  margin-top: 95px;
+}
+.hero-editorial h1 {
+  font-size: clamp(42px, 7.2vw, 132px);
+  line-height: 1.01;
+  letter-spacing: -0.065em;
+}
+.hero-editorial h1 > span:last-child {
+  margin-left: 0;
+}
+.hero-editorial h1 > span:first-child {
+  font-size: 0.64em;
+  margin-bottom: 16px;
+  letter-spacing: -0.045em;
+}
+.sculpture-stage {
+  width: 64vw;
+  right: -9vw;
+  top: 10px;
+}
+.sculpture-stage .art {
+  animation: none;
+}
+.object-caption {
+  bottom: 14%;
+  right: 24%;
+}
+.hero-baseline {
+  margin-top: 50px;
+}
+.hero-baseline p {
+  max-width: 440px;
+  font-size: 15px;
+}
+.section {
+  padding: var(--space-section) var(--space-gutter);
+}
+.button {
+  background: var(--ivory);
+  border-color: var(--ivory);
+}
+.button:hover {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+.button-secondary {
+  background: transparent;
+  border-color: #a5a39f80;
+}
+.intelligence-scene {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  align-items: center;
+  gap: 6vw;
+  min-height: 800px;
+  padding: var(--space-section) var(--space-gutter);
+}
+.intelligence-scene > .art {
+  width: 65%;
+  opacity: 0.13;
+  right: -10%;
+}
+.intelligence-copy {
+  min-width: 0;
+}
+.intelligence-copy h2 {
+  font-size: clamp(42px, 5.4vw, 86px);
+}
+.signature-workflow {
+  min-width: 0;
+  padding: 32px;
+  border: 1px solid #a5a39f55;
+  background: #10100fea;
+  position: relative;
+}
+.workflow-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  font-size: 9px;
+  line-height: 1.7;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+.workflow-nodes {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  margin: 42px 0;
+  border-block: 1px solid var(--rule);
+}
+.workflow-nodes button {
+  background: transparent;
+  color: var(--text);
+  border: 0;
+  border-right: 1px solid var(--rule);
+  text-align: left;
+  padding: 22px 10px;
+  transition: background 0.25s;
+}
+.workflow-nodes button:last-child {
+  border: 0;
+}
+.workflow-nodes button[aria-pressed="true"] {
+  background: var(--charcoal);
+}
+.workflow-nodes span {
+  color: var(--gold);
+  display: block;
+  font-size: 10px;
+  margin-bottom: 28px;
+}
+.workflow-nodes strong {
+  font-size: clamp(12px, 1.2vw, 18px);
+  display: block;
+  font-weight: 400;
+  margin-bottom: 16px;
+}
+.workflow-nodes svg {
+  color: var(--gold);
+}
+.workflow-reading {
+  min-height: 218px;
+}
+.workflow-reading h3 {
+  font-size: 27px;
+  letter-spacing: -0.045em;
+}
+.workflow-reading p {
+  font-size: 13px;
+  margin-bottom: 0;
+}
+.signature-process {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: 8vw;
+}
+.timeline-controls button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 22px 0;
+  background: transparent;
+  color: var(--muted);
+  border: 0;
+  border-top: 1px solid var(--rule);
+  text-align: left;
+  font-size: clamp(15px, 1.6vw, 24px);
+}
+.timeline-controls button span {
+  font-size: 11px;
+  color: var(--gold);
+}
+.timeline-controls button svg {
+  margin-left: auto;
+}
+.timeline-controls button[aria-selected="true"] {
+  color: var(--ivory);
+}
+.timeline-detail {
+  min-width: 0;
+}
+.timeline-detail > svg {
+  width: 100%;
+  color: var(--gold);
+  margin-bottom: 25px;
+}
+.timeline-detail h3 {
+  font-size: clamp(28px, 3vw, 45px);
+}
+.timeline-detail p {
+  max-width: 520px;
+}
+.engagement-index {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 6vw;
+}
+.engagement-index > a {
+  border-top: 1px solid var(--rule);
+  padding: 38px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+.engagement-index h3 {
+  font-size: clamp(27px, 3vw, 45px);
+  margin: 15px 0;
+}
+.engagement-index p {
+  font-size: 14px;
+  max-width: 480px;
+}
+.engagement-index .text-link {
+  margin-top: auto;
+}
+.luxury-contact {
+  min-height: 95svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.contact-statement h2 {
+  font-size: clamp(27px, 5.2vw, 90px);
+  line-height: 1.05;
+  margin-block: 45px;
+}
+.contact-statement > svg {
+  width: 8vw;
+  height: 8vw;
+}
+.contact-baseline {
+  margin-top: 55px;
+}
+.footer-wordmark span {
+  font-size: 9px;
+  letter-spacing: 0.12em;
+}
+.footer-bottom {
+  flex-wrap: wrap;
+}
+.ivory .button:not(.button-secondary) {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--ivory);
+}
+.ivory .checkbox,
+.ivory .checkbox a,
+.ivory .check-field,
+.ivory label,
+.ivory label a {
+  color: #625c53;
+}
+.ivory label a {
+  text-decoration: underline;
+}
+.hero-topline > span:first-child {
+  max-width: none;
+  overflow: visible;
+}
+.signature-page > .page-hero {
+  padding: 90px var(--space-gutter) 70px;
+  border-bottom: 1px solid var(--rule);
+}
+.page-hero h1 {
+  font-size: clamp(48px, 7.4vw, 120px);
+  max-width: 1120px;
+  line-height: 1.02;
+}
+.page-hero .hero-description {
+  max-width: 590px;
+  font-size: 16px;
+}
+.page-hero .button-row {
+  margin-top: 35px;
+}
+.page-about > .page-hero {
+  background: var(--ivory);
+  color: var(--ink);
+  min-height: 620px;
+  display: flex;
+  align-items: center;
+}
+.page-about > .page-hero p {
+  color: #625c53;
+}
+.page-about > .page-hero .button {
+  background: var(--ink);
+  color: var(--ivory);
+  border-color: var(--ink);
+}
+.page-about > .section:nth-child(3) .three-grid {
+  display: block;
+  counter-reset: value;
+}
+.page-about > .section:nth-child(3) .panel {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 30px;
+  border-width: 1px 0 0;
+  padding: 35px 0;
+}
+.page-portfolio > .page-hero {
+  min-height: 570px;
+  display: flex;
+  align-items: end;
+  background: var(--charcoal);
+}
+.page-portfolio > .page-hero h1 {
+  max-width: 900px;
+}
+.page-blog > .page-hero {
+  display: grid;
+  grid-template-columns: 1fr;
+  border-top: 6px solid var(--gold);
+}
+.page-blog .project-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+.page-blog .project-card {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: 40px;
+  padding: 35px 0;
+  border-top: 1px solid var(--rule);
+}
+.page-blog .project-body {
+  padding: 20px 0;
+}
+.page-industries .two-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 45px;
+  counter-reset: industry;
+}
+.page-industries .panel {
+  min-height: 310px;
+  border: 0;
+  border-top: 1px solid var(--rule);
+  padding: 32px 0;
+  position: relative;
+}
+.page-industries .panel::before {
+  counter-increment: industry;
+  content: "SECTOR / 0" counter(industry);
+  font-size: 10px;
+  color: var(--gold);
+  letter-spacing: 0.16em;
+  display: block;
+  margin-bottom: 50px;
+}
+.page-industries .panel:nth-child(even) {
+  padding: 32px;
+  background: var(--charcoal);
+}
+.page-technologies .two-grid {
+  display: block;
+}
+.page-technologies .panel {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  padding: 40px 0;
+  border: 0;
+  border-top: 1px solid var(--rule);
+  gap: 25px;
+}
+.page-technologies .panel h2 {
+  font-size: clamp(28px, 4vw, 58px);
+}
+.page-engagement-models .two-grid {
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+}
+.page-engagement-models .panel {
+  padding: 40px 0;
+  border-width: 1px 0 0;
+  background: transparent;
+}
+.page-engagement-models .panel h2 {
+  font-size: clamp(30px, 4vw, 58px);
+}
+.page-ai-solutions > .page-hero {
+  border-left: 6px solid var(--gold);
+  background: var(--charcoal);
+}
+.page-start-project > .page-hero h1 {
+  max-width: 900px;
+}
+.page-start-project > .section {
+  padding-top: 45px;
+}
+.page-faq .faq-list {
+  max-width: 1000px;
+  margin-left: auto;
+}
+.page-careers .empty-state {
+  text-align: left;
+  border-width: 1px 0;
+  padding: 70px 0;
+}
+.page-privacy-policy .page-hero h1,
+.page-cookie-policy .page-hero h1,
+.page-terms-of-service .page-hero h1 {
+  font-size: clamp(40px, 5vw, 76px);
+}
+.page-privacy-policy .prose,
+.page-cookie-policy .prose,
+.page-terms-of-service .prose {
+  margin: 60px auto;
+  max-width: 780px;
+}
+.page-privacy-policy .prose h2,
+.page-cookie-policy .prose h2,
+.page-terms-of-service .prose h2 {
+  font-size: 32px;
+}
+.page-services .split-hero {
+  background: var(--charcoal);
+}
+.page-services .three-grid {
+  display: block;
+}
+.page-services .three-grid > .panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 30px;
+  padding: 30px 0;
+  border-width: 1px 0 0;
+}
+.page-services .three-grid h3 {
+  font-size: 30px;
+}
+.signature-page .demo-output .signature-workflow {
+  margin: 20px 0;
+}
+.signature-page .demo-output .workflow-heading {
+  flex-wrap: wrap;
+}
+.signature-page .demo-output .workflow-reading {
+  min-height: 190px;
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .sculpture-stage {
+    transition: transform 1.2s var(--ease-signature);
+  }
+  .cinematic-hero:hover .sculpture-stage {
+    transform: translate(-12px, 8px) rotate(-2deg);
+  }
+  .concept-image img {
+    transition: transform 0.8s var(--ease-signature);
+  }
+}
+@media (max-width: 1024px) {
+  .cinematic-hero {
+    min-height: 850px;
+  }
+  .intelligence-scene {
+    gap: 35px;
+  }
+  .signature-workflow {
+    padding: 22px;
+  }
+  .workflow-heading {
+    flex-direction: column;
+    gap: 5px;
+  }
+  .workflow-nodes {
+    margin: 26px 0;
+  }
+  .workflow-nodes button {
+    padding: 18px 8px;
+  }
+  .hero-editorial {
+    margin-top: 130px;
+  }
+}
+@media (max-width: 768px) {
+  .hero-topline > span:first-child {
+    max-width: 100%;
+    font-size: 8px;
+    line-height: 1.8;
+  }
+  .contact-baseline {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 18px;
+  }
+  .contact-baseline .text-link {
+    margin-top: 0;
+  }
+  .editorial-services .service-preview {
+    display: none;
+  }
+  .editorial-services .service-card {
+    min-height: 0;
+    row-gap: 16px;
+  }
+  .editorial-services .service-card .text-link {
+    margin-top: 0;
+  }
+  .cinematic-hero {
+    min-height: 800px;
+    padding-top: 25px;
+  }
+  .hero-editorial {
+    margin-top: 150px;
+  }
+  .hero-editorial h1 {
+    font-size: 9.1vw;
+  }
+  .sculpture-stage {
+    width: 95vw;
+    right: -25vw;
+    top: 0;
+  }
+  .object-caption {
+    display: none;
+  }
+  .intelligence-scene {
+    display: block;
+  }
+  .intelligence-copy {
+    margin-bottom: 45px;
+  }
+  .intelligence-scene > .art {
+    width: 100%;
+    top: 0;
+    bottom: auto;
+  }
+  .signature-process {
+    gap: 35px;
+    grid-template-columns: 1fr;
+  }
+  .timeline-controls {
+    display: flex;
+    overflow-x: auto;
+    padding: 5px 5px 15px;
+  }
+  .timeline-controls button {
+    flex: 0 0 175px;
+    align-items: start;
+    padding: 18px 10px;
+  }
+  .timeline-detail {
+    max-width: 100%;
+  }
+  .timeline-detail > svg {
+    max-height: 240px;
+  }
+  .engagement-index {
+    grid-template-columns: 1fr;
+  }
+  .contact-statement h2 {
+    font-size: 5.6vw;
+  }
+  .contact-statement > svg {
+    width: 8vw;
+    height: 8vw;
+  }
+  .signature-page > .page-hero {
+    padding-block: 65px;
+    min-height: auto;
+  }
+  .page-hero h1 {
+    font-size: clamp(40px, 9vw, 70px);
+  }
+  .page-about > .section:nth-child(3) .panel,
+  .page-blog .project-card,
+  .page-technologies .panel,
+  .page-services .three-grid > .panel {
+    display: block;
+  }
+  .page-industries .two-grid,
+  .page-engagement-models .two-grid {
+    grid-template-columns: 1fr;
+  }
+  .page-blog .project-card {
+    margin-bottom: 25px;
+  }
+  .page-technologies .technology-pills {
+    margin-top: 25px;
+  }
+}
+@media (max-width: 390px) {
+  .cinematic-hero {
+    min-height: 780px;
+  }
+  .hero-editorial {
+    margin-top: 135px;
+  }
+  .hero-baseline p {
+    font-size: 13px;
+  }
+  .hero-baseline .button-row {
+    gap: 10px;
+  }
+  .hero-baseline .button {
+    padding: 13px 15px;
+  }
+  .signature-workflow {
+    padding: 18px;
+  }
+  .workflow-nodes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .workflow-nodes span {
+    margin-bottom: 12px;
+  }
+  .workflow-nodes button {
+    border-bottom: 1px solid var(--rule);
+  }
+  .workflow-reading h3 {
+    font-size: 24px;
+  }
+  .luxury-contact > .button-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .contact-statement h2 {
+    font-size: 5.5vw;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .signature-page *,
+  .signature-page *::before,
+  .signature-page *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

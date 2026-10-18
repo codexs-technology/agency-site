@@ -321,7 +321,7 @@ export function Footer({ note }: { note?: string }) {
   return (
     <footer>
       <div className="footer-wordmark" aria-hidden="true">
-        CodesBoxs<span>®</span>
+        CodesBoxs<span> / ENGINEERING STUDIO</span>
       </div>
       <div className="footer-top">
         <div>
@@ -359,6 +359,9 @@ export function Footer({ note }: { note?: string }) {
           © {new Date().getUTCFullYear()} {business.name}
         </span>
         <span>{note || "Designed with intent. Engineered with care."}</span>
+        <a href="#main" className="text-link">
+          Back to top ↑
+        </a>
       </div>
     </footer>
   );

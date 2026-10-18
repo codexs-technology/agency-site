@@ -1,6 +1,21 @@
 # CodesBoxs implementation progress
 
-Last updated: 2026-10-13. Status: IN PROGRESS, not approved for production.
+Last updated: 2026-10-18. Status: IN PROGRESS, not approved for production.
+
+## Signature Experience V3 — current checkpoint (2026-10-18)
+- Inspected repository state, existing progress, React/SSR public routes, shared content, forms, Worker/D1 boundaries, scripts and tests before editing. Preserved pre-existing README changes and untracked admin setup helpers.
+- Added exact V3 core palette, spacing/motion tokens, original parametric titanium ribbon SVG and reproducible artwork generator. Self-hosted licensed Space Grotesk/Newsreader retained; no runtime 3D dependency added.
+- Recomposed opening with requested message, closing with requested conversion statement, bounded interactive AI architecture, keyboard-operable development timeline and homepage engagement index. Added differentiated interior page-family compositions and removed unverified registered-trademark decoration.
+- Backend, API contracts, authentication, schema, admin and form submission handlers unchanged.
+- First validation: 20/20 unit tests passed; TypeScript, Vite client/SSR builds and Wrangler deployment dry-run passed. Source color audit found no blue-leaning six-digit hex values across 12 public stylesheet/SVG files (not a raster/third-party pixel audit).
+- Full lint reports two pre-existing helper-script errors: capture-luxury.mjs browser document global and untracked local-admin.mjs caught-error cause. Scoped source/test/new-script lint passed. Formatting check passed before keyboard follow-up; rerun pending.
+- First E2E attempt: request-only route/security tests ran, browser tests blocked by missing bundled Chromium. Retrying with installed Chrome using existing PLAYWRIGHT_CHANNEL support. No browser completeness claim before screenshot inspection.
+- No push, deployment, remote migration, secret or production operation performed. Live contact address/booking ownership, real email delivery, Turnstile production setup, client evidence, legal approval, cross-browser/manual accessibility and performance certification remain unverified.
+- Chrome retry completed: **17/17 E2E tests passed in 4.4 minutes**, including real local D1/authentication/CSRF/content publishing, newsletter lifecycle, contact/project browser persistence, keyboard/reduced motion, automated accessibility, route/image/link checks and screenshot coverage. Source: `v3-e2e-pass1-chrome.log`.
+- Actual homepage screenshots captured at 1440/1024/768/390/320 in both `artifacts/signature-v3/pass-1` and `pass-2`; reviewed rendered output. Second refinement corrected service-row mobile spacing, contact baseline separation, ivory primary-action visibility and newsletter consent contrast. Representative contact/industry/technology captures also inspected.
+- Refined production build/TypeScript/Worker dry-run passed (`v3-refine-build.log`); final scoped source/test/new-script lint and full source/test formatting passed (`v3-static-final.log`, `v3-format-final-check.log`). Full refined-source E2E rerun in `v3-e2e-final.log` pending summary at this checkpoint.
+- Detailed evidence and incomplete acceptance items: `D:\Tech Website\reports\SIGNATURE_V3_REPORT.md`. Editorial photography, imagery-led industries and wholly bespoke layouts for every detail page remain incomplete; do not treat this checkpoint as full V3 acceptance.
+- Final refined-application E2E rerun completed **17/17 passed in 3.7 minutes** (`v3-e2e-final.log`); scoped lint/format and TypeScript checks passed. Both passes contain 48 PNG artifacts. Screenshot-only interior rendering helper corrected offscreen capture blanks; inspected corrected About page. Supplemental standalone capture ended with connection refused after the test-owned server stopped, not an application test failure. No production action performed.
 
 ## Luxury redesign — current authoritative checkpoint (2026-10-13)
 - Inspected clean Git status/diff, public components/forms, Worker routes, D1 integration, admin/outbox and tests before editing.
