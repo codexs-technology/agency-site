@@ -31,7 +31,7 @@ export const contactSchema = z.object({
 });
 export const projectSchema = contactSchema
   .omit({ service: true })
-  .extend({ services: z.array(text(2, 100)).min(1).max(13) });
+  .extend({ services: z.array(text(2, 100)).min(1).max(15) });
 export const newsletterSchema = z.object({
   email,
   consent,

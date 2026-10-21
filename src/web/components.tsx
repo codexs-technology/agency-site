@@ -110,10 +110,37 @@ export function Art({
     />
   );
 }
-export function Header({ announcement }: { announcement?: string }) {
+export function Header({
+  announcement,
+  path = "/",
+}: {
+  announcement?: string;
+  path?: string;
+}) {
   const [open, setOpen] = useState(false);
   const drawer = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
+  const header = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const close = (event: Event) => {
+      if (event.type === "keydown" && (event as KeyboardEvent).key !== "Escape")
+        return;
+      if (
+        event.type !== "keydown" &&
+        header.current?.contains(event.target as Node)
+      )
+        return;
+      header.current
+        ?.querySelectorAll("details[open]")
+        .forEach((node) => node.removeAttribute("open"));
+    };
+    document.addEventListener("pointerdown", close);
+    document.addEventListener("keydown", close);
+    return () => {
+      document.removeEventListener("pointerdown", close);
+      document.removeEventListener("keydown", close);
+    };
+  }, []);
   useEffect(() => {
     if (!open) return;
     const previous = document.body.style.overflow;
@@ -150,10 +177,10 @@ export function Header({ announcement }: { announcement?: string }) {
   }, [open]);
   const links = [
     ["Home", "/"],
-    ["AI Solutions", "/ai-solutions"],
+    ["Solutions", "/solutions"],
     ["Portfolio", "/portfolio"],
-    ["Industries", "/industries"],
     ["About", "/about"],
+    ["Pricing", "/pricing"],
     ["Contact", "/contact"],
   ];
   const resources = [
@@ -176,7 +203,7 @@ export function Header({ announcement }: { announcement?: string }) {
           </a>
         </div>
       )}
-      <header className="header">
+      <header className="header" ref={header}>
         <a href="/" className="brand" aria-label="CodesBoxs home">
           <span className="brand-mark">
             <Code2 size={22} />
@@ -185,7 +212,9 @@ export function Header({ announcement }: { announcement?: string }) {
           <span className="brand-dot">.</span>
         </a>
         <nav className="desktop-nav" aria-label="Main navigation">
-          <a href="/">Home</a>
+          <a href="/" aria-current={path === "/" ? "page" : undefined}>
+            Home
+          </a>
           <details className="nav-dropdown">
             <summary>
               Services <ChevronDown size={13} />
@@ -204,7 +233,7 @@ export function Header({ announcement }: { announcement?: string }) {
               </div>
               <div className="mega-links">
                 {services.map((s, i) => {
-                  const Icon = icons[i];
+                  const Icon = icons[i] || Code2;
                   return (
                     <a href={`/services/${s.slug}`} key={s.slug}>
                       <Icon size={17} />
@@ -216,22 +245,14 @@ export function Header({ announcement }: { announcement?: string }) {
             </div>
           </details>
           {links.slice(1, 5).map(([label, href]) => (
-            <a key={href} href={href}>
+            <a
+              key={href}
+              href={href}
+              aria-current={path === href ? "page" : undefined}
+            >
               {label}
             </a>
           ))}
-          <details className="nav-dropdown">
-            <summary>
-              Resources <ChevronDown size={13} />
-            </summary>
-            <div className="resource-menu">
-              {resources.map(([label, href]) => (
-                <a href={href} key={href}>
-                  {label}
-                </a>
-              ))}
-            </div>
-          </details>
           <a href="/contact">Contact</a>
         </nav>
         <a href="/contact" className="header-cta">
@@ -268,7 +289,11 @@ export function Header({ announcement }: { announcement?: string }) {
             >
               <X />
             </button>
-            {links.map(([label, href]) => (
+            {[
+              ...links.slice(0, 1),
+              ["Services", "/services"],
+              ...links.slice(1),
+            ].map(([label, href]) => (
               <a href={href} key={href}>
                 {label}
               </a>

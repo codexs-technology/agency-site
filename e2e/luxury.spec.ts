@@ -1,19 +1,18 @@
 import { test, expect } from "@playwright/test";
 
-test("luxury compositions, capabilities and self-hosted fonts", async ({
+test("premium reference composition and self-hosted fonts", async ({
   page,
 }) => {
   await page.goto("/");
-  await expect(page.locator("h1")).toContainText("WE DON’T JUST BUILD.");
-  await expect(page.locator("h1")).toContainText("WE ENGINEER");
-  await expect(page.locator("h1")).toContainText("WHAT’S NEXT.");
-  await expect(page.locator(".cinematic-hero")).toHaveCount(1);
-  await expect(page.locator(".ivory")).toHaveCount(4);
-  await page.getByRole("button", { name: /Applied intelligence/ }).click();
-  await expect(page.locator(".capability-copy")).toContainText("human review");
+  await expect(page.locator("h1")).toContainText("Engineering");
+  await expect(page.locator("h1")).toContainText("Intelligent Digital");
+  await expect(page.locator(".premium-hero")).toHaveCount(1);
+  await expect(page.locator(".premium-light")).toHaveCount(2);
+  await expect(page.locator(".premium-service")).toHaveCount(10);
+  await expect(page.locator(".premium-price")).toHaveCount(3);
   expect(
     await page.evaluate(() => getComputedStyle(document.body).backgroundColor),
-  ).toBe("rgb(16, 16, 15)");
+  ).toBe("rgb(9, 12, 16)");
   await page.evaluate(() => document.fonts.ready);
   expect(
     await page.evaluate(() => document.fonts.check('16px "Space Grotesk"')),

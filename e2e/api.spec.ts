@@ -48,6 +48,60 @@ test("real local D1 persistence, authentication, CSRF, content and logout", asyn
   expect(login.headers()["set-cookie"]).toContain("SameSite=Strict");
   const session = await login.json();
   const authHeaders = { ...headers, "X-CSRF-Token": session.csrfToken };
+  for (const collection of [
+    "pricing",
+    "testimonials",
+    "orders",
+    "compliance",
+  ]) {
+    const response = await request.get(`/api/admin/commerce/${collection}`);
+    expect(response.status()).toBe(200);
+    expect(await response.json()).toHaveProperty("items");
+  }
+  const packageResponse = await (
+    await request.get("/api/admin/commerce/pricing")
+  ).json();
+  const starter = packageResponse.items.find(
+    (item: { slug: string }) => item.slug === "starter",
+  );
+  expect(starter.approved).toBe(0);
+  expect(
+    (
+      await request.put(`/api/admin/commerce/pricing/${starter.id}`, {
+        headers,
+        data: starter,
+      })
+    ).status(),
+  ).toBe(403);
+  expect(
+    (
+      await request.put(`/api/admin/commerce/pricing/${starter.id}`, {
+        headers: authHeaders,
+        data: {
+          ...starter,
+          description: "An updated local-only starter package description.",
+        },
+      })
+    ).status(),
+  ).toBe(200);
+  const readiness = await (await request.get("/api/payments/readiness")).json();
+  expect(readiness.enabled).toBe(false);
+  expect(
+    (
+      await request.post("/api/admin/commerce/testimonials", {
+        headers: authHeaders,
+        data: {
+          name: "Test-only review",
+          role: "",
+          company: "",
+          review: "This is isolated test data, not a public customer claim.",
+          permission_reference: "",
+          verified: 0,
+          status: "published",
+        },
+      })
+    ).status(),
+  ).toBe(400);
   const subscriptionEmail = `unsubscribe-${suffix}@example.com`;
   const subscribe = () =>
     request.post("/api/newsletter/subscribe", {

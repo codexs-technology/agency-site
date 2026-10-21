@@ -21,15 +21,18 @@ import {
   Art,
   Button,
   ConsultationCTA,
-  Footer,
   Header,
   Section,
-  ServiceCards,
   Turnstile,
 } from "./components";
 import { ContactForm, ProjectForm, request } from "./forms";
 import { applicationSchema } from "../shared/validation";
-import { LuxuryHome } from "./LuxuryHome";
+import {
+  PremiumHome,
+  PremiumFooter,
+  PremiumServiceGrid,
+  PackagePage,
+} from "./PremiumHome";
 import { SignatureProcess, SignatureWorkflow } from "./SignatureSystems";
 
 class ErrorBoundary extends Component<
@@ -928,7 +931,11 @@ function Unsubscribe() {
 }
 function PublicPage({ data }: { data: SiteData }) {
   const path = data.path;
-  if (path === "/") return <LuxuryHome data={data} />;
+  if (path === "/") return <PremiumHome data={data} />;
+  if (path === "/pricing" || path.startsWith("/pricing/"))
+    return (
+      <PackagePage slug={path.split("/")[2] || ""} records={data.pricing} />
+    );
   if (path.startsWith("/services/"))
     return <ServicePage slug={path.split("/")[2]} data={data} />;
   if (path.startsWith("/blog/") || path.startsWith("/portfolio/")) {
@@ -954,9 +961,51 @@ function PublicPage({ data }: { data: SiteData }) {
         eyebrow={path.slice(1).replaceAll("-", " ").toUpperCase()}
       />
       {path === "/newsletter/unsubscribe" && <Unsubscribe />}
+      {["/refund-policy", "/service-delivery-policy"].includes(path) && (
+        <Section>
+          <div className="notice">
+            <strong>Not approved for merchant submission.</strong> Online
+            purchases are not enabled. Final owner-approved policy terms must be
+            published before accepting payments.
+          </div>
+          <p>
+            {path === "/refund-policy"
+              ? "Request written cancellation procedures, deposit treatment, refund eligibility, approved-work exclusions, refund timing and a dispute contact before entering an agreement. These terms have not been supplied or approved; this page does not invent them."
+              : "Delivery is through agreed digital deliverables and project milestones. The agreement must define scope, delivery time, customer dependencies, acceptance criteria, revisions, intellectual property handover and support. No universal turnaround time is promised."}
+          </p>
+          <Button href="/contact">Request terms for your project</Button>
+        </Section>
+      )}
       {path === "/services" && (
         <Section>
-          <ServiceCards managed={data.serviceContent} />
+          <PremiumServiceGrid />
+          {!!data.serviceContent.filter(
+            (entry) => !services.some((service) => service.slug === entry.slug),
+          ).length && (
+            <>
+              <h2>Additional capabilities</h2>
+              <div className="three-grid">
+                {data.serviceContent
+                  .filter(
+                    (entry) =>
+                      !services.some((service) => service.slug === entry.slug),
+                  )
+                  .map((entry) => (
+                    <a
+                      key={entry.id}
+                      className="panel"
+                      href={`/services/${entry.slug}`}
+                    >
+                      <h3>{entry.title}</h3>
+                      <p>{entry.summary}</p>
+                      <span className="text-link">
+                        Explore service <ArrowUpRight size={16} />
+                      </span>
+                    </a>
+                  ))}
+              </div>
+            </>
+          )}
         </Section>
       )}
       {path === "/about" && (
@@ -1025,7 +1074,7 @@ function PublicPage({ data }: { data: SiteData }) {
           </Section>
         </>
       )}
-      {path === "/ai-solutions" && (
+      {(path === "/ai-solutions" || path === "/solutions") && (
         <>
           <Section>
             <AIShowcase />
@@ -1242,14 +1291,14 @@ function PublicPage({ data }: { data: SiteData }) {
 export function App({ data }: { data: SiteData }) {
   return (
     <ErrorBoundary>
-      <Header announcement={data.settings.announcement} />
+      <Header announcement={data.settings.announcement} path={data.path} />
       <main
         id="main"
         className={`signature-page page-${data.path.split("/")[1] || "home"}`}
       >
         <PublicPage data={data} />
       </main>
-      <Footer note={data.settings.footer_note} />
+      <PremiumFooter data={data} />
     </ErrorBoundary>
   );
 }

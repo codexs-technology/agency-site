@@ -5,18 +5,18 @@ import { pages } from "../src/shared/content";
 test("signature sample architecture and development timeline are interactive", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/solutions");
   await page.getByRole("button", { name: "03 Evaluate" }).click();
   await expect(page.locator(".workflow-reading")).toContainText(
     "must not invent",
   );
+  await page.goto("/process");
   const timeline = page.locator(".signature-process");
   await timeline.getByRole("tab").last().click();
   await expect(timeline.locator(".timeline-detail .eyebrow")).toContainText(
     "07",
   );
-  await expect(page.locator(".signature-engagements a")).not.toHaveCount(0);
-  await page.getByRole("link", { name: "Back to top" }).click();
+  await page.getByRole("link", { name: /Back to top/ }).click();
   await expect(page.locator("h1")).toBeInViewport();
 });
 

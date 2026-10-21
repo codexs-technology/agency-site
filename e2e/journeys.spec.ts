@@ -8,6 +8,7 @@ test("valid contact UI persists and backend failure never shows success", async 
   await page.goto("/contact");
   await page.getByLabel("Full name").fill("Browser Inquiry Example");
   await page
+    .locator("main")
     .getByLabel("Email address")
     .fill(`browser-${randomBytes(6).toString("hex")}@example.com`);
   await page
@@ -19,14 +20,17 @@ test("valid contact UI persists and backend failure never shows success", async 
     .fill(
       "We would like a customer-facing portal with accessible onboarding and documented integrations.",
     );
-  await page.getByRole("checkbox").check();
+  await page.locator("main").getByRole("checkbox").check();
   await page.getByRole("button", { name: "Send Project Inquiry" }).click();
   await expect(
     page.getByRole("heading", { name: "Inquiry saved." }),
   ).toBeVisible();
   await page.goto("/contact");
   await page.getByLabel("Full name").fill("Failure Inquiry Example");
-  await page.getByLabel("Email address").fill("failure@example.com");
+  await page
+    .locator("main")
+    .getByLabel("Email address")
+    .fill("failure@example.com");
   await page
     .getByLabel("Service interested in")
     .selectOption("Web Development");
@@ -36,7 +40,7 @@ test("valid contact UI persists and backend failure never shows success", async 
     .fill(
       "A detailed project inquiry for testing a failed backend response and honest error handling.",
     );
-  await page.getByRole("checkbox").check();
+  await page.locator("main").getByRole("checkbox").check();
   await page.route("**/api/contact", (route) =>
     route.fulfill({
       status: 503,
@@ -67,9 +71,10 @@ test("multistep project inquiry reviews and persists", async ({ page }) => {
   await page.getByRole("button", { name: "Continue" }).click();
   await page.getByLabel("Full name").fill("Project Browser Example");
   await page
+    .locator("main")
     .getByLabel("Email address")
     .fill(`project-browser-${randomBytes(6).toString("hex")}@example.com`);
-  await page.getByRole("checkbox").check();
+  await page.locator("main").getByRole("checkbox").check();
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page.locator(".review-list")).toContainText("AI Development");
   await page.getByRole("button", { name: "Back", exact: true }).click();

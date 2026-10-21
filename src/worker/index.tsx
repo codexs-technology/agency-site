@@ -75,6 +75,8 @@ app.get("/sitemap.xml", async (c) => {
           "/privacy-policy",
           "/terms-of-service",
           "/cookie-policy",
+          "/refund-policy",
+          "/service-delivery-policy",
         ].includes(p),
     ),
     ...services.map((s) => `/services/${s.slug}`),
@@ -96,7 +98,22 @@ app.get("/sitemap.xml", async (c) => {
   );
 });
 app.get("*", async (c) => {
-  const path = new URL(c.req.url).pathname;
+  const requestedPath = new URL(c.req.url).pathname;
+  const adminRoutes = [
+    "/admin/login",
+    "/admin/dashboard",
+    "/admin/leads",
+    "/admin/services",
+    "/admin/pricing",
+    "/admin/portfolio",
+    "/admin/testimonials",
+    "/admin/orders",
+    "/admin/newsletter",
+    "/admin/content",
+    "/admin/settings",
+    "/admin/audit-logs",
+  ];
+  const path = adminRoutes.includes(requestedPath) ? "/admin" : requestedPath;
   if (
     path.startsWith("/assets/") ||
     path.startsWith("/images/") ||
@@ -131,6 +148,37 @@ app.get("*", async (c) => {
       }>()
     : { results: [] };
   const data: SiteData = {
+    adminSection:
+      (
+        {
+          login: "dashboard",
+          dashboard: "dashboard",
+          leads: "contacts",
+          services: "services",
+          pricing: "pricing",
+          portfolio: "portfolio",
+          testimonials: "testimonials",
+          orders: "orders",
+          newsletter: "subscribers",
+          content: "blog",
+          settings: "settings",
+          "audit-logs": "audits",
+        } as Record<string, string>
+      )[requestedPath.split("/")[2]] || "dashboard",
+    pricing: c.env.DB
+      ? (
+          await c.env.DB.prepare(
+            "SELECT * FROM pricing_packages WHERE status='published' AND approved=1 ORDER BY amount_minor,id",
+          ).all<Record<string, unknown>>()
+        ).results
+      : [],
+    testimonials: c.env.DB
+      ? (
+          await c.env.DB.prepare(
+            "SELECT id,name,role,company,review FROM testimonials WHERE status='published' AND verified=1 AND length(permission_reference)>5 ORDER BY created_at DESC LIMIT 3",
+          ).all<Record<string, unknown>>()
+        ).results
+      : [],
     path,
     posts,
     projects,

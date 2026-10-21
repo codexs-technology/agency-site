@@ -16,7 +16,7 @@ export const business = {
   name: "CodesBoxs SMC Pvt Ltd",
   brand: "CodesBoxs",
   email: "codexstechnology@gmail.com",
-  booking: "https://calendly.com/codexstechnology/30min",
+  booking: "/contact",
   github: "https://github.com/codexs-technology",
 };
 export const services: Service[] = [
@@ -427,6 +427,74 @@ export const services: Service[] = [
   },
 ];
 
+services.push(
+  {
+    slug: "branding-logo-design",
+    title: "Branding & Logo Design",
+    eyebrow: "An identity with intention",
+    summary:
+      "Distinctive visual identities, logos and practical brand systems.",
+    description:
+      "Build a coherent identity around your positioning, audience and real-world applications. Discovery and visual exploration lead to an agreed direction before final artwork is prepared. Trademark clearance and legal registration are separate professional services, not implied by a design engagement.",
+    capabilities: [
+      "Brand discovery and visual direction",
+      "Logo design and variations",
+      "Typography and color systems",
+      "Digital and print application guidance",
+    ],
+    benefits: [
+      "A consistent visual language",
+      "Reusable assets for your team",
+      "Clear guidelines for future applications",
+    ],
+    deliverables: [
+      "Approved logo files in agreed formats",
+      "Color and typography guidelines",
+      "Scoped brand application examples",
+    ],
+    technologies: [
+      "Vector artwork",
+      "SVG",
+      "Design tokens",
+      "Brand guidelines",
+    ],
+    question: "Are trademark registration and font licenses included?",
+    answer:
+      "No. Legal clearance, registration and third-party licenses must be separately agreed and obtained. The proposal defines revision limits, usage rights and final handover formats.",
+    image: "engineering",
+  },
+  {
+    slug: "cloud-api-integration",
+    title: "Cloud & API Integration",
+    eyebrow: "Connect your business systems",
+    summary:
+      "Cloud infrastructure and reliable integrations with clear ownership.",
+    description:
+      "Connect business applications through documented interfaces and maintainable cloud architecture. We assess permissions, data ownership and failure modes before implementation. Integration availability depends on authorized access and the capabilities of each provider.",
+    capabilities: [
+      "Cloudflare application architecture",
+      "Authenticated API integrations",
+      "Webhook processing and retries",
+      "Deployment and monitoring workflows",
+    ],
+    benefits: [
+      "Less duplicated data entry",
+      "Observable integration failures",
+      "Documented operational boundaries",
+    ],
+    deliverables: [
+      "Integration specification and data mapping",
+      "Tested connectors and error handling",
+      "Deployment and recovery documentation",
+    ],
+    technologies: ["Cloudflare Workers", "D1", "REST APIs", "Webhooks"],
+    question: "Are cloud and subscription fees included?",
+    answer:
+      "Not unless explicitly included in the quote. Provider access, hosting fees, usage limits, support responsibilities and maintenance are agreed before development.",
+    image: "cloud",
+  },
+);
+
 export const stages = [
   [
     "Discovery",
@@ -607,8 +675,39 @@ export type SiteData = {
   siteUrl: string;
   localTestMode: boolean;
   settings: Record<string, string>;
+  pricing?: Record<string, unknown>[];
+  testimonials?: Record<string, unknown>[];
+  adminSection?: string;
 };
 export const pages: Record<string, [string, string]> = {
+  "/solutions": [
+    "Intelligence Built Into Every Workflow.",
+    "AI agents, voice interfaces and workflow automation designed with clear boundaries and human oversight.",
+  ],
+  "/pricing": [
+    "Simple Pricing for Every Need.",
+    "Explore proposed engagement outlines and request a scoped quote. No unapproved fixed purchase prices.",
+  ],
+  "/pricing/starter": [
+    "Starter engagement",
+    "A scoped website or landing page inquiry, subject to an approved written quote.",
+  ],
+  "/pricing/business": [
+    "Business engagement",
+    "Discuss a growing business website or application with a clear delivery scope.",
+  ],
+  "/pricing/enterprise": [
+    "Enterprise engagement",
+    "Request a custom software, SaaS or AI integration consultation.",
+  ],
+  "/refund-policy": [
+    "Refund & Cancellation Policy — awaiting approval",
+    "Refund and cancellation terms are not yet approved for online sales. No checkout is enabled.",
+  ],
+  "/service-delivery-policy": [
+    "Service Delivery Policy — awaiting approval",
+    "Delivery milestones and acceptance criteria must be confirmed in the signed project agreement.",
+  ],
   "/newsletter/unsubscribe": [
     "Manage your newsletter subscription",
     "Use the private link from your subscription email to unsubscribe. No action is taken until you confirm.",

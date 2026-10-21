@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { leadStatuses } from "../shared/validation";
 import { request } from "./forms";
+import { CommercialAdmin } from "./CommercialAdmin";
 
 type Row = Record<string, unknown>;
 type Session = { email: string; csrfToken: string };
@@ -30,6 +31,10 @@ const sections = [
   ["settings", "Site settings", Settings],
   ["audits", "Audit history", History],
   ["emails", "Email delivery", Mail],
+  ["pricing", "Pricing packages", Layers],
+  ["testimonials", "Testimonials", Users],
+  ["orders", "Orders", Inbox],
+  ["compliance", "Merchant readiness", Settings],
 ] as const;
 const contentEntities = ["blog", "portfolio", "services", "jobs"];
 const defaultContent: Row = {
@@ -46,10 +51,14 @@ const defaultContent: Row = {
   location: "",
   employment_type: "",
 };
-export function Admin() {
+export function Admin({
+  initialSection = "dashboard",
+}: {
+  initialSection?: string;
+}) {
   const [session, setSession] = useState<Session | null>(null);
   const [checking, setChecking] = useState(true);
-  const [entity, setEntity] = useState("dashboard");
+  const [entity, setEntity] = useState(initialSection);
   const [rows, setRows] = useState<Row[]>([]);
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [page, setPage] = useState(1);
@@ -80,7 +89,11 @@ export function Admin() {
     };
   }, []);
   useEffect(() => {
-    if (!session) return;
+    if (
+      !session ||
+      ["pricing", "testimonials", "orders", "compliance"].includes(entity)
+    )
+      return;
     let current = true;
     const url =
       entity === "dashboard"
@@ -254,7 +267,15 @@ export function Admin() {
             Loading or saving…
           </p>
         )}
-        {entity === "dashboard" ? (
+        {["pricing", "testimonials", "orders", "compliance"].includes(
+          entity,
+        ) ? (
+          <CommercialAdmin
+            key={entity}
+            entity={entity}
+            csrf={session.csrfToken}
+          />
+        ) : entity === "dashboard" ? (
           <>
             <div className="admin-stats">
               {Object.entries(counts).map(([name, count]) => (

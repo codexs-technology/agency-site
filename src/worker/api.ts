@@ -1,4 +1,6 @@
 import { Hono } from "hono";
+import { commerce } from "./commerce";
+import { paymentReadiness } from "./payments";
 import { bodyLimit } from "hono/body-limit";
 import { getCookie, setCookie, deleteCookie } from "hono/cookie";
 import { z } from "zod";
@@ -429,6 +431,9 @@ const adminTables: Record<string, string> = {
   audits: "audit_logs",
   emails: "email_outbox",
 };
+api.get("/payments/readiness", (c) => c.json(paymentReadiness()));
+api.post("/checkout", (c) => c.json({ error: paymentReadiness().reason }, 503));
+api.route("/admin/commerce", commerce);
 api.get("/admin/dashboard", async (c) => {
   const counts: Record<string, number> = {};
   for (const [key, table] of Object.entries(adminTables)) {
