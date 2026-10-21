@@ -1,5 +1,7 @@
 # CodesBoxs SMC Pvt Ltd website
 
+Repository: `codexs-technology/agency-site`. For the premium implementation and current release gates, see `docs/PREMIUM_RELEASE.md`; the historical measurements below predate that redesign.
+
 **Status: implementation in progress; NO-GO for production until the open gates in PROJECT_PROGRESS.md and REQUIREMENTS.md are verified.**
 
 React/TypeScript public website with server-rendered content, Hono on Cloudflare Workers, D1 persistence, and a responsive administrator interface. No VPS or traditional Node server is required. Node is used for development/build tooling only.
@@ -74,3 +76,8 @@ Legal pages are clearly marked drafts and noindexed. Owner/legal review is a lau
 ## Operations
 
 Read `docs/DEPLOYMENT.md`, `docs/SECURITY.md` and `docs/BACKUP_RECOVERY.md`. CI checks are present but have not been verified on GitHub. The deployment workflow is manual and must use a protected production environment with required reviewers. No live deployment, remote migration, DNS change or verified GitHub push has occurred.
+## Original repository identity
+
+The initial `agency-site` repository README identified this project as `agency-site`.
+Its initial commit is preserved as an ancestor through a non-destructive merge;
+the complete website implementation and operational documentation are retained above.
