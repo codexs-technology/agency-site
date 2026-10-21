@@ -7,5 +7,22 @@
   "d1_databases": [{ "binding": "DB", "database_name": "codesboxs", "database_id": "1c500b42-2acf-40d2-930c-f19f52d1a128", "migrations_dir": "migrations" }],
   "vars": { "ENVIRONMENT": "development", "PUBLIC_SITE_URL": "http://localhost:8787" },
   "triggers": { "crons": ["*/10 * * * *"] },
-  "observability": { "enabled": true }
+  "observability": { "enabled": true },
+  "env": {
+    "production": {
+      "name": "agency-site",
+      "vars": {
+        "ENVIRONMENT": "production",
+        "PUBLIC_SITE_URL": "https://codesboxs.com"
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "agency-site-db",
+          "database_id": "a6095c86-021b-4409-85ae-c5e474389ca9",
+          "migrations_dir": "migrations"
+        }
+      ]
+    }
+  }
 }
