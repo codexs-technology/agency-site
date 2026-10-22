@@ -244,6 +244,8 @@ const packages = [
   {
     slug: "starter",
     name: "Website Development",
+    engagement: "Project-Based Pricing",
+    cta: "Discuss Your Website",
     copy: "For small businesses and starter projects.",
     features: [
       "Basic website or landing page",
@@ -256,6 +258,8 @@ const packages = [
   {
     slug: "business",
     name: "Business Applications",
+    engagement: "Milestone-Based Development",
+    cta: "Plan Your Application",
     copy: "For growing businesses.",
     features: [
       "Advanced website or web application",
@@ -268,6 +272,8 @@ const packages = [
   {
     slug: "enterprise",
     name: "AI Automation Solutions",
+    engagement: "Tailored AI Solutions",
+    cta: "Explore AI Solutions",
     copy: "For connected workflows and human-supervised automation.",
     features: [
       "Custom software or SaaS consultation",
@@ -301,7 +307,7 @@ export function PricingCards({
                 Number(record.amount_minor),
                 String(record.currency),
               )
-            : "Custom Quote";
+            : p.engagement;
         return (
           <article
             className={`premium-price ${i === 1 ? "price-featured" : ""}`}
@@ -318,7 +324,7 @@ export function PricingCards({
             <p className="price-note">
               {record
                 ? `${record.billing === "recurring" ? "Recurring engagement — billing interval agreed in quote." : record.billing === "one_time" ? "One-time engagement." : "Scope and fees agreed before work begins."} ${String(record.disclosures)}`
-                : "Scope and fees agreed before work begins."}
+                : "Engagement model, not a price. Final fees are agreed in a written proposal."}
             </p>
             <ul>
               {p.features.map((f) => (
@@ -353,8 +359,8 @@ export function PricingCards({
                 </dd>
               </div>
             </dl>
-            <Button secondary={i !== 1} href={`/pricing/${p.slug}`}>
-              {i === 2 ? "Contact Sales" : "Get Started"}
+            <Button secondary={i !== 1} href="/start-project">
+              {p.cta}
             </Button>
           </article>
         );
@@ -408,7 +414,7 @@ export function PackagePage({
                         Number(r.amount_minor),
                         String(r.currency),
                       )
-                    : "Custom Quote"}{" "}
+                    : p.engagement}{" "}
                   · {String(r.billing).replaceAll("_", " ")}
                 </p>
                 <p>Delivery: {String(r.delivery)}</p>
@@ -489,6 +495,96 @@ export function PackagePage({
             </a>
             {" · "}
             <a href="/refund-policy">Refund & cancellation — review draft</a>
+          </div>
+          <div
+            className="comparison-scroll"
+            tabIndex={0}
+            role="region"
+            aria-label="Engagement comparison"
+          >
+            <table className="engagement-comparison">
+              <caption>
+                Compare engagement models — final scope and fees require a
+                written proposal
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Focus</th>
+                  <th scope="col">Website Development</th>
+                  <th scope="col">Business Applications</th>
+                  <th scope="col">AI Automation Solutions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">Planning</th>
+                  <td>Pages, content and customer journeys</td>
+                  <td>Roles, workflows and data model</td>
+                  <td>Task boundaries, evaluation and human handoff</td>
+                </tr>
+                <tr>
+                  <th scope="row">Deliverables</th>
+                  <td>Responsive website and handover guide</td>
+                  <td>Application, tests and integration documentation</td>
+                  <td>
+                    Scoped automation, evaluation cases and operating guide
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">Billing</th>
+                  <td>Project fee agreed in proposal</td>
+                  <td>Agreed milestone invoices</td>
+                  <td>
+                    Agreed project milestones; provider costs itemized
+                    separately
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">Timing</th>
+                  <td colSpan={3}>
+                    Estimated after discovery, dependencies and acceptance
+                    criteria are agreed. No universal turnaround is promised.
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">Revisions & support</th>
+                  <td colSpan={3}>
+                    Limits, coverage, duration and any recurring fees must be
+                    agreed in writing. No automatic lifetime support.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div className="pricing-faq">
+            <h2>Before you commission a project</h2>
+            {[
+              [
+                "How do I request a proposal?",
+                "Send a project inquiry with your goals, required services, dependencies and timing. We clarify scope before preparing a written proposal; an inquiry is not an order.",
+              ],
+              [
+                "When are fees and currency confirmed?",
+                "Your written proposal identifies currency, taxes, deliverables, any deposit, milestones and invoice due dates before you approve it. Engagement labels are not purchase prices.",
+              ],
+              [
+                "How are changes handled?",
+                "Revisions within the agreed scope follow the approved review process. New requirements need an updated scope, fee and estimate before additional work is authorized.",
+              ],
+              [
+                "What happens at handover?",
+                "Deliverables are reviewed against agreed acceptance tests. Handover records the supplied version, source/access transfer, documentation, open items and support scope.",
+              ],
+              [
+                "Can I pay online?",
+                "No. Website checkout remains disabled. No payment provider or collection method is promised before separate owner and processor approval.",
+              ],
+            ].map(([question, answer]) => (
+              <details key={question}>
+                <summary>{question}</summary>
+                <p>{answer}</p>
+              </details>
+            ))}
           </div>
         </>
       )}
@@ -696,10 +792,10 @@ export function PremiumHome({ data }: { data: SiteData }) {
               for <span>Every Need.</span>
             </h2>
             <p>
-              Choose a starting point that fits your goals, or request a custom
-              quote for a larger project.
+              Choose an engagement model that fits your goals, or request a
+              written proposal for a larger project.
             </p>
-            <Button href="/start-project">Get a Custom Quote</Button>
+            <Button href="/start-project">Request a Project Proposal</Button>
             <p className="pricing-disclosure">
               Package outlines are subject to an agreed scope. No unapproved
               fixed prices or live checkout.

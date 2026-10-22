@@ -1,5 +1,15 @@
 import { z } from "zod";
 
+export const recruitmentStatuses = [
+  "Received",
+  "Under Review",
+  "Shortlisted",
+  "Interview",
+  "Offer",
+  "Rejected",
+  "Withdrawn",
+] as const;
+
 export const leadStatuses = [
   "New",
   "Contacted",
@@ -62,6 +72,15 @@ export const applicationSchema = z.object({
   consent,
   turnstileToken: text(0, 2048).default(""),
   website: text(0, 200).default(""),
+});
+export const recruitmentSchema = applicationSchema.extend({
+  job_id: text(1, 100),
+  phone: text(5, 40),
+  country: text(2, 100),
+  applicant_location: text(2, 150),
+  experience: text(10, 4000),
+  skills: text(2, 2000),
+  professional_url: applicationSchema.shape.portfolio_url,
 });
 export const contentSchema = z.object({
   slug: text(2, 120).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),

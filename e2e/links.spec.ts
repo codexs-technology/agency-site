@@ -24,7 +24,11 @@ test("SSR routes, local images and all rendered internal links resolve", async (
       expect(target.status(), `${route} -> ${path}`).toBe(200);
       if (path.startsWith("/images/"))
         expect(target.headers()["content-type"]).toContain(
-          path.endsWith(".png") ? "image/png" : "image/svg+xml",
+          path.endsWith(".png")
+            ? "image/png"
+            : path.endsWith(".webp")
+              ? "image/webp"
+              : "image/svg+xml",
         );
     }
   }

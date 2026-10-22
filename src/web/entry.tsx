@@ -5,6 +5,7 @@ import "./luxury.css";
 import "./signature.css";
 import "./premium.css";
 import "./merchant.css";
+import "./upgrade.css";
 
 const node = document.getElementById("site-data");
 const root = document.getElementById("root");

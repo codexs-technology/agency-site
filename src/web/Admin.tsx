@@ -12,7 +12,7 @@ import {
   Mail,
   Briefcase,
 } from "lucide-react";
-import { leadStatuses } from "../shared/validation";
+import { leadStatuses, recruitmentStatuses } from "../shared/validation";
 import { request } from "./forms";
 import { CommercialAdmin } from "./CommercialAdmin";
 
@@ -369,7 +369,9 @@ export function Admin({
                     <option value="">All statuses</option>
                     {(contentEntities.includes(entity)
                       ? ["draft", "published"]
-                      : leadStatuses
+                      : entity === "applications"
+                        ? recruitmentStatuses
+                        : leadStatuses
                     ).map((v) => (
                       <option key={v}>{v}</option>
                     ))}
@@ -657,11 +659,18 @@ export function Admin({
                           "description",
                           "cover_letter",
                           "portfolio_url",
+                          "phone",
+                          "country",
+                          "applicant_location",
+                          "experience",
+                          "skills",
+                          "professional_url",
                           "entity",
                           "entity_id",
                           "recipient",
                           "last_error",
                           "attempts",
+                          "confirmed_at",
                         ]
                           .filter(
                             (key) => row[key] !== undefined && row[key] !== "",
@@ -673,6 +682,46 @@ export function Admin({
                             </details>
                           ))}
                         {row.summary ? <p>{String(row.summary)}</p> : null}
+                        {entity === "subscribers" && (
+                          <>
+                            <p>
+                              {row.confirmed_at
+                                ? "Email confirmation recorded"
+                                : "Not confirmed — do not include in marketing"}
+                            </p>
+                            <button
+                              className="button button-secondary"
+                              disabled={busy || row.status === "unsubscribed"}
+                              onClick={() =>
+                                void mutate(
+                                  `/api/admin/subscribers/${row.id}/status`,
+                                  { status: "unsubscribed" },
+                                  "PATCH",
+                                )
+                              }
+                            >
+                              Unsubscribe
+                            </button>
+                          </>
+                        )}
+                        {entity === "applications" && (
+                          <div className="document-links">
+                            {row.has_resume ? (
+                              <a
+                                href={`/api/admin/applications/${row.id}/documents/resume`}
+                              >
+                                Download resume (untrusted file)
+                              </a>
+                            ) : null}
+                            {row.has_cover_file ? (
+                              <a
+                                href={`/api/admin/applications/${row.id}/documents/cover`}
+                              >
+                                Download cover letter (untrusted file)
+                              </a>
+                            ) : null}
+                          </div>
+                        )}
                       </td>
                       <td>
                         {["contacts", "projects", "applications"].includes(
@@ -692,7 +741,10 @@ export function Admin({
                                 )
                               }
                             >
-                              {leadStatuses.map((s) => (
+                              {(entity === "applications"
+                                ? recruitmentStatuses
+                                : leadStatuses
+                              ).map((s) => (
                                 <option key={s}>{s}</option>
                               ))}
                             </select>

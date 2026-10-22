@@ -114,7 +114,26 @@ test("real local D1 persistence, authentication, CSRF, content and logout", asyn
     (item: { recipient: string }) => item.recipient === subscriptionEmail,
   );
   expect(confirmation).toBeTruthy();
-  const unsubscribeToken = confirmation.text.match(/token=([a-f0-9]{64})/)[1];
+  const unsubscribeToken = confirmation.text.match(
+    /unsubscribe\?token=([a-f0-9]{64})/,
+  )[1];
+  const confirmToken = confirmation.text.match(
+    /confirm\?token=([a-f0-9]{64})/,
+  )[1];
+  const confirmed = await request.post("/api/newsletter/confirm", {
+    headers,
+    data: { token: confirmToken },
+  });
+  expect(confirmed.status()).toBe(200);
+  expect(await confirmed.json()).toHaveProperty("confirmed", true);
+  expect(
+    (
+      await request.post("/api/newsletter/confirm", {
+        headers,
+        data: { token: confirmToken },
+      })
+    ).status(),
+  ).toBe(404);
   expect(
     (
       await request.post("/api/newsletter/unsubscribe", {
@@ -147,7 +166,7 @@ test("real local D1 persistence, authentication, CSRF, content and logout", asyn
     subscriptions.items.find(
       (item: { email: string }) => item.email === subscriptionEmail,
     ).status,
-  ).toBe("subscribed");
+  ).toBe("unsubscribed");
   const leads = await request.get("/api/admin/contacts");
   expect(
     (await leads.json()).items.some(

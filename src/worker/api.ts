@@ -11,6 +11,7 @@ import {
   contentSchema,
   gallerySchema,
   leadStatuses,
+  recruitmentStatuses,
   loginSchema,
   newsletterSchema,
   projectSchema,
@@ -302,10 +303,20 @@ api.post("/newsletter/subscribe", async (c) => {
     );
   const id = randomToken();
   const token = randomToken();
+  const confirmToken = randomToken();
+  const confirmHash = await digest(confirmToken);
   const statements = [
     c.env.DB.prepare(
-      "INSERT INTO newsletter_subscribers(id,email,consent,unsubscribe_hash) VALUES(?,?,1,?) ON CONFLICT(email) DO UPDATE SET status='subscribed',unsubscribe_hash=excluded.unsubscribe_hash WHERE newsletter_subscribers.status='unsubscribed'",
+      "INSERT INTO newsletter_subscribers(id,email,consent,unsubscribe_hash,status) VALUES(?,?,1,?,'unsubscribed') ON CONFLICT(email) DO UPDATE SET unsubscribe_hash=excluded.unsubscribe_hash WHERE newsletter_subscribers.confirmed_at IS NULL OR newsletter_subscribers.status='unsubscribed'",
     ).bind(id, parsed.data.email, await digest(token)),
+    c.env.DB.prepare(
+      "INSERT INTO newsletter_confirmations(email,token_hash,expires_at) SELECT ?,?,? WHERE NOT EXISTS(SELECT 1 FROM newsletter_subscribers WHERE email=? AND status='subscribed' AND confirmed_at IS NOT NULL) ON CONFLICT(email) DO UPDATE SET token_hash=excluded.token_hash,expires_at=excluded.expires_at,confirmed_at=NULL",
+    ).bind(
+      parsed.data.email,
+      confirmHash,
+      Math.floor(Date.now() / 1000) + 86400,
+      parsed.data.email,
+    ),
   ];
   if (c.env.SEND_CONFIRMATIONS === "true") {
     statements.push(
@@ -316,7 +327,7 @@ api.post("/newsletter/subscribe", async (c) => {
         "newsletter",
         parsed.data.email,
         "CodesBoxs newsletter subscription",
-        `Your subscription is stored. To unsubscribe, visit ${c.env.PUBLIC_SITE_URL}/newsletter/unsubscribe?token=${token}`,
+        `Confirm your newsletter subscription within 24 hours: ${c.env.PUBLIC_SITE_URL}/newsletter/confirm?token=${confirmToken}\nNo marketing is enabled until you confirm. To unsubscribe, visit ${c.env.PUBLIC_SITE_URL}/newsletter/unsubscribe?token=${token}`,
         emailConfigured(c.env) ? "pending" : "blocked",
         parsed.data.email,
         await digest(token),
@@ -329,10 +340,46 @@ api.post("/newsletter/subscribe", async (c) => {
     {
       stored: true,
       message:
-        "Subscription recorded. If you were already subscribed, no duplicate was created.",
+        "Subscription request recorded. If confirmation is needed, an email is queued when delivery is configured. You are not subscribed until you confirm. Email delivery is not yet confirmed; existing confirmed subscriptions are unchanged.",
     },
     201,
   );
+});
+api.post("/newsletter/confirm", async (c) => {
+  if (!(await rateLimit(c, "newsletter-confirm", 20, 3600)))
+    return c.json({ error: "Please try again later" }, 429);
+  const parsed = z
+    .object({ token: z.string().regex(/^[a-f0-9]{64}$/) })
+    .safeParse(await c.req.json());
+  if (!parsed.success)
+    return c.json({ error: "Invalid confirmation link" }, 400);
+  const hash = await digest(parsed.data.token);
+  const row = await c.env.DB.prepare(
+    "SELECT email FROM newsletter_confirmations WHERE token_hash=? AND expires_at>? AND confirmed_at IS NULL",
+  )
+    .bind(hash, Math.floor(Date.now() / 1000))
+    .first<{ email: string }>();
+  if (!row)
+    return c.json(
+      {
+        error:
+          "Confirmation link is invalid, expired or already used. Request another subscription email if needed.",
+      },
+      404,
+    );
+  await c.env.DB.batch([
+    c.env.DB.prepare(
+      "UPDATE newsletter_subscribers SET status='subscribed',confirmed_at=CURRENT_TIMESTAMP WHERE email=? AND EXISTS(SELECT 1 FROM newsletter_confirmations WHERE token_hash=? AND confirmed_at IS NULL AND expires_at>?)",
+    ).bind(row.email, hash, Math.floor(Date.now() / 1000)),
+    c.env.DB.prepare(
+      "UPDATE newsletter_confirmations SET confirmed_at=CURRENT_TIMESTAMP WHERE token_hash=? AND confirmed_at IS NULL",
+    ).bind(hash),
+  ]);
+  return c.json({
+    confirmed: true,
+    message:
+      "Your newsletter subscription is confirmed. You can unsubscribe using the link in your email.",
+  });
 });
 api.post("/newsletter/unsubscribe", async (c) => {
   if (!(await rateLimit(c, "unsubscribe", 20, 3600)))
@@ -342,11 +389,16 @@ api.post("/newsletter/unsubscribe", async (c) => {
     .safeParse(await c.req.json());
   if (!parsed.success)
     return c.json({ error: "Invalid unsubscribe token" }, 400);
-  const result = await c.env.DB.prepare(
-    "UPDATE newsletter_subscribers SET status='unsubscribed' WHERE unsubscribe_hash=?",
-  )
-    .bind(await digest(parsed.data.token))
-    .run();
+  const hash = await digest(parsed.data.token);
+  const results = await c.env.DB.batch([
+    c.env.DB.prepare(
+      "DELETE FROM newsletter_confirmations WHERE email IN (SELECT email FROM newsletter_subscribers WHERE unsubscribe_hash=?)",
+    ).bind(hash),
+    c.env.DB.prepare(
+      "UPDATE newsletter_subscribers SET status='unsubscribed' WHERE unsubscribe_hash=?",
+    ).bind(hash),
+  ]);
+  const result = results[1];
   if (!result.meta.changes)
     return c.json(
       {
@@ -579,6 +631,77 @@ api.put("/admin/portfolio/:id/images", async (c) => {
   ]);
   return c.json({ saved: true });
 });
+api.get("/admin/applications/:id/documents/:kind", async (c) => {
+  if (!c.env.APPLICATION_DOCUMENTS)
+    return c.json({ error: "Document storage unavailable" }, 503);
+  const kind = c.req.param("kind");
+  if (!["resume", "cover"].includes(kind))
+    return c.json({ error: "Not found" }, 404);
+  const row = await c.env.DB.prepare(
+    "SELECT resume_key,cover_file_key FROM job_applications WHERE id=?",
+  )
+    .bind(c.req.param("id"))
+    .first<{ resume_key: string | null; cover_file_key: string | null }>();
+  const key = kind === "resume" ? row?.resume_key : row?.cover_file_key;
+  if (!key) return c.json({ error: "Document not found" }, 404);
+  const object = await c.env.APPLICATION_DOCUMENTS.get(key);
+  if (!object) return c.json({ error: "Document not found" }, 404);
+  c.header("Content-Type", "application/octet-stream");
+  c.header(
+    "Content-Disposition",
+    `attachment; filename="${kind}.${key.endsWith(".pdf") ? "pdf" : "docx"}"`,
+  );
+  c.header(
+    "Content-Security-Policy",
+    "default-src 'none'; sandbox; frame-ancestors 'none'",
+  );
+  await c.env.DB.prepare(
+    "INSERT INTO audit_logs(id,admin_id,action,entity,entity_id) VALUES(?,?,?,?,?)",
+  )
+    .bind(
+      randomToken(),
+      c.get("session").admin_id,
+      `download:${kind}`,
+      "applications",
+      c.req.param("id"),
+    )
+    .run();
+  return c.body(object.body);
+});
+api.patch("/admin/subscribers/:id/status", async (c) => {
+  const parsed = z
+    .object({ status: z.literal("unsubscribed") })
+    .safeParse(await c.req.json());
+  if (!parsed.success)
+    return c.json(
+      {
+        error:
+          "Administrators can unsubscribe, but cannot bypass the subscriber's confirmation.",
+      },
+      400,
+    );
+  const id = c.req.param("id");
+  const result = await c.env.DB.batch([
+    c.env.DB.prepare(
+      "DELETE FROM newsletter_confirmations WHERE email IN (SELECT email FROM newsletter_subscribers WHERE id=?)",
+    ).bind(id),
+    c.env.DB.prepare(
+      "UPDATE newsletter_subscribers SET status='unsubscribed' WHERE id=?",
+    ).bind(id),
+    c.env.DB.prepare(
+      "INSERT INTO audit_logs(id,admin_id,action,entity,entity_id) VALUES(?,?,?,?,?)",
+    ).bind(
+      randomToken(),
+      c.get("session").admin_id,
+      "unsubscribe",
+      "subscribers",
+      id,
+    ),
+  ]);
+  return result[1].meta.changes
+    ? c.json({ saved: true })
+    : c.json({ error: "Not found" }, 404);
+});
 api.get("/admin/:entity", async (c) => {
   const entity = c.req.param("entity");
   const table = adminTables[entity];
@@ -597,7 +720,9 @@ api.get("/admin/:entity", async (c) => {
         : "id";
   const status = c.req.query("status") || "";
   const hasStatus = !["audits"].includes(entity);
-  const where = `${searchable} LIKE ?${hasStatus && status ? " AND status=?" : ""}`;
+  const statusField =
+    entity === "applications" ? "recruitment_status" : "status";
+  const where = `${searchable} LIKE ?${hasStatus && status ? ` AND ${statusField}=?` : ""}`;
   const params =
     hasStatus && status ? [`%${search}%`, status] : [`%${search}%`];
   const [rows, count] = await c.env.DB.batch([
@@ -609,7 +734,24 @@ api.get("/admin/:entity", async (c) => {
     ).bind(...params),
   ]);
   return c.json({
-    items: rows.results,
+    items:
+      entity === "applications"
+        ? (rows.results as Record<string, unknown>[]).map((row) => {
+            const {
+              access_hash: _access,
+              resume_key: resume,
+              cover_file_key: cover,
+              ...safe
+            } = row;
+            void _access;
+            return {
+              ...safe,
+              status: row.recruitment_status,
+              has_resume: !!resume,
+              has_cover_file: !!cover,
+            };
+          })
+        : rows.results,
     total: (count.results[0] as { total: number }).total,
     page,
   });
@@ -619,12 +761,17 @@ api.patch("/admin/:entity/:id/status", async (c) => {
   if (!["contacts", "projects", "applications"].includes(entity))
     return c.json({ error: "Unknown lead type" }, 404);
   const parsed = z
-    .object({ status: z.enum(leadStatuses) })
+    .object({
+      status:
+        entity === "applications"
+          ? z.enum(recruitmentStatuses)
+          : z.enum(leadStatuses),
+    })
     .safeParse(await c.req.json());
   if (!parsed.success) return c.json({ error: "Invalid status" }, 400);
   const result = await c.env.DB.batch([
     c.env.DB.prepare(
-      `UPDATE ${adminTables[entity]} SET status=? WHERE id=?`,
+      `UPDATE ${adminTables[entity]} SET ${entity === "applications" ? "recruitment_status" : "status"}=? WHERE id=?`,
     ).bind(parsed.data.status, c.req.param("id")),
     c.env.DB.prepare(
       "INSERT INTO audit_logs(id,admin_id,action,entity,entity_id) VALUES(?,?,?,?,?)",

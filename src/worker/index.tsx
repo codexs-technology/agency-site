@@ -13,6 +13,9 @@ import { api } from "./api";
 import { isLocal, randomToken } from "./security";
 import { processOutbox } from "./email";
 import type { AppEnv, Env } from "./types";
+import { portfolioConcepts, mergeEditorial } from "../shared/portfolio";
+import { editorialArticles } from "../shared/editorial";
+import { recruitment } from "./recruitment";
 
 const app = new Hono<AppEnv>();
 const escape = (value: string) =>
@@ -58,6 +61,7 @@ app.use("/api/*", async (c, next) => {
   }
   await next();
 });
+app.route("/api/recruitment", recruitment);
 app.route("/api", api);
 app.get("/robots.txt", (c) =>
   c.text(
@@ -66,12 +70,16 @@ app.get("/robots.txt", (c) =>
 );
 app.get("/sitemap.xml", async (c) => {
   const paths = [
+    ...portfolioConcepts.map((item) => `/portfolio/${item.slug}`),
+    ...editorialArticles.map((item) => `/blog/${item.slug}`),
     ...Object.keys(pages).filter(
       (p) =>
         ![
           "/404",
           "/thank-you",
           "/newsletter/unsubscribe",
+          "/careers/application-status",
+          "/newsletter/confirm",
           "/privacy-policy",
           "/terms-of-service",
           "/cookie-policy",
@@ -138,12 +146,15 @@ app.get("*", async (c) => {
           ).all<ContentRecord>()
         ).results
       : [];
-  const [posts, projects, jobs, serviceContent] = await Promise.all([
-    query("blog_posts"),
-    query("portfolio_projects"),
-    query("job_openings"),
-    query("services"),
-  ]);
+  const [managedPosts, managedProjects, jobs, serviceContent] =
+    await Promise.all([
+      query("blog_posts"),
+      query("portfolio_projects"),
+      query("job_openings"),
+      query("services"),
+    ]);
+  const posts = mergeEditorial(managedPosts, editorialArticles);
+  const projects = mergeEditorial(managedProjects, portfolioConcepts);
   const settingRows = c.env.DB
     ? await c.env.DB.prepare("SELECT key,value FROM site_settings").all<{
         key: string;
@@ -151,6 +162,9 @@ app.get("*", async (c) => {
       }>()
     : { results: [] };
   const data: SiteData = {
+    applicationUploadsReady:
+      !!c.env.APPLICATION_DOCUMENTS &&
+      c.env.APPLICATION_UPLOADS_APPROVED === "true",
     adminSection:
       (
         {
@@ -203,7 +217,7 @@ app.get("*", async (c) => {
     : undefined;
   const post = posts.find((p) => path === `/blog/${p.slug}`);
   const project = projects.find((p) => path === `/portfolio/${p.slug}`);
-  if (project) {
+  if (project && c.env.DB && !project.id.startsWith("concept-")) {
     const images = await c.env.DB.prepare(
       "SELECT url,alt FROM portfolio_images WHERE project_id=? ORDER BY position,id",
     )
@@ -234,6 +248,8 @@ app.get("*", async (c) => {
       ? "Authorized administration only."
       : pages[found ? path : "/404"][1]);
   const canonical = c.env.PUBLIC_SITE_URL.replace(/\/$/, "") + path;
+  const privatePage =
+    path.startsWith("/newsletter/") || path === "/careers/application-status";
   const schema: Record<string, unknown> = post
     ? {
         "@context": "https://schema.org",
@@ -242,6 +258,13 @@ app.get("*", async (c) => {
         description,
         author: { "@type": "Organization", name: post.author },
         datePublished: post.published_at,
+        mainEntityOfPage: canonical,
+        publisher: {
+          "@type": "Organization",
+          name: business.brand,
+          url: c.env.PUBLIC_SITE_URL,
+        },
+        articleSection: post.category,
         image: c.env.PUBLIC_SITE_URL + post.image,
       }
     : service || managedService
@@ -267,6 +290,7 @@ app.get("*", async (c) => {
           },
           sameAs: business.socials.map((social) => social.url),
         };
+  if (privatePage) c.header("X-Robots-Tag", "noindex, nofollow");
   c.header("Cache-Control", "no-store");
   return c.html(
     `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${escape(title)} | CodesBoxs</title><meta name="description" content="${escape(description)}"><link rel="canonical" href="${escape(canonical)}"><meta property="og:title" content="${escape(title)}"><meta property="og:description" content="${escape(description)}"><meta property="og:url" content="${escape(canonical)}"><meta property="og:type" content="${post ? "article" : "website"}"><meta property="og:image" content="${escape(c.env.PUBLIC_SITE_URL)}/images/social-preview.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="CodesBoxs — We Build Intelligent Digital Experiences"><meta name="twitter:image" content="${escape(c.env.PUBLIC_SITE_URL)}/images/social-preview.png"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${escape(title)}"><meta name="twitter:description" content="${escape(description)}"><meta name="theme-color" content="#0B0A09">${!found || path === "/admin" || path.includes("policy") || path === "/terms-of-service" ? '<meta name="robots" content="noindex,follow">' : ""}<link rel="icon" href="/images/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/entry.css"><script type="application/ld+json">${safeJson(schema)}</script></head><body><div id="root">${renderToString(path === "/admin" ? <Admin /> : <App data={data} />)}</div><script id="site-data" type="application/json">${safeJson(data)}</script><script type="module" src="/assets/app.js"></script>${data.turnstileSiteKey ? '<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>' : ""}</body></html>`,

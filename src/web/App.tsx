@@ -17,16 +17,8 @@ import {
   type ContentRecord,
   type SiteData,
 } from "../shared/content";
-import {
-  Art,
-  Button,
-  ConsultationCTA,
-  Header,
-  Section,
-  Turnstile,
-} from "./components";
+import { Art, Button, ConsultationCTA, Header, Section } from "./components";
 import { ContactForm, ProjectForm, request } from "./forms";
-import { applicationSchema } from "../shared/validation";
 import {
   PremiumHome,
   PremiumFooter,
@@ -37,6 +29,8 @@ import { BusinessDetails } from "./BusinessDetails";
 import { PolicyPage } from "./PolicyPage";
 import { policySections } from "../shared/policies";
 import { SignatureProcess, SignatureWorkflow } from "./SignatureSystems";
+import { CareersPage } from "./CareersPage";
+import { NewsletterConfirm } from "./NewsletterConfirm";
 
 class ErrorBoundary extends Component<
   { children: ReactNode },
@@ -343,9 +337,13 @@ function Collection({
       `${p.title} ${p.summary}`.toLowerCase().includes(search.toLowerCase()),
   );
   const [page, setPage] = useState(1);
-  const totalPages = Math.max(1, Math.ceil(filtered.length / 9));
+  const pageSize = type === "portfolio" ? 12 : 9;
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   const currentPage = Math.min(page, totalPages);
-  const visible = filtered.slice((currentPage - 1) * 9, currentPage * 9);
+  const visible = filtered.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize,
+  );
   return (
     <>
       <div className="filter-bar">
@@ -418,6 +416,9 @@ function Collection({
                     <span key={t}>{t}</span>
                   ))}
               </div>
+              {type === "portfolio" && (
+                <span className="project-view">View Project →</span>
+              )}
             </div>
           </a>
         ))}
@@ -659,6 +660,37 @@ function Detail({
               ),
             )}
         </article>
+        {!!item.references?.length && (
+          <aside className="editorial-references">
+            <h2>References and further reading</h2>
+            <ul>
+              {item.references.map((reference) => (
+                <li key={reference.url}>
+                  <a
+                    href={reference.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {reference.title} (opens in a new tab)
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <p>
+              Vendor capabilities can change. Check the linked documentation for
+              your chosen version and deployment.
+            </p>
+          </aside>
+        )}
+        {item.serviceSlug && (
+          <p>
+            <a href={`/services/${item.serviceSlug}`}>
+              Explore the related service →
+            </a>
+            {" · "}
+            <a href="/start-project">Discuss your project →</a>
+          </p>
+        )}
         {type === "portfolio" && (
           <>
             {!!item.is_concept && (
@@ -696,166 +728,24 @@ function Detail({
       <Section
         title={type === "blog" ? "Keep exploring." : "Related concepts."}
       >
-        <Collection items={items.filter((p) => p.id !== item.id)} type={type} />
+        <Collection
+          items={items
+            .filter((p) => p.id !== item.id)
+            .sort(
+              (a, b) =>
+                Number(b.category === item.category) -
+                Number(a.category === item.category),
+            )
+            .slice(0, 3)}
+          type={type}
+        />
       </Section>
       <ConsultationCTA />
     </>
   );
 }
 function Careers({ data }: { data: SiteData }) {
-  const [job, setJob] = useState("");
-  const [token, setToken] = useState("");
-  const [message, setMessage] = useState("");
-  const [busy, setBusy] = useState(false);
-  return (
-    <>
-      <Section title="How we approach the work.">
-        <div className="three-grid">
-          {[
-            [
-              "Write things down",
-              "Clear decisions and useful documentation make remote collaboration easier.",
-            ],
-            [
-              "Stay curious",
-              "Question assumptions, learn from reviews and choose tools deliberately.",
-            ],
-            [
-              "Own the quality",
-              "Care about the experience, the implementation and the person maintaining it next.",
-            ],
-          ].map(([title, text]) => (
-            <div className="panel" key={title}>
-              <h3>{title}</h3>
-              <p>{text}</p>
-            </div>
-          ))}
-        </div>
-        <Art
-          name="team"
-          alt="Original illustration of a shared digital collaboration workspace, not a photograph of actual employees"
-        />
-      </Section>
-      <Section title="Published opportunities">
-        {!data.jobs.length ? (
-          <div className="empty-state">
-            <h3>No open positions are currently published.</h3>
-            <p>
-              We do not list speculative roles or collect applications for
-              nonexistent openings. Check back for owner-published
-              opportunities.
-            </p>
-          </div>
-        ) : (
-          <>
-            <div className="two-grid">
-              {data.jobs.map((j) => (
-                <div className="panel" key={j.id}>
-                  <h3>{j.title}</h3>
-                  <p>
-                    {j.location} · {j.employment_type}
-                  </p>
-                  <p>{j.summary}</p>
-                  <p>{j.body}</p>
-                  <button className="button" onClick={() => setJob(j.id)}>
-                    Apply for this position
-                  </button>
-                </div>
-              ))}
-            </div>
-            {job && (
-              <form
-                className="form-panel"
-                onSubmit={async (e) => {
-                  e.preventDefault();
-                  setBusy(true);
-                  setMessage("");
-                  const fields = new FormData(e.currentTarget);
-                  try {
-                    const parsed = applicationSchema.safeParse({
-                      name: fields.get("name"),
-                      email: fields.get("email"),
-                      cover_letter: fields.get("cover_letter"),
-                      portfolio_url: fields.get("portfolio_url") || "",
-                      consent: fields.get("consent") === "on",
-                      turnstileToken: token,
-                    });
-                    if (!parsed.success) {
-                      setMessage(
-                        parsed.error.issues
-                          .map((issue) => issue.message)
-                          .join(" "),
-                      );
-                      return;
-                    }
-                    await request(`/api/jobs/${job}/apply`, parsed.data);
-                    setMessage(
-                      "Your application has been stored. Email delivery is not yet confirmed.",
-                    );
-                  } catch (err) {
-                    setMessage((err as Error).message);
-                  } finally {
-                    setBusy(false);
-                  }
-                }}
-              >
-                <h3>Application</h3>
-                {[
-                  ["name", "Full name"],
-                  ["email", "Email"],
-                  ["portfolio_url", "HTTPS portfolio URL (optional)"],
-                ].map(([name, label]) => (
-                  <label className="field" key={name}>
-                    {label}
-                    <input
-                      name={name}
-                      type={
-                        name === "email"
-                          ? "email"
-                          : name === "portfolio_url"
-                            ? "url"
-                            : "text"
-                      }
-                      required={name !== "portfolio_url"}
-                      maxLength={
-                        name === "name" ? 100 : name === "email" ? 254 : 500
-                      }
-                    />
-                  </label>
-                ))}
-                <label className="field">
-                  Cover letter
-                  <textarea
-                    name="cover_letter"
-                    required
-                    minLength={30}
-                    maxLength={10000}
-                    rows={6}
-                  />
-                </label>
-                <p className="notice">
-                  Resume uploads are not configured. Use a portfolio link; do
-                  not submit confidential documents.
-                </p>
-                <label className="checkbox">
-                  <input type="checkbox" name="consent" required />I consent to
-                  processing this application.
-                </label>
-                <Turnstile data={data} onToken={setToken} />
-                <button
-                  className="button"
-                  disabled={busy || (!data.localTestMode && !token)}
-                >
-                  {busy ? "Saving…" : "Submit Application"}
-                </button>
-                <p role="status">{message}</p>
-              </form>
-            )}
-          </>
-        )}
-      </Section>
-    </>
-  );
+  return <CareersPage data={data} />;
 }
 function NotFound() {
   return (
@@ -996,10 +886,20 @@ function PublicPage({ data }: { data: SiteData }) {
                   claims.
                 </p>
               </div>
-              <Art
-                name="team"
-                alt="Original collaborative workspace illustration, not a representation of verified team members"
-              />
+              <figure>
+                <img
+                  className="art"
+                  src="/images/workspace.webp"
+                  alt="Illustrative stock corporate workspace with collaborative desks and technology equipment; not CodesBoxs premises"
+                  width={1200}
+                  height={800}
+                  loading="lazy"
+                  decoding="async"
+                />
+                <figcaption className="image-disclosure">
+                  Illustrative stock workspace. Not our office or employees.
+                </figcaption>
+              </figure>
             </div>
           </Section>
           <Section title="Business identity and contact">
@@ -1109,7 +1009,23 @@ function PublicPage({ data }: { data: SiteData }) {
       )}
       {path === "/portfolio" && (
         <Section>
+          <div className="portfolio-intro">
+            <h2>Twelve disciplines. One considered approach.</h2>
+            <p>
+              Explore original concept projects across websites, software, AI,
+              automation and brand design. These demonstrations explain how we
+              think about product requirements and engineering boundaries. They
+              are not completed client engagements, live products or evidence of
+              commercial results.
+            </p>
+            <p>
+              Every engagement starts with discovery and a written scope, then
+              moves through design, implementation, review and documented
+              handover. Select a category to explore the relevant approach.
+            </p>
+          </div>
           <Collection items={data.projects} type="portfolio" />
+          <ConsultationCTA />
         </Section>
       )}
       {path === "/blog" && (
@@ -1204,6 +1120,9 @@ function PublicPage({ data }: { data: SiteData }) {
         </Section>
       )}
       {path === "/careers" && <Careers data={data} />}
+      {path === "/newsletter/confirm" && <NewsletterConfirm />}
+      {(path === "/careers/apply" ||
+        path === "/careers/application-status") && <CareersPage data={data} />}
       {path === "/contact" && (
         <Section>
           <div className="contact-layout">

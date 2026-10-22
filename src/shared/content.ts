@@ -668,6 +668,8 @@ export const faqs = [
   },
 ];
 export type ContentRecord = {
+  references?: { title: string; url: string }[];
+  serviceSlug?: string;
   gallery?: { url: string; alt: string }[];
   id: string;
   slug: string;
@@ -685,6 +687,7 @@ export type ContentRecord = {
   employment_type?: string;
 };
 export type SiteData = {
+  applicationUploadsReady?: boolean;
   path: string;
   posts: ContentRecord[];
   projects: ContentRecord[];
@@ -699,6 +702,18 @@ export type SiteData = {
   adminSection?: string;
 };
 export const pages: Record<string, [string, string]> = {
+  "/newsletter/confirm": [
+    "Confirm your newsletter subscription",
+    "Confirm your email subscription using the private link sent to your inbox. No subscription is activated by visiting this page alone.",
+  ],
+  "/careers/apply": [
+    "Apply for a published role",
+    "Submit an application only for a currently published CodesBoxs opportunity. Private documents require configured and approved storage.",
+  ],
+  "/careers/application-status": [
+    "Your application status",
+    "Use your private application reference and separate access key to check your own application status securely.",
+  ],
   "/solutions": [
     "Intelligence Built Into Every Workflow.",
     "AI agents, voice interfaces and workflow automation designed with clear boundaries and human oversight.",

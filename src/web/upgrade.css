@@ -1,0 +1,94 @@
+.comparison-scroll {
+  overflow-x: auto;
+  margin-block: 3rem;
+  border: 1px solid var(--line, #45413b);
+  border-radius: 16px;
+}
+.engagement-comparison {
+  width: 100%;
+  min-width: 660px;
+  border-collapse: collapse;
+  text-align: left;
+}
+.engagement-comparison caption {
+  text-align: left;
+  padding: 1.5rem;
+  font-weight: 600;
+}
+.engagement-comparison th,
+.engagement-comparison td {
+  padding: 1.25rem;
+  border-top: 1px solid #45413b;
+  vertical-align: top;
+}
+.pricing-faq details {
+  padding: 1.5rem 0;
+  border-bottom: 1px solid #45413b;
+}
+.pricing-faq summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.pricing-faq p {
+  max-width: 75ch;
+  margin-top: 1rem;
+}
+.portfolio-intro {
+  max-width: 75ch;
+  margin-bottom: 2.5rem;
+}
+.project-grid .project-card {
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+.project-grid .project-card:hover,
+.project-grid .project-card:focus-visible {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px #0002;
+}
+.project-view {
+  display: inline-block;
+  margin-top: 1rem;
+  font-weight: 600;
+}
+.image-disclosure {
+  font-size: 0.8rem;
+  color: var(--muted, #a8a39c);
+  margin-top: 0.75rem;
+}
+.editorial-references {
+  padding-top: 2rem;
+  border-top: 1px solid #45413b;
+}
+.editorial-references a {
+  overflow-wrap: anywhere;
+  text-decoration: underline;
+}
+.applicant-receipt {
+  overflow-wrap: anywhere;
+}
+.application-form {
+  max-width: 900px;
+  margin-inline: auto;
+}
+.application-form .two-grid {
+  gap: 1.5rem;
+}
+.document-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.premium-price .package-price {
+  font-size: clamp(1.4rem, 2vw, 2rem);
+  line-height: 1.2;
+}
+@media (prefers-reduced-motion: reduce) {
+  .project-grid .project-card {
+    transition: none;
+  }
+  .project-grid .project-card:hover {
+    transform: none;
+  }
+}

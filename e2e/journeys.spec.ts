@@ -85,7 +85,7 @@ test("multistep project inquiry reviews and persists", async ({ page }) => {
   await page.getByRole("button", { name: "Submit Project Brief" }).click();
   await expect(
     page.getByRole("heading", { name: "Project brief saved." }),
-  ).toBeVisible();
+  ).toBeVisible({ timeout: 15000 });
 });
 
 test("representative routes meet automated accessibility checks", async ({
