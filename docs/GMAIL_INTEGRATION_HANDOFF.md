@@ -1,0 +1,59 @@
+# Gmail recruitment continuation — October 23, 2026
+
+This supersedes R2 requirements in the previous premium handoff for NEW applications only. Preserve all legacy rows/keys and the premium site. No production deployment, remote migration or live email submission is authorized by this change.
+
+## Contract and security
+
+Worker secrets: `CAREERS_WEBHOOK_URL` (Google `/macros/s/.../exec` URL) and `CAREERS_WEBHOOK_SECRET` (at least 32 random characters). Never use VITE variables or commit these values. `APPLICATION_UPLOADS_APPROVED=true` remains an explicit privacy/release approval gate; secrets alone do not authorize document collection. Existing status/withdrawal routes and seven recruitment statuses are retained. Separate 256-bit reference/access key, hashed access key, same-origin checks, server Turnstile and D1 IP rate limits remain in force. Unique `(job_id,email)` plus the replay table prevent parallel dispatch of duplicate applications. A conflicting/lost receipt requires manual identity review, not a new email send.
+
+PDF/DOCX only, 2 MiB per file, 3 MiB total, at most two files; multipart cap includes 64 KiB field overhead. Extension, MIME, filename, magic bytes and passive structure checked. These checks are NOT malware scanning, including compressed DOCX contents. Treat every attachment as untrusted, use isolated scanning/viewing and never enable macros. Owner must accept residual risk before enabling the gate.
+
+D1 stores metadata, text fields, token hash and `delivery_state` (`pending`, `failed`, `sent`), never resume bytes or base64. Attachments exist in Worker memory during a single attempt and then in the private email account only if accepted. No durable attachment retry queue exists. A process crash after metadata persistence can lose the documents: pending is not a promise of eventual delivery. Admin download routes now return 410 with private-inbox instructions. No Gmail attachment links are generated.
+
+Worker POSTs secret, name, email, position, reference, coverLetter, files plus version=1 and issuedAt. It handles only Google's 302/303 ContentService redirect using a GET to script.googleusercontent.com without body/secret. Timeout, malformed/non-JSON, wrong protocol/reference, unexpected redirect and provider exceptions remain pending, not success. Explicit pre-send quota/validation rejection is failed. `sent` means MailApp accepted the send, NOT independently verified inbox delivery.
+
+## Exact Apps Script replacement and redeployment (owner action)
+
+The existing deployed script source was not supplied and cannot be verified from Worker secret names. Use the complete `integrations/careers/Code.gs` replacement after reviewing it. It accepts only recruitment; do not repurpose it as an arbitrary recipient mail relay.
+
+1. Open the existing owner-controlled Apps Script project. Preserve its current version/source for rollback. Replace Code.gs with the checked-in replacement.
+2. Project Settings → Script Properties: set `CAREERS_WEBHOOK_SECRET` to the SAME random value as the Worker secret, privately. Do not paste the secret in source or support chat.
+3. Confirm the account authorized to execute is the intended careers owner. Authorize MailApp only as needed. Deploy → Manage deployments → edit the existing Web App → New version. Execute as the owner; access must permit the server-to-server POST (the script authenticates using the shared secret). Keep the `/exec` URL; if changed, update the Worker secret only after approval.
+4. Review Google account MFA/recovery, mailbox access, forwarding, filters and retention. Confirm the hard-coded recipient is `codexstechnology@gmail.com`.
+5. Do not delete Script Properties delivery tombstones during redeployment. ScriptLock serializes claims. A pending tombstone is written BEFORE MailApp; repeated references never resend, including after a crash. This provides at-most-one send attempt, not guaranteed exactly-once delivery. An ambiguous pending message must be reconciled by searching both received/sent mail for its full reference. Never reset its tombstone and blindly retry.
+6. The ledger stops at 1,500 delivery entries instead of evicting duplicate protections. Monitor it. Before capacity, plan a durable tombstone store or controlled version retirement; never erase protections while credentials/version can replay old requests. Timestamp freshness is five minutes; clocks must be correct.
+
+No arbitrary attachment retention, download, automatic deletion or resend endpoint is exposed. Duplicate, wrong-secret, stale, signature, quota and timeout tests must be repeated in the actual Apps Script runtime. Local VM tests use service doubles only.
+
+## Privacy, retention and deletion
+
+Before enabling collection, owner must publish an approved privacy notice identifying Google/Gmail processing, purpose, access, international processing, retention duration, lawful basis and deletion contact. No retention duration is invented here. Restrict Gmail to authorized hiring personnel; no public sharing or forwarding. Do not save attachments into personal Drive or local machines without approved controls. Attachments must not appear in analytics, request logging or error reports; request bodies/secrets must be excluded from Cloudflare logs.
+
+Withdrawal changes recruitment status, not automatic erasure. Verify deletion-request identity using existing private credentials or an approved manual process; never ask for extra identity documents unnecessarily. Find application by reference, remove D1 personal fields/record using an authorized reviewed procedure (replay FK must be handled deliberately), delete Gmail inbox/sent/trash/spam copies, downloaded copies and approved backup copies subject to holds. Record only a minimal non-PII audit. Preserve non-PII duplicate tombstones until replay safety is assured. Verify Google account/Vault/backup retention separately; do not promise immediate irreversible deletion. Legacy R2 records/objects require a separate owner inventory and deletion process; this change does not erase them.
+
+## Contact, newsletter and production investigation
+
+Cloudflare CLI is NOT authenticated locally. Project list, production deployments and secret-name inventory could not be read. The configured production candidate is Worker `agency-site`, D1 `agency-site-db`, ID `a6095c86-021b-4409-85ae-c5e474389ca9`; development uses a DIFFERENT DB. This is configuration evidence, not proof of the domain's serving project. Do not bind or migrate either by guesswork.
+
+Continuation read-only live audit: `/api/services` returns 503 with the missing-configuration message; `/contact` returns 200 but declares submissions unavailable and has an empty public Turnstile key; `/newsletter/confirm` returns 404. The latter differs from this branch's implemented route and reinforces the need to identify the actual serving deployment/version before changing any environment. These observations do not identify the Cloudflare project by themselves.
+
+The source's `/api/*` guard returns the observed services 503 when `DB` is absent. A missing migration would cause a different query failure. Public HTML suppresses the Turnstile site key if DB or the Turnstile secret is missing, so an empty public key does NOT prove the site key itself is absent. Check the actual serving Worker/Pages deployment, domain/route ownership, commit/version, `DB` binding and both Turnstile keys there. Check `PUBLIC_SITE_URL=https://codesboxs.com`, `ENVIRONMENT=production`, no production local-test bypass, and Pages advanced-mode API routing.
+
+Contact/newsletter retain the existing Resend outbox, not the attachment-only Apps Script. Required server secrets/config: `RESEND_API_KEY`, verified `EMAIL_FROM`, `NOTIFICATION_EMAIL`, `SEND_CONFIRMATIONS=true`. Gmail careers secrets alone cannot send subscriber confirmation to arbitrary recipients. Do not broaden the recruitment webhook to an unrestricted relay. Verify Resend sender/domain and actual inbox receipt. Worker cron must be present on the serving production Worker; Pages does not execute Worker cron and needs an authorized external durable scheduler. Existing outbox retry policy and provider idempotency window require operational monitoring; don't blindly retry old ambiguous provider sends after that window.
+
+Newsletter still stores requests inactive until explicit unexpired hashed-token confirmation; unsubscribes invalidate confirmations. Admin cannot force confirmation. Marketing eligibility remains `status='subscribed' AND confirmed_at IS NOT NULL`. Email text contains private confirmation/unsubscribe URLs: treat email_outbox and backups as sensitive, never expose/export them publicly. Existing confirmed subscribers are not reset.
+
+## Safe production migration plan (NOT executed)
+
+1. Owner provides authenticated read-only account access locally, not secrets in chat. Map codesboxs.com to actual Worker custom-domain/route or Pages domain, inspect active deployment and binding names. Verify database ID with owner and account inventory before any export. Inspect secret NAMES only.
+2. Secure backup directory OUTSIDE repository, encrypted/access-restricted. Record current deployment/version and D1 recovery bookmark. Export the verified DB with `npx wrangler d1 export agency-site-db --remote --env production --output <secure-path>/before-gmail.sql`; hash file and test restore into an isolated database. This command is only correct if the candidate DB is proven correct. Backup remains blocked until access is available.
+3. Use `d1 migrations list` and read-only schema queries on the verified target. Compare applied migration history and actual PRAGMA table_info/indexes. Never mark applied or replay ALTER TABLE by guesswork.
+4. Review 0001 schema/seed, 0002 editorial inserts, 0003 commercial tables/settings, 0004 inquiry replay table, 0005 additive recruitment fields/index, 0006 confirmation fields/table, then 0007 additive Gmail delivery fields/replay table. No DROP/DELETE/reset is included. 0007 defaults legacy delivery to pending with `legacy_unverified`; never auto-send legacy applications. Legacy keys remain untouched. Backfill sent ONLY with evidence through reviewed admin operations.
+5. Apply missing migrations to an isolated restored backup first; compare row counts/constraints and verify existing contact, subscriber, content and application data. New code requires 0007 (and its predecessors). Obtain explicit owner approval before remote migration/deployment. Prefer schema-first additive rollout; rolling back code must not re-enable R2 collection inadvertently.
+6. After approval, apply only verified pending migrations to the verified target. Configure bindings/vars/secrets on the SERVING environment. Deploy approved commit only, repeat read-only smoke checks and authorized synthetic end-to-end cases. Retain rollback bundle and backup; never reset production to undo additive columns.
+
+## Required real acceptance tests and release gate
+
+Owner authorizes one labeled synthetic published-role application using non-sensitive PDF/DOCX, Turnstile, correct same-origin domain and private credentials. Verify D1 delivery state AND actual Gmail attachment receipt; repeat request must not send twice. Check wrong key, status, withdrawal and deletion. Exercise pre-send quota rejection and ambiguous outcome safely in a non-production script. Authorize contact persistence/inbox delivery and newsletter request/inactive state, delivered confirmation URL, confirmation, unsubscribe, admin unsubscribe and rate limits. Test real browser direct routes. Record actual environment/version/time; do not substitute mocked tests for these results.
+
+Deployment remains NOT READY until serving-project identity, backup, schema/config, Apps Script redeployment, privacy approval, real Gmail/Resend/Turnstile verification and explicit deployment approval are complete.

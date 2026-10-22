@@ -11,7 +11,8 @@ export type Env = {
   EMAIL_FROM?: string;
   NOTIFICATION_EMAIL?: string;
   SEND_CONFIRMATIONS?: string;
-  APPLICATION_DOCUMENTS?: R2Bucket;
+  CAREERS_WEBHOOK_URL?: string;
+  CAREERS_WEBHOOK_SECRET?: string;
   APPLICATION_UPLOADS_APPROVED?: string;
 };
 export type Session = {

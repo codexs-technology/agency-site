@@ -16,6 +16,7 @@ import type { AppEnv, Env } from "./types";
 import { portfolioConcepts, mergeEditorial } from "../shared/portfolio";
 import { editorialArticles } from "../shared/editorial";
 import { recruitment } from "./recruitment";
+import { careersConfigured } from "./careers-webhook";
 
 const app = new Hono<AppEnv>();
 const escape = (value: string) =>
@@ -163,8 +164,7 @@ app.get("*", async (c) => {
     : { results: [] };
   const data: SiteData = {
     applicationUploadsReady:
-      !!c.env.APPLICATION_DOCUMENTS &&
-      c.env.APPLICATION_UPLOADS_APPROVED === "true",
+      careersConfigured(c.env) && c.env.APPLICATION_UPLOADS_APPROVED === "true",
     adminSection:
       (
         {

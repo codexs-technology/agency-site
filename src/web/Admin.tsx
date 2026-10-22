@@ -706,20 +706,14 @@ export function Admin({
                         )}
                         {entity === "applications" && (
                           <div className="document-links">
-                            {row.has_resume ? (
-                              <a
-                                href={`/api/admin/applications/${row.id}/documents/resume`}
-                              >
-                                Download resume (untrusted file)
-                              </a>
-                            ) : null}
-                            {row.has_cover_file ? (
-                              <a
-                                href={`/api/admin/applications/${row.id}/documents/cover`}
-                              >
-                                Download cover letter (untrusted file)
-                              </a>
-                            ) : null}
+                            <p>
+                              Gmail delivery:{" "}
+                              {String(row.delivery_state || "unverified")}.
+                              Authorized staff: search the private careers inbox
+                              by reference {String(row.id)}. Attachments are not
+                              available from this website. Never publish Gmail
+                              links.
+                            </p>
                           </div>
                         )}
                       </td>

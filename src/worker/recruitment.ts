@@ -4,13 +4,25 @@ import { z } from "zod";
 import { recruitmentSchema } from "../shared/validation";
 import type { AppEnv } from "./types";
 import { digest, randomToken, rateLimit, verifyTurnstile } from "./security";
-import { emailConfigured, notification, processOutbox } from "./email";
+import { careersConfigured, deliverCareers, toBase64 } from "./careers-webhook";
 
-export const MAX_DOCUMENT_BYTES = 5 * 1024 * 1024;
+export const MAX_DOCUMENT_BYTES = 2 * 1024 * 1024;
+export const MAX_COMBINED_BYTES = 3 * 1024 * 1024;
 /** Structural allowlist only, NOT malware scanning. Production requires owner approval. */
 export async function validateDocument(file: File) {
   if (!file.size || file.size > MAX_DOCUMENT_BYTES)
-    throw new Error("Each document must be between 1 byte and 5 MB.");
+    throw new Error("Each document must be between 1 byte and 2 MiB.");
+  if (
+    file.name.length > 120 ||
+    !file.name.length ||
+    /[/\\]/.test(file.name) ||
+    [...file.name].some(
+      (char) => char.charCodeAt(0) < 32 || char.charCodeAt(0) === 127,
+    )
+  )
+    throw new Error(
+      "Use a document filename of at most 120 characters without path separators.",
+    );
   const bytes = new Uint8Array(await file.arrayBuffer());
   const extension = file.name.toLowerCase().split(".").pop();
   const text = new TextDecoder("latin1").decode(bytes);
@@ -45,9 +57,12 @@ export const recruitment = new Hono<AppEnv>();
 recruitment.use(
   "*",
   bodyLimit({
-    maxSize: 11 * 1024 * 1024,
+    maxSize: MAX_COMBINED_BYTES + 65536,
     onError: (c) =>
-      c.json({ error: "Application exceeds the 11 MB request limit." }, 413),
+      c.json(
+        { error: "Application exceeds the 3 MiB combined upload limit." },
+        413,
+      ),
   }),
 );
 recruitment.use("*", async (c, next) => {
@@ -60,7 +75,7 @@ recruitment.post("/submit", async (c) => {
   if (!(await rateLimit(c, "recruitment-submit", 3, 3600)))
     return c.json({ error: "Too many applications. Please try later." }, 429);
   if (
-    !c.env.APPLICATION_DOCUMENTS ||
+    !careersConfigured(c.env) ||
     c.env.APPLICATION_UPLOADS_APPROVED !== "true"
   )
     return c.json(
@@ -125,6 +140,22 @@ recruitment.post("/submit", async (c) => {
     );
   const resume = form.get("resume");
   const cover = form.get("cover_file");
+  const files = [...form.values()].filter(
+    (value) => value instanceof File && value.size,
+  );
+  if (
+    files.length > 2 ||
+    files.some((file) => file !== resume && file !== cover) ||
+    files.reduce((size, file) => size + (file as File).size, 0) >
+      MAX_COMBINED_BYTES
+  )
+    return c.json(
+      {
+        error:
+          "Upload only a resume and optional cover document, at most 3 MiB combined.",
+      },
+      413,
+    );
   if (!(resume instanceof File))
     return c.json({ error: "A PDF or DOCX resume is required." }, 400);
   let resumeData: Awaited<ReturnType<typeof validateDocument>>;
@@ -138,22 +169,24 @@ recruitment.post("/submit", async (c) => {
   }
   const id = randomToken(),
     accessKey = randomToken();
-  const resumeKey = `applications/${id}/resume.${resumeData.extension}`;
-  const coverKey = coverData
-    ? `applications/${id}/cover.${coverData.extension}`
-    : null;
-  const uploaded: string[] = [];
+  const documents = [
+    {
+      name: `resume.${resumeData.extension}`,
+      mimeType: resumeData.type,
+      base64: toBase64(resumeData.bytes),
+    },
+    ...(coverData
+      ? [
+          {
+            name: `cover.${coverData.extension}`,
+            mimeType: coverData.type,
+            base64: toBase64(coverData.bytes),
+          },
+        ]
+      : []),
+  ];
+  const requestHash = await digest(`${job.id}:${d.email}`);
   try {
-    await c.env.APPLICATION_DOCUMENTS.put(resumeKey, resumeData.bytes, {
-      httpMetadata: { contentType: resumeData.type },
-    });
-    uploaded.push(resumeKey);
-    if (coverData && coverKey) {
-      await c.env.APPLICATION_DOCUMENTS.put(coverKey, coverData.bytes, {
-        httpMetadata: { contentType: coverData.type },
-      });
-      uploaded.push(coverKey);
-    }
     const statements = [
       c.env.DB.prepare(
         "INSERT INTO job_applications(id,job_id,name,email,cover_letter,portfolio_url,consent,phone,country,applicant_location,experience,skills,professional_url,resume_key,cover_file_key,access_hash) VALUES(?,?,?,?,?,?,1,?,?,?,?,?,?,?,?,?)",
@@ -170,31 +203,29 @@ recruitment.post("/submit", async (c) => {
         d.experience,
         d.skills,
         d.professional_url,
-        resumeKey,
-        coverKey,
+        null,
+        null,
         await digest(accessKey),
       ),
-      notification(c.env, "job application", id),
-    ];
-    if (c.env.SEND_CONFIRMATIONS === "true")
-      statements.push(
-        c.env.DB.prepare(
-          "INSERT INTO email_outbox(id,kind,recipient,subject,text,status) VALUES(?,?,?,?,?,?)",
-        ).bind(
-          randomToken(),
-          "application confirmation",
-          d.email,
-          "CodesBoxs application recorded",
-          `Your application for ${job.title} was recorded. Reference: ${id}. Status access uses the separate private key shown after submission; it is not included in this email. This is not an interview or offer. Contact codexstechnology@gmail.com if you lose the key.`,
-          emailConfigured(c.env) ? "pending" : "blocked",
+      c.env.DB.prepare(
+        "INSERT INTO recruitment_replays(request_hash,application_id) VALUES(?,?)",
+      ).bind(requestHash, id),
+      c.env.DB.prepare(
+        "UPDATE job_applications SET document_metadata=?,delivery_code='dispatch_started',delivery_updated_at=CURRENT_TIMESTAMP WHERE id=?",
+      ).bind(
+        JSON.stringify(
+          documents.map(({ name, mimeType }, index) => ({
+            name,
+            mimeType,
+            size:
+              index === 0 ? resumeData.bytes.length : coverData!.bytes.length,
+          })),
         ),
-      );
+        id,
+      ),
+    ];
     await c.env.DB.batch(statements);
   } catch {
-    // R2 and D1 cannot share a transaction. Compensate uploaded objects on failed persistence.
-    await Promise.allSettled(
-      uploaded.map((key) => c.env.APPLICATION_DOCUMENTS!.delete(key)),
-    );
     return c.json(
       {
         error:
@@ -203,15 +234,33 @@ recruitment.post("/submit", async (c) => {
       503,
     );
   }
-  c.executionCtx.waitUntil(processOutbox(c.env));
+  const delivery = await deliverCareers(c.env, {
+    name: d.name,
+    email: d.email,
+    position: job.title,
+    reference: id,
+    coverLetter: `${d.cover_letter}\n\nPhone: ${d.phone}\nCountry: ${d.country}\nLocation: ${d.applicant_location}\nExperience: ${d.experience}\nSkills: ${d.skills}\nPortfolio: ${d.portfolio_url}\nProfessional profile: ${d.professional_url}`,
+    files: documents,
+  });
+  // A failed acknowledgement write must not trigger a second Gmail message.
+  let deliveryState = delivery.state;
+  try {
+    await c.env.DB.prepare(
+      "UPDATE job_applications SET delivery_state=?,delivery_code=?,delivery_updated_at=CURRENT_TIMESTAMP WHERE id=?",
+    )
+      .bind(delivery.state, delivery.code, id)
+      .run();
+  } catch {
+    deliveryState = "pending";
+  }
   return c.json(
     {
       stored: true,
       id,
       accessKey,
       message:
-        "Application saved. Keep your reference and separate access key private. Email delivery is not confirmed.",
-      notification: emailConfigured(c.env) ? "queued" : "blocked",
+        "Application metadata saved. Keep your reference and access key private. Delivery state is shown separately; pending or failed delivery requires contacting careers, not another submission. Documents are not retained by this website.",
+      notification: deliveryState,
     },
     201,
   );
@@ -237,12 +286,13 @@ for (const action of ["status", "withdraw"] as const)
       return c.json({ error: "Invalid application credentials" }, 401);
     const hash = await digest(parsed.data.accessKey);
     const row = await c.env.DB.prepare(
-      "SELECT a.id,a.recruitment_status,a.created_at,j.title FROM job_applications a JOIN job_openings j ON j.id=a.job_id WHERE a.id=? AND a.access_hash=?",
+      "SELECT a.id,a.recruitment_status,a.delivery_state,a.created_at,j.title FROM job_applications a JOIN job_openings j ON j.id=a.job_id WHERE a.id=? AND a.access_hash=?",
     )
       .bind(parsed.data.reference, hash)
       .first<{
         id: string;
         recruitment_status: string;
+        delivery_state: string;
         created_at: string;
         title: string;
       }>();
@@ -258,6 +308,7 @@ for (const action of ["status", "withdraw"] as const)
     return c.json({
       reference: row.id,
       status: row.recruitment_status,
+      deliveryState: row.delivery_state,
       position: row.title,
       receivedAt: row.created_at,
     });

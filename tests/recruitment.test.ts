@@ -1,11 +1,29 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { recruitment } from "../src/worker/recruitment";
 import type { Env } from "../src/worker/types";
 
 function harness(
-  options: { failure?: boolean; open?: boolean; approved?: boolean } = {},
+  options: {
+    failure?: boolean;
+    open?: boolean;
+    approved?: boolean;
+    limited?: boolean;
+    production?: boolean;
+    duplicate?: boolean;
+  } = {},
 ) {
-  const objects = new Map<string, unknown>();
+  const objects = new Map<string, unknown>(); // No binary persistence in the Gmail workflow.
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () =>
+      Response.json({
+        version: 1,
+        ok: true,
+        state: "sent",
+        reference: [...applications.keys()][0],
+      }),
+    ),
+  );
   const applications = new Map<string, { hash: string; status: string }>();
   const writes: { sql: string; values: unknown[] }[] = [];
   const DB = {
@@ -18,12 +36,14 @@ function harness(
           return statement;
         },
         async first() {
-          if (sql.includes("rate_limits")) return { count: 1 };
+          if (sql.includes("rate_limits"))
+            return { count: options.limited ? 99 : 1 };
           if (sql.includes("SELECT id,title FROM job_openings"))
             return options.open === false
               ? null
               : { id: "published-role", title: "Synthetic integration role" };
-          if (sql.includes("SELECT id FROM job_applications")) return null;
+          if (sql.includes("SELECT id FROM job_applications"))
+            return options.duplicate ? { id: "existing" } : null;
           if (sql.includes("JOIN job_openings")) {
             const stored = applications.get(String(statement.values[0]));
             return stored && stored.hash === statement.values[1]
@@ -63,19 +83,13 @@ function harness(
   };
   const env = {
     DB,
-    ENVIRONMENT: "development",
+    ENVIRONMENT: options.production ? "production" : "development",
     LOCAL_TEST_MODE: "true",
     PUBLIC_SITE_URL: "http://localhost:8787",
     APPLICATION_UPLOADS_APPROVED: options.approved === false ? "false" : "true",
-    APPLICATION_DOCUMENTS: {
-      async put(key: string, value: unknown) {
-        objects.set(key, value);
-        return {};
-      },
-      async delete(key: string) {
-        objects.delete(key);
-      },
-    },
+    CAREERS_WEBHOOK_URL:
+      "https://script.google.com/macros/s/test-deployment/exec",
+    CAREERS_WEBHOOK_SECRET: "test-secret-not-real-".repeat(3),
     SEND_CONFIRMATIONS: "true",
   } as unknown as Env;
   const context = {
@@ -131,8 +145,21 @@ function harness(
   return { submit, access, objects, applications, writes };
 }
 
-describe("recruitment HTTP workflow with isolated D1/R2 doubles (not production proof)", () => {
-  it("saves files and record before receipt, hashes separate credentials and allows own withdrawal", async () => {
+afterEach(() => vi.unstubAllGlobals());
+describe("recruitment HTTP workflow with isolated D1/fetch doubles (not production proof)", () => {
+  it("blocks rate abuse, production Turnstile bypass and duplicate email/role before dispatch", async () => {
+    for (const [options, status] of [
+      [{ limited: true }, 429],
+      [{ production: true }, 422],
+      [{ duplicate: true }, 409],
+    ] as const) {
+      const test = harness(options);
+      expect((await test.submit()).status).toBe(status);
+      expect(fetch).not.toHaveBeenCalled();
+      expect(test.writes).toHaveLength(0);
+    }
+  });
+  it("saves metadata before dispatch, hashes separate credentials and allows own withdrawal", async () => {
     const test = harness();
     const response = await test.submit();
     expect(response.status).toBe(201);
@@ -142,11 +169,18 @@ describe("recruitment HTTP workflow with isolated D1/R2 doubles (not production 
       stored: boolean;
     };
     expect(receipt.stored).toBe(true);
-    expect(test.objects.size).toBe(1);
+    expect(test.objects.size).toBe(0);
     expect(test.applications.get(receipt.id)?.hash).not.toBe(receipt.accessKey);
     expect(
       test.writes.filter((row) => row.sql.includes("email_outbox")),
-    ).toHaveLength(2);
+    ).toHaveLength(0);
+    expect(fetch).toHaveBeenCalledTimes(1);
+    const dispatch = JSON.parse(
+      vi.mocked(fetch).mock.calls[0][1]!.body as string,
+    );
+    expect(dispatch.files[0].name).toBe("resume.pdf");
+    expect(dispatch.files[0].base64).toBeTruthy();
+    expect(JSON.stringify(test.writes)).not.toContain(dispatch.files[0].base64);
     const wrong = await test.access("status", receipt.id, "0".repeat(64));
     expect(wrong.status).toBe(401);
     const status = await test.access("status", receipt.id, receipt.accessKey);
@@ -158,12 +192,13 @@ describe("recruitment HTTP workflow with isolated D1/R2 doubles (not production 
     );
     expect(await withdrawn.json()).toMatchObject({ status: "Withdrawn" });
   });
-  it("compensates uploaded documents and queues no emails after database failure", async () => {
+  it("never dispatches attachments after database failure", async () => {
     const test = harness({ failure: true });
     const response = await test.submit();
     expect(response.status).toBe(503);
     expect(test.objects.size).toBe(0);
     expect(test.writes).toHaveLength(0);
+    expect(fetch).not.toHaveBeenCalled();
   });
   it("rejects unapproved collection, closed roles and invalid uploads without persistence", async () => {
     for (const [test, expected] of [

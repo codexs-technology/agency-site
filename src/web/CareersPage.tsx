@@ -31,6 +31,18 @@ async function careerRequest(
         ? result.error
         : "Request failed. Please contact careers.",
     );
+  if (
+    path === "submit" &&
+    (result.stored !== true ||
+      typeof result.id !== "string" ||
+      !/^[a-f0-9]{64}$/.test(result.id) ||
+      typeof result.accessKey !== "string" ||
+      !/^[a-f0-9]{64}$/.test(result.accessKey) ||
+      !["pending", "failed", "sent"].includes(String(result.notification)))
+  )
+    throw new Error(
+      "Receipt is incomplete. Contact careers before resubmitting; delivery is not confirmed.",
+    );
   return result;
 }
 
@@ -111,6 +123,14 @@ export function CareersPage({ data }: { data: SiteData }) {
             <div role="status">
               <h3>{String(status.position)}</h3>
               <p>Status: {String(status.status)}</p>
+              <p>
+                Gmail delivery: {String(status.deliveryState || "unconfirmed")}
+              </p>
+              <p>
+                Withdrawal stops recruitment processing; it does not
+                automatically erase email attachments. Contact careers for a
+                verified deletion request.
+              </p>
               <p>Received: {String(status.receivedAt)}</p>
               {status.status !== "Withdrawn" && (
                 <button
@@ -180,7 +200,7 @@ export function CareersPage({ data }: { data: SiteData }) {
           <>
             {!data.applicationUploadsReady && (
               <p className="notice" role="status">
-                Private document storage is not configured and approved.
+                Gmail document forwarding is not configured and approved.
                 Applications cannot be submitted here yet. Contact
                 codexstechnology@gmail.com; do not email sensitive documents
                 unless requested through an approved process.
@@ -214,7 +234,11 @@ export function CareersPage({ data }: { data: SiteData }) {
                     reference: String(result.id),
                     key: String(result.accessKey),
                   });
-                  setMessage(String(result.message));
+                  setMessage(
+                    String(result.message) +
+                      " Gmail delivery: " +
+                      String(result.notification || "unconfirmed"),
+                  );
                 } catch (error) {
                   setMessage((error as Error).message);
                 } finally {
@@ -227,7 +251,10 @@ export function CareersPage({ data }: { data: SiteData }) {
               <p>
                 Apply only for a published position. Do not upload identity
                 documents, payment data, passwords or confidential client
-                material. Each document must be a PDF or DOCX of at most 5 MB.
+                material. PDF/DOCX only: 2 MiB per file, 3 MiB combined.
+                Documents are forwarded to the private careers Gmail inbox and
+                are not retained by this website. Structural checks are not
+                malware scanning.
               </p>
               <div className="two-grid">
                 {[
@@ -300,7 +327,7 @@ export function CareersPage({ data }: { data: SiteData }) {
                 />
               </label>
               <label className="field">
-                Resume (PDF or DOCX, at most 5 MB)
+                Resume (PDF or DOCX, at most 2 MiB each; 3 MiB combined)
                 <input
                   name="resume"
                   type="file"
@@ -319,7 +346,8 @@ export function CareersPage({ data }: { data: SiteData }) {
                 />
               </label>
               <label className="field">
-                Cover-letter file (optional PDF or DOCX, at most 5 MB)
+                Cover-letter file (optional PDF or DOCX, at most 2 MiB each; 3
+                MiB combined)
                 <input name="cover_file" type="file" accept=".pdf,.docx" />
               </label>
               <div className="honeypot" aria-hidden="true">

@@ -632,41 +632,13 @@ api.put("/admin/portfolio/:id/images", async (c) => {
   return c.json({ saved: true });
 });
 api.get("/admin/applications/:id/documents/:kind", async (c) => {
-  if (!c.env.APPLICATION_DOCUMENTS)
-    return c.json({ error: "Document storage unavailable" }, 503);
-  const kind = c.req.param("kind");
-  if (!["resume", "cover"].includes(kind))
-    return c.json({ error: "Not found" }, 404);
-  const row = await c.env.DB.prepare(
-    "SELECT resume_key,cover_file_key FROM job_applications WHERE id=?",
-  )
-    .bind(c.req.param("id"))
-    .first<{ resume_key: string | null; cover_file_key: string | null }>();
-  const key = kind === "resume" ? row?.resume_key : row?.cover_file_key;
-  if (!key) return c.json({ error: "Document not found" }, 404);
-  const object = await c.env.APPLICATION_DOCUMENTS.get(key);
-  if (!object) return c.json({ error: "Document not found" }, 404);
-  c.header("Content-Type", "application/octet-stream");
-  c.header(
-    "Content-Disposition",
-    `attachment; filename="${kind}.${key.endsWith(".pdf") ? "pdf" : "docx"}"`,
+  return c.json(
+    {
+      error:
+        "Website document downloads are unavailable. Authorized hiring staff must search the private careers Gmail inbox using the application reference. Delivery must be verified; no public attachment links are created.",
+    },
+    410,
   );
-  c.header(
-    "Content-Security-Policy",
-    "default-src 'none'; sandbox; frame-ancestors 'none'",
-  );
-  await c.env.DB.prepare(
-    "INSERT INTO audit_logs(id,admin_id,action,entity,entity_id) VALUES(?,?,?,?,?)",
-  )
-    .bind(
-      randomToken(),
-      c.get("session").admin_id,
-      `download:${kind}`,
-      "applications",
-      c.req.param("id"),
-    )
-    .run();
-  return c.body(object.body);
 });
 api.patch("/admin/subscribers/:id/status", async (c) => {
   const parsed = z
