@@ -55,7 +55,10 @@ export async function request(
     });
     let data: Record<string, unknown>;
     try {
-      data = (await response.json()) as Record<string, unknown>;
+      const parsed: unknown = await response.json();
+      if (!parsed || typeof parsed !== "object" || Array.isArray(parsed))
+        throw new Error("Invalid response object");
+      data = parsed as Record<string, unknown>;
     } catch {
       throw new Error(
         "The service returned an unexpected response. Receipt is not confirmed; contact support before resubmitting.",
@@ -66,6 +69,21 @@ export async function request(
         typeof data.error === "string"
           ? data.error
           : "The request could not be completed. Please try again.",
+      );
+    const publicSubmission =
+      /^\/api\/(contact|consultations\/inquiry|projects\/inquiry|newsletter\/subscribe|jobs\/[^/]+\/apply)$/.test(
+        url,
+      );
+    if (
+      publicSubmission &&
+      (data.stored !== true ||
+        (!/^\/api\/jobs\//.test(url) &&
+          (typeof data.message !== "string" || !data.message.trim())) ||
+        (url !== "/api/newsletter/subscribe" &&
+          (typeof data.id !== "string" || !/^[a-f0-9]{64}$/.test(data.id))))
+    )
+      throw new Error(
+        "Receipt is not confirmed. Contact support before resubmitting; do not assume your submission was saved.",
       );
     return data;
   } finally {

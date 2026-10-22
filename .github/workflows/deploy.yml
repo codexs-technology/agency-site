@@ -12,7 +12,11 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - run: npm run typecheck && npm run lint && npm test && npm run build:web
+      - run: npm run typecheck && npm run lint && npm run format:check && npm test && npm run build:web
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - name: Validate production bundle without deployment
+        run: npx wrangler deploy --env production --dry-run --outdir worker-build
       - name: Reject unconfigured production target
         run: node scripts/check-production.mjs
       - run: npx wrangler deploy --env production

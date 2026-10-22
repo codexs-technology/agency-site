@@ -462,6 +462,28 @@ export function PackagePage({
               deployment handover. Third-party costs, taxes, revisions and
               acceptance requirements must be itemized before you accept.
             </p>
+            <h3>Currency, deposits and milestone invoices</h3>
+            <p>
+              No default currency, deposit percentage or milestone charge is
+              advertised. Your owner-approved quote must state the currency,
+              total fee, taxes, any deposit, milestone amounts and invoice due
+              dates. Nothing is charged by submitting an inquiry.
+            </p>
+            <h3>Authorization and delivery records</h3>
+            <p>
+              Before an order is accepted, the written scope must identify the
+              client and authorized approver. Each invoice should reference that
+              agreement and the relevant deliverable. Handover should record the
+              delivered version, secure access transfer, acceptance evidence and
+              any outstanding items. These describe the proposed documentation
+              process, not evidence of completed sales or gateway approval.
+            </p>
+            <p>
+              Online payment collection is disabled. No processor acceptance or
+              payment method is promised. Software-service invoices must not be
+              used to collect casino deposits, gambling funds, unrelated
+              third-party payments or other unapproved activity.
+            </p>
             <a href="/service-delivery-policy">
               Delivery policy — review draft
             </a>

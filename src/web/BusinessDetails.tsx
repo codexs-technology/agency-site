@@ -41,7 +41,7 @@ export function BusinessDetails() {
                 </a>
               </>
             ) : (
-              "Karachi, Pakistan. Full address and map publication are pending registration and address-proof verification."
+              "Full business address and map publication are pending registration and address-proof verification."
             )}
           </dd>
         </div>

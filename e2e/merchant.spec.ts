@@ -12,6 +12,8 @@ test("business contacts, policy navigation and mobile layouts", async ({
     "/refund-policy",
     "/service-delivery-policy",
     "/cookie-policy",
+    "/privacy-policy",
+    "/terms-and-conditions",
   ]) {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(path);
@@ -36,6 +38,16 @@ test("business contacts, policy navigation and mobile layouts", async ({
     .getByRole("link", { name: "Cancellation before work begins", exact: true })
     .click();
   await expect(page).toHaveURL(/#policy-1$/);
+});
+
+test("terms alias redirects to the retained review draft on direct navigation", async ({
+  request,
+}) => {
+  const response = await request.get("/terms-and-conditions", {
+    maxRedirects: 0,
+  });
+  expect(response.status()).toBe(308);
+  expect(response.headers().location).toBe("/terms-of-service");
 });
 
 test("blog pagination and filters use published content without inventing articles", async ({

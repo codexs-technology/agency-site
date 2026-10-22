@@ -1,0 +1,375 @@
+{
+  "checkedAt": "2026-10-22T21:18:32.465Z",
+  "method": "GET",
+  "results": [
+    {
+      "path": "/solutions",
+      "status": 200,
+      "location": null,
+      "title": "Intelligence Built Into Every Workflow. | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/pricing",
+      "status": 200,
+      "location": null,
+      "title": "Simple Pricing for Every Need. | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/pricing/starter",
+      "status": 200,
+      "location": null,
+      "title": "Starter engagement | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/pricing/business",
+      "status": 200,
+      "location": null,
+      "title": "Business engagement | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/pricing/enterprise",
+      "status": 200,
+      "location": null,
+      "title": "Enterprise engagement | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/refund-policy",
+      "status": 200,
+      "location": null,
+      "title": "Refund &amp; Cancellation Policy — awaiting approval | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": true
+    },
+    {
+      "path": "/service-delivery-policy",
+      "status": 200,
+      "location": null,
+      "title": "Service Delivery Policy — awaiting approval | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": true
+    },
+    {
+      "path": "/newsletter/unsubscribe",
+      "status": 200,
+      "location": null,
+      "title": "Manage your newsletter subscription | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "location": null,
+      "title": "We Build Intelligent Digital Experiences. | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/about",
+      "status": 200,
+      "location": null,
+      "title": "Engineering Digital Excellence. | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/services",
+      "status": 200,
+      "location": null,
+      "title": "Expertise that moves you forward. | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/ai-solutions",
+      "status": 200,
+      "location": null,
+      "title": "Practical intelligence. Meaningful impact. | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/portfolio",
+      "status": 200,
+      "location": null,
+      "title": "Ideas made tangible. | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/industries",
+      "status": 200,
+      "location": null,
+      "title": "Your context shapes the solution. | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/process",
+      "status": 200,
+      "location": null,
+      "title": "Clarity at every milestone. | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/technologies",
+      "status": 200,
+      "location": null,
+      "title": "The right tools. For the right reasons. | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/engagement-models",
+      "status": 200,
+      "location": null,
+      "title": "A partnership that fits your ambition. | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/blog",
+      "status": 200,
+      "location": null,
+      "title": "Notes from the engineering desk. | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/careers",
+      "status": 200,
+      "location": null,
+      "title": "Build useful things. Thoughtfully. | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/faq",
+      "status": 200,
+      "location": null,
+      "title": "Good questions. Clear answers. | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/contact",
+      "status": 200,
+      "location": null,
+      "title": "Let’s build what’s next. | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/start-project",
+      "status": 200,
+      "location": null,
+      "title": "From bold idea to a clear brief. | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/privacy-policy",
+      "status": 200,
+      "location": null,
+      "title": "Privacy policy — review draft | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": true
+    },
+    {
+      "path": "/terms-of-service",
+      "status": 200,
+      "location": null,
+      "title": "Terms of service — review draft | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": true
+    },
+    {
+      "path": "/cookie-policy",
+      "status": 200,
+      "location": null,
+      "title": "Cookie policy — review draft | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": true
+    },
+    {
+      "path": "/thank-you",
+      "status": 200,
+      "location": null,
+      "title": "Your next chapter starts with a conversation. | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/services/web-development",
+      "status": 200,
+      "location": null,
+      "title": "Web Development | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/services/mobile-app-development",
+      "status": 200,
+      "location": null,
+      "title": "Mobile App Development | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/services/custom-software",
+      "status": 200,
+      "location": null,
+      "title": "Custom Software | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/services/ai-development",
+      "status": 200,
+      "location": null,
+      "title": "AI Development | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/services/ai-agents-automation",
+      "status": 200,
+      "location": null,
+      "title": "AI Agents &amp; Automation | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/services/saas-development",
+      "status": 200,
+      "location": null,
+      "title": "SaaS Development | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/services/ecommerce-development",
+      "status": 200,
+      "location": null,
+      "title": "E-commerce Development | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/services/ui-ux-design",
+      "status": 200,
+      "location": null,
+      "title": "UI/UX Design | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/services/cloud-devops",
+      "status": 200,
+      "location": null,
+      "title": "Cloud &amp; DevOps | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/services/api-integrations",
+      "status": 200,
+      "location": null,
+      "title": "API &amp; Integrations | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/services/erp-crm",
+      "status": 200,
+      "location": null,
+      "title": "ERP &amp; CRM Solutions | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/services/cybersecurity",
+      "status": 200,
+      "location": null,
+      "title": "Cybersecurity | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/services/digital-marketing",
+      "status": 200,
+      "location": null,
+      "title": "Digital Marketing | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/services/branding-logo-design",
+      "status": 200,
+      "location": null,
+      "title": "Branding &amp; Logo Design | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/services/cloud-api-integration",
+      "status": 200,
+      "location": null,
+      "title": "Cloud &amp; API Integration | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/terms-and-conditions",
+      "status": 404,
+      "location": null,
+      "title": "This page is off the map. | CodesBoxs",
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/api/services",
+      "status": 503,
+      "location": null,
+      "title": null,
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/api/payments/readiness",
+      "status": 503,
+      "location": null,
+      "title": null,
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/sitemap.xml",
+      "status": 200,
+      "location": null,
+      "title": null,
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    },
+    {
+      "path": "/robots.txt",
+      "status": 200,
+      "location": null,
+      "title": null,
+      "hasTurnstile": false,
+      "hasDraftWarning": false
+    }
+  ],
+  "limitations": "Does not submit forms, verify documents, email delivery, database writes or merchant approval."
+}

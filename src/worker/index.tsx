@@ -99,6 +99,9 @@ app.get("/sitemap.xml", async (c) => {
 });
 app.get("*", async (c) => {
   const requestedPath = new URL(c.req.url).pathname;
+  // Preserve the existing draft URL and its canonical/noindex behavior.
+  if (requestedPath.replace(/\/$/, "") === "/terms-and-conditions")
+    return c.redirect("/terms-of-service", 308);
   const adminRoutes = [
     "/admin/login",
     "/admin/dashboard",
