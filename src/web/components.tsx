@@ -466,12 +466,22 @@ export function Turnstile({
   onToken: (token: string) => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [failed, setFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
   const callback = useRef(onToken);
   useEffect(() => {
     callback.current = onToken;
   }, [onToken]);
   useEffect(() => {
     if (data.localTestMode || !data.turnstileSiteKey) return;
+    const reset = () => {
+      callback.current("");
+      setAttempt((value) => value + 1);
+    };
+    // A Siteverify attempt consumes a token, including when later persistence fails.
+    const form = ref.current?.closest("form");
+    form?.addEventListener("security-reset", reset);
+    const timeout = window.setTimeout(() => setFailed(true), 15000);
     let widget: string | undefined;
     const interval = window.setInterval(() => {
       const api = (
@@ -486,20 +496,29 @@ export function Turnstile({
       widget = api.render(ref.current, {
         sitekey: data.turnstileSiteKey,
         theme: "dark",
-        callback: (token: string) => callback.current(token),
+        callback: (token: string) => {
+          window.clearTimeout(timeout);
+          setFailed(false);
+          callback.current(token);
+        },
         "expired-callback": () => callback.current(""),
-        "error-callback": () => callback.current(""),
+        "error-callback": () => {
+          callback.current("");
+          setFailed(true);
+        },
       });
       window.clearInterval(interval);
     }, 200);
     return () => {
       window.clearInterval(interval);
+      window.clearTimeout(timeout);
+      form?.removeEventListener("security-reset", reset);
       const api = (
         window as unknown as { turnstile?: { remove: (id: string) => void } }
       ).turnstile;
       if (widget) api?.remove(widget);
     };
-  }, [data.turnstileSiteKey, data.localTestMode]);
+  }, [data.turnstileSiteKey, data.localTestMode, attempt]);
   if (data.localTestMode)
     return (
       <p className="notice">
@@ -509,8 +528,31 @@ export function Turnstile({
   if (!data.turnstileSiteKey)
     return (
       <p className="notice">
-        Form security is not configured. Please contact us by email instead.
+        Online submissions are temporarily unavailable. Please email{" "}
+        <a href={`mailto:${business.email}`}>{business.email}</a> or call{" "}
+        <a href={`tel:${business.phone}`}>{business.phone}</a>. Your message has
+        not been sent.
       </p>
     );
-  return <div ref={ref} className="turnstile" />;
+  return (
+    <>
+      <div ref={ref} className="turnstile" />
+      {failed && (
+        <p role="status" className="notice">
+          Security verification could not finish.{" "}
+          <button
+            type="button"
+            onClick={() => {
+              setFailed(false);
+              setAttempt((value) => value + 1);
+            }}
+          >
+            Retry verification
+          </button>{" "}
+          or <a href={`mailto:${business.email}`}>email us</a>. No submission
+          has been confirmed.
+        </p>
+      )}
+    </>
+  );
 }

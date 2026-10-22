@@ -11,28 +11,75 @@ import {
 import { services, type SiteData } from "../shared/content";
 import { Turnstile } from "./components";
 
+const inquiryKeys = new Map<string, string>();
+
 export async function request(
   url: string,
   body?: unknown,
   method = "POST",
   csrf?: string,
 ) {
-  const response = await fetch(url, {
-    method,
-    headers: {
-      "Content-Type": "application/json",
-      ...(csrf ? { "X-CSRF-Token": csrf } : {}),
-    },
-    ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
-  });
-  const data = (await response.json()) as Record<string, unknown>;
-  if (!response.ok)
-    throw new Error(
-      typeof data.error === "string"
-        ? data.error
-        : "The request could not be completed. Please try again.",
-    );
-  return data;
+  try {
+    let idempotencyKey: string | undefined;
+    if (
+      /^\/api\/(contact|consultations\/inquiry|projects\/inquiry)$/.test(url) &&
+      body &&
+      typeof body === "object"
+    ) {
+      const stable = {
+        ...(body as Record<string, unknown>),
+        turnstileToken: undefined,
+      };
+      const hash = Array.from(
+        new Uint8Array(
+          await crypto.subtle.digest(
+            "SHA-256",
+            new TextEncoder().encode(url + JSON.stringify(stable)),
+          ),
+        ),
+        (byte) => byte.toString(16).padStart(2, "0"),
+      ).join("");
+      idempotencyKey = inquiryKeys.get(hash) || crypto.randomUUID();
+      if (inquiryKeys.size >= 20 && !inquiryKeys.has(hash))
+        inquiryKeys.delete(inquiryKeys.keys().next().value!);
+      inquiryKeys.set(hash, idempotencyKey);
+    }
+    const response = await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        ...(csrf ? { "X-CSRF-Token": csrf } : {}),
+        ...(idempotencyKey ? { "Idempotency-Key": idempotencyKey } : {}),
+      },
+      ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
+    });
+    let data: Record<string, unknown>;
+    try {
+      data = (await response.json()) as Record<string, unknown>;
+    } catch {
+      throw new Error(
+        "The service returned an unexpected response. Receipt is not confirmed; contact support before resubmitting.",
+      );
+    }
+    if (!response.ok)
+      throw new Error(
+        typeof data.error === "string"
+          ? data.error
+          : "The request could not be completed. Please try again.",
+      );
+    return data;
+  } finally {
+    if (
+      typeof document !== "undefined" &&
+      /^\/api\/(contact|consultations\/inquiry|projects\/inquiry|newsletter\/subscribe|jobs\/[^/]+\/apply)$/.test(
+        url,
+      )
+    ) {
+      document
+        .querySelectorAll("form")
+        .forEach((form) => form.dispatchEvent(new Event("security-reset")));
+    }
+  }
 }
 export function ContactForm({ data }: { data: SiteData }) {
   const [token, setToken] = useState("");

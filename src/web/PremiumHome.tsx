@@ -15,7 +15,8 @@ import {
   PenTool,
   Globe,
 } from "lucide-react";
-import { services, type SiteData } from "../shared/content";
+import { business, services, type SiteData } from "../shared/content";
+import { BusinessDetails } from "./BusinessDetails";
 import { Button, Section } from "./components";
 import { Newsletter } from "./forms";
 import { formatMinorAmount } from "../shared/pricing";
@@ -242,32 +243,32 @@ export function PremiumServiceGrid() {
 const packages = [
   {
     slug: "starter",
-    name: "Starter",
+    name: "Website Development",
     copy: "For small businesses and starter projects.",
     features: [
       "Basic website or landing page",
       "Responsive design",
       "Contact form",
       "Basic SEO setup",
-      "Up to 2 revisions",
+      "Revision scope agreed in writing",
     ],
   },
   {
     slug: "business",
-    name: "Business",
+    name: "Business Applications",
     copy: "For growing businesses.",
     features: [
       "Advanced website or web application",
       "Custom UI/UX design",
       "SEO optimization",
       "CMS integration where applicable",
-      "Up to 5 revisions",
+      "Revision scope agreed in writing",
     ],
   },
   {
     slug: "enterprise",
-    name: "Enterprise",
-    copy: "For larger and more complex solutions.",
+    name: "AI Automation Solutions",
+    copy: "For connected workflows and human-supervised automation.",
     features: [
       "Custom software or SaaS consultation",
       "AI integration options",
@@ -327,6 +328,31 @@ export function PricingCards({
                 </li>
               ))}
             </ul>
+            <dl className="package-terms">
+              <div>
+                <dt>Timeline</dt>
+                <dd>
+                  {record
+                    ? String(record.delivery)
+                    : "Estimated after discovery; confirmed in your quote."}
+                </dd>
+              </div>
+              <div>
+                <dt>Revisions</dt>
+                <dd>
+                  {record
+                    ? String(record.revisions)
+                    : "Rounds and acceptance criteria agreed before work."}
+                </dd>
+              </div>
+              <div>
+                <dt>Support</dt>
+                <dd>
+                  Coverage and duration quoted separately unless included in
+                  writing.
+                </dd>
+              </div>
+            </dl>
             <Button secondary={i !== 1} href={`/pricing/${p.slug}`}>
               {i === 2 ? "Contact Sales" : "Get Started"}
             </Button>
@@ -418,7 +444,30 @@ export function PackagePage({
             Choose a starting point. No online payment is collected; all
             engagements require an approved written scope and quote.
           </p>
-          <PricingCards records={records} />
+          <div>
+            <h2 className="pricing-options-title">Choose your project focus</h2>
+            <PricingCards records={records} />
+          </div>
+          <div className="panel billing-summary">
+            <h2>From inquiry to digital delivery</h2>
+            <p>
+              Discuss your requirements, review a written scope and quote, then
+              approve the agreement before work begins. One-time project fees
+              and milestone amounts are specified in that agreement. Recurring
+              support requires a separate, explicit billing schedule; it is not
+              automatically included.
+            </p>
+            <p>
+              Delivery is digital: agreed source files, access, documentation or
+              deployment handover. Third-party costs, taxes, revisions and
+              acceptance requirements must be itemized before you accept.
+            </p>
+            <a href="/service-delivery-policy">
+              Delivery policy — review draft
+            </a>
+            {" · "}
+            <a href="/refund-policy">Refund & cancellation — review draft</a>
+          </div>
         </>
       )}
     </Section>
@@ -685,10 +734,9 @@ export function PremiumHome({ data }: { data: SiteData }) {
 
 export function PremiumFooter({ data }: { data: SiteData }) {
   const groups = {
-    Services: featuredServices.map(([slug, title]) => [
-      title,
-      `/services/${slug}`,
-    ]),
+    Services: featuredServices
+      .slice(0, 3)
+      .map(([slug, title]) => [title, `/services/${slug}`]),
     Company: [
       ["About Us", "/about"],
       ["Our Work", "/portfolio"],
@@ -716,7 +764,21 @@ export function PremiumFooter({ data }: { data: SiteData }) {
             We create innovative digital solutions, intelligent automation, and
             scalable products for businesses worldwide.
           </p>
-          <p className="footer-identity">CodesBoxs SMC Pvt Ltd</p>
+          <BusinessDetails />
+          <nav className="social-links" aria-label="Official social media">
+            {business.socials.map((social) => (
+              <a
+                key={social.name}
+                href={social.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${social.name} (opens in a new tab)`}
+              >
+                <Globe size={18} aria-hidden="true" />
+                <span>{social.name}</span>
+              </a>
+            ))}
+          </nav>
         </div>
         {Object.entries(groups).map(([title, links]) => (
           <div key={title}>
@@ -736,8 +798,7 @@ export function PremiumFooter({ data }: { data: SiteData }) {
       </div>
       <div className="premium-footer-bottom">
         <span>
-          © {new Date().getUTCFullYear()} CodesBoxs SMC Pvt Ltd. All rights
-          reserved.
+          © {new Date().getUTCFullYear()} {business.name}. All rights reserved.
         </span>
         <a href="/privacy-policy">Privacy & data choices</a>
         <a href="#main">Back to top ↑</a>

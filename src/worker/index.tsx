@@ -184,7 +184,10 @@ app.get("*", async (c) => {
     projects,
     jobs,
     serviceContent,
-    turnstileSiteKey: c.env.TURNSTILE_SITE_KEY || "",
+    turnstileSiteKey:
+      c.env.DB && c.env.TURNSTILE_SECRET_KEY
+        ? c.env.TURNSTILE_SITE_KEY || ""
+        : "",
     siteUrl: c.env.PUBLIC_SITE_URL,
     localTestMode: isLocal(c.env, c.req.url),
     settings: Object.fromEntries(
@@ -249,10 +252,17 @@ app.get("*", async (c) => {
       : {
           "@context": "https://schema.org",
           "@type": "Organization",
-          name: business.name,
+          name: business.brand,
+          legalName: business.name,
           url: c.env.PUBLIC_SITE_URL,
           email: business.email,
-          sameAs: [business.github],
+          telephone: business.phone,
+          contactPoint: {
+            "@type": "ContactPoint",
+            contactType: "customer support",
+            email: business.supportEmail,
+          },
+          sameAs: business.socials.map((social) => social.url),
         };
   c.header("Cache-Control", "no-store");
   return c.html(

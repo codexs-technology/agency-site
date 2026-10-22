@@ -33,6 +33,9 @@ import {
   PremiumServiceGrid,
   PackagePage,
 } from "./PremiumHome";
+import { BusinessDetails } from "./BusinessDetails";
+import { PolicyPage } from "./PolicyPage";
+import { policySections } from "../shared/policies";
 import { SignatureProcess, SignatureWorkflow } from "./SignatureSystems";
 
 class ErrorBoundary extends Component<
@@ -339,6 +342,10 @@ function Collection({
       (category === "All" || p.category === category) &&
       `${p.title} ${p.summary}`.toLowerCase().includes(search.toLowerCase()),
   );
+  const [page, setPage] = useState(1);
+  const totalPages = Math.max(1, Math.ceil(filtered.length / 9));
+  const currentPage = Math.min(page, totalPages);
+  const visible = filtered.slice((currentPage - 1) * 9, currentPage * 9);
   return (
     <>
       <div className="filter-bar">
@@ -347,7 +354,10 @@ function Collection({
           <input
             type="search"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPage(1);
+            }}
           />
         </label>
         <div className="filter-chips" aria-label="Category filters">
@@ -358,7 +368,10 @@ function Collection({
             <button
               className={category === c ? "active" : ""}
               aria-pressed={category === c}
-              onClick={() => setCategory(c)}
+              onClick={() => {
+                setCategory(c);
+                setPage(1);
+              }}
               key={c}
             >
               {c}
@@ -367,7 +380,7 @@ function Collection({
         </div>
       </div>
       <div className="project-grid">
-        {filtered.map((p) => (
+        {visible.map((p) => (
           <a key={p.id} className="project-card" href={`/${type}/${p.slug}`}>
             <img
               src={p.image || "/images/dashboard.svg"}
@@ -378,7 +391,11 @@ function Collection({
             />
             <div>
               <span className="eyebrow">
-                {type === "portfolio" ? "CONCEPT PROJECT · " : ""}
+                {type === "portfolio"
+                  ? p.is_concept
+                    ? "CONCEPT PROJECT · "
+                    : "PROJECT · "
+                  : ""}
                 {p.category}
               </span>
               <h3>
@@ -386,6 +403,11 @@ function Collection({
                 <ArrowUpRight size={21} />
               </h3>
               <p>{p.summary}</p>
+              {type === "blog" && p.published_at && (
+                <time dateTime={p.published_at}>
+                  {p.published_at.slice(0, 10)}
+                </time>
+              )}
               <div className="tags">
                 {(type === "portfolio"
                   ? p.technologies || ""
@@ -400,6 +422,30 @@ function Collection({
           </a>
         ))}
       </div>
+      {totalPages > 1 && (
+        <nav
+          className="button-row collection-pagination"
+          aria-label={`${type} pagination`}
+        >
+          <button
+            className="button button-secondary"
+            disabled={currentPage === 1}
+            onClick={() => setPage(currentPage - 1)}
+          >
+            Previous
+          </button>
+          <span role="status">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            className="button button-secondary"
+            disabled={currentPage === totalPages}
+            onClick={() => setPage(currentPage + 1)}
+          >
+            Next
+          </button>
+        </nav>
+      )}
       {!filtered.length && (
         <p role="status">
           No matching{" "}
@@ -580,7 +626,9 @@ function Detail({
         description={item.summary}
         eyebrow={
           type === "portfolio"
-            ? "CONCEPT PROJECT · NOT CLIENT WORK"
+            ? item.is_concept
+              ? "CONCEPT PROJECT · NOT CLIENT WORK"
+              : "PROJECT OVERVIEW"
             : item.category
         }
       />
@@ -613,10 +661,12 @@ function Detail({
         </article>
         {type === "portfolio" && (
           <>
-            <p className="notice">
-              Illustrative design and architecture only. No client, revenue,
-              deployment or performance outcomes are claimed.
-            </p>
+            {!!item.is_concept && (
+              <p className="notice">
+                Illustrative design and architecture only. No client, revenue,
+                deployment or performance outcomes are claimed.
+              </p>
+            )}
             <div className="technology-pills">
               {item.technologies?.split(",").map((t) => (
                 <span key={t}>{t}</span>
@@ -807,70 +857,6 @@ function Careers({ data }: { data: SiteData }) {
     </>
   );
 }
-function Legal({ path }: { path: string }) {
-  const sections =
-    path === "/privacy-policy"
-      ? [
-          [
-            "Information you provide",
-            "Inquiry forms collect your name, email, company, optional phone, service interests, budget, timeline and project description. Newsletter registration records an email address and consent. Published job applications collect the fields displayed in that application form.",
-          ],
-          [
-            "Purpose and processors",
-            "Information is used to review inquiries, manage communication and administer applications or subscriptions. The planned infrastructure includes Cloudflare for hosting and database processing and a configured email provider for notifications. The owner must verify the final processors, contractual terms and applicable transfer safeguards.",
-          ],
-          [
-            "Retention and rights",
-            "Retention periods, lawful bases, data-controller details and jurisdiction-specific rights have not been finalized. The business owner must approve these before launch. Contact codexstechnology@gmail.com for privacy inquiries; avoid providing highly sensitive information.",
-          ],
-        ]
-      : path === "/terms-of-service"
-        ? [
-            [
-              "Website information",
-              "The website describes potential services and illustrative concepts. It is not a binding quotation, performance guarantee or statement of certification. Concept projects are not client case studies.",
-            ],
-            [
-              "Project agreements",
-              "Scope, fees, intellectual property, licensing, delivery, confidentiality and support must be addressed in a separate signed agreement. Submitting an inquiry does not create a service contract.",
-            ],
-            [
-              "Required legal decisions",
-              "Applicable law, dispute resolution, liability provisions, legal entity particulars and enforceable acceptable-use terms require owner and qualified legal review. These draft notes must not be treated as final legal terms.",
-            ],
-          ]
-        : [
-            [
-              "Essential cookies",
-              "An authenticated administrator session uses an HTTP-only cookie to secure dashboard access. Cloudflare Turnstile may process browser information for abuse prevention; review its current configuration and applicable notice requirements before launch.",
-            ],
-            [
-              "Optional technologies",
-              "No analytics, advertising or optional tracking scripts are enabled by default. A decorative consent banner is therefore not included. If optional tracking is introduced, implement prior consent where required and enforce preferences before loading those technologies.",
-            ],
-            [
-              "Owner review",
-              "The owner must confirm the deployed cookie inventory, purposes, lifetimes and third-party behavior. This draft describes the intended implementation, not a verified production audit.",
-            ],
-          ];
-  return (
-    <Section>
-      <div className="notice">
-        <strong>OWNER / LEGAL REVIEW REQUIRED.</strong> This is an editable
-        draft, not legal advice or an approved policy. Production publication is
-        blocked until reviewed.
-      </div>
-      <article className="prose">
-        {sections.map(([title, text]) => (
-          <div key={title}>
-            <h2>{title}</h2>
-            <p>{text}</p>
-          </div>
-        ))}
-      </article>
-    </Section>
-  );
-}
 function NotFound() {
   return (
     <>
@@ -961,21 +947,7 @@ function PublicPage({ data }: { data: SiteData }) {
         eyebrow={path.slice(1).replaceAll("-", " ").toUpperCase()}
       />
       {path === "/newsletter/unsubscribe" && <Unsubscribe />}
-      {["/refund-policy", "/service-delivery-policy"].includes(path) && (
-        <Section>
-          <div className="notice">
-            <strong>Not approved for merchant submission.</strong> Online
-            purchases are not enabled. Final owner-approved policy terms must be
-            published before accepting payments.
-          </div>
-          <p>
-            {path === "/refund-policy"
-              ? "Request written cancellation procedures, deposit treatment, refund eligibility, approved-work exclusions, refund timing and a dispute contact before entering an agreement. These terms have not been supplied or approved; this page does not invent them."
-              : "Delivery is through agreed digital deliverables and project milestones. The agreement must define scope, delivery time, customer dependencies, acceptance criteria, revisions, intellectual property handover and support. No universal turnaround time is promised."}
-          </p>
-          <Button href="/contact">Request terms for your project</Button>
-        </Section>
-      )}
+      {policySections[path] && <PolicyPage path={path} />}
       {path === "/services" && (
         <Section>
           <PremiumServiceGrid />
@@ -1014,9 +986,8 @@ function PublicPage({ data }: { data: SiteData }) {
             <div className="two-grid">
               <div>
                 <p className="large-copy">
-                  CodesBoxs SMC Pvt Ltd is positioned as a software, AI and
-                  digital transformation partner for businesses building their
-                  next chapter.
+                  {business.name} provides software development, AI and digital
+                  services for businesses building their next chapter.
                 </p>
                 <p>
                   Our approach connects product thinking, design and
@@ -1030,6 +1001,9 @@ function PublicPage({ data }: { data: SiteData }) {
                 alt="Original collaborative workspace illustration, not a representation of verified team members"
               />
             </div>
+          </Section>
+          <Section title="Business identity and contact">
+            <BusinessDetails />
           </Section>
           <Section title="What guides the work.">
             <div className="three-grid">
@@ -1239,6 +1213,7 @@ function PublicPage({ data }: { data: SiteData }) {
                 Tell us about the problem, the people it affects and what
                 success could look like.
               </p>
+              <BusinessDetails />
               <a className="contact-email" href={`mailto:${business.email}`}>
                 {business.email}
               </a>
@@ -1264,9 +1239,6 @@ function PublicPage({ data }: { data: SiteData }) {
           <ProjectForm data={data} />
         </Section>
       )}
-      {["/privacy-policy", "/terms-of-service", "/cookie-policy"].includes(
-        path,
-      ) && <Legal path={path} />}
       {path === "/thank-you" && (
         <Section>
           <p>

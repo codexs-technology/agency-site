@@ -1,0 +1,38 @@
+[
+  {
+    "name": "format",
+    "exitCode": 0
+  },
+  {
+    "name": "typecheck",
+    "exitCode": 0
+  },
+  {
+    "name": "lint",
+    "exitCode": 0
+  },
+  {
+    "name": "unit",
+    "exitCode": 0
+  },
+  {
+    "name": "build",
+    "exitCode": 0
+  },
+  {
+    "name": "format-check",
+    "exitCode": 0
+  },
+  {
+    "name": "e2e",
+    "exitCode": 0
+  },
+  {
+    "name": "diff-check",
+    "exitCode": 0
+  },
+  {
+    "name": "status",
+    "exitCode": 0
+  }
+]

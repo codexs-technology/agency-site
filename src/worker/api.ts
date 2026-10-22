@@ -175,6 +175,34 @@ for (const [path, schema, table, kind] of [
         400,
       );
     const data = parsed.data;
+    const requestKey = c.req.header("Idempotency-Key");
+    if (requestKey && !/^[a-f0-9-]{36}$/i.test(requestKey))
+      return c.json({ error: "Invalid request reference" }, 400);
+    const stablePayload = { ...data, turnstileToken: undefined };
+    const payloadHash = requestKey
+      ? await digest(JSON.stringify({ path, ...stablePayload }))
+      : "";
+    const findReplay = async () =>
+      requestKey
+        ? c.env.DB.prepare(
+            "SELECT payload_hash,inquiry_id FROM inquiry_requests WHERE request_key=?",
+          )
+            .bind(requestKey)
+            .first<{ payload_hash: string; inquiry_id: string }>()
+        : null;
+    const replay = await findReplay();
+    if (replay)
+      return replay.payload_hash === payloadHash
+        ? c.json({
+            id: replay.inquiry_id,
+            stored: true,
+            message:
+              "Your inquiry was already saved. No duplicate was created.",
+          })
+        : c.json(
+            { error: "This request reference belongs to a different inquiry." },
+            409,
+          );
     if (!(await verifyTurnstile(c, data.turnstileToken, data.website)))
       return c.json(
         {
@@ -214,6 +242,12 @@ for (const [path, schema, table, kind] of [
             data.description,
           );
     const statements = [insert, notification(c.env, kind, id)];
+    if (requestKey)
+      statements.push(
+        c.env.DB.prepare(
+          "INSERT INTO inquiry_requests(request_key,payload_hash,inquiry_id) VALUES(?,?,?)",
+        ).bind(requestKey, payloadHash, id),
+      );
     if (c.env.SEND_CONFIRMATIONS === "true")
       statements.push(
         c.env.DB.prepare(
@@ -227,7 +261,19 @@ for (const [path, schema, table, kind] of [
           emailConfigured(c.env) ? "pending" : "blocked",
         ),
       );
-    await c.env.DB.batch(statements);
+    try {
+      await c.env.DB.batch(statements);
+    } catch (error) {
+      // D1 batch rolls back on a competing request-key insert; return only the committed reference.
+      const concurrent = await findReplay();
+      if (concurrent && concurrent.payload_hash === payloadHash)
+        return c.json({
+          id: concurrent.inquiry_id,
+          stored: true,
+          message: "Your inquiry was already saved. No duplicate was created.",
+        });
+      throw error;
+    }
     c.executionCtx.waitUntil(processOutbox(c.env));
     return c.json(
       {

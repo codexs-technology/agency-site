@@ -13,9 +13,22 @@ export type Service = {
   image: string;
 };
 export const business = {
-  name: "CodesBoxs SMC Pvt Ltd",
+  name: "CODES BOXS (SMC-PRIVATE) LIMITED",
   brand: "CodesBoxs",
   email: "codexstechnology@gmail.com",
+  supportEmail: "support@codesboxs.com",
+  phone: "+923412768875",
+  address:
+    "Plot No. 1/1, Near Ghazi Overseas Employment Pakistan, Nersari, PECHS Block 6, Shahrah-e-Faisal, Karachi, Pakistan.",
+  addressVerified: false,
+  socials: [
+    { name: "Instagram", url: "https://www.instagram.com/codex.technology/" },
+    { name: "Pinterest", url: "https://www.pinterest.com/codexst/" },
+    { name: "X", url: "https://x.com/CodexTechnyg" },
+    { name: "GitHub", url: "https://github.com/codexs-technology" },
+    { name: "LinkedIn", url: "https://www.linkedin.com/company/codes-boxs" },
+    { name: "Facebook", url: "https://www.facebook.com/codesbox.technology" },
+  ],
   booking: "/contact",
   github: "https://github.com/codexs-technology",
 };
@@ -29,9 +42,10 @@ export const services: Service[] = [
     description:
       "A good website is more than an attractive interface. We connect content strategy, interaction design and reliable engineering so your digital presence can become a useful business tool. From marketing sites to authenticated platforms, the architecture follows your workflows—not a template.",
     capabilities: [
-      "Server-rendered business websites",
-      "Interactive web applications",
-      "Content platforms and publishing",
+      "Business and corporate websites",
+      "E-commerce storefronts and checkout integrations",
+      "Campaign landing pages and content publishing",
+      "Custom web applications and API integration",
       "Accessibility and performance remediation",
     ],
     benefits: [
@@ -60,9 +74,12 @@ export const services: Service[] = [
       "Mobile products need to work within real-world constraints: interrupted networks, small screens and impatient users. We design task-focused flows and choose native or cross-platform approaches according to device features, release plans and your team’s maintenance needs.",
     capabilities: [
       "Cross-platform iOS and Android applications",
+      "Touch-first UI/UX design and prototypes",
+      "Backend integration and API development",
       "Offline-aware workflows",
       "Push notifications and device integrations",
       "App release preparation",
+      "Device testing and scoped maintenance",
     ],
     benefits: [
       "Consistent workflows across devices",
@@ -150,8 +167,10 @@ export const services: Service[] = [
       "An agent should have a clear job, limited permissions and an observable execution trail. We connect tools and business systems with deliberate approval gates so automation can assist your team without silently taking irreversible actions.",
     capabilities: [
       "Lead qualification workflows",
-      "Support triage and routing",
-      "Tool-connected AI agents",
+      "AI voice agents and conversation flows",
+      "Customer support chatbots and human escalation",
+      "CRM, API and business workflow integrations",
+      "Scoped permissions, data handling and execution logs",
       "Human-in-the-loop approvals",
     ],
     benefits: [

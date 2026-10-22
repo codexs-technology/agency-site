@@ -94,26 +94,31 @@ export async function verifyTurnstile(
   if (honeypot) return false;
   if (isLocal(c.env, c.req.url)) return true;
   if (!c.env.TURNSTILE_SECRET_KEY || !token) return false;
-  const response = await fetch(
-    "https://challenges.cloudflare.com/turnstile/v0/siteverify",
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        secret: c.env.TURNSTILE_SECRET_KEY,
-        response: token,
-        remoteip: c.req.header("CF-Connecting-IP"),
-      }),
-      signal: AbortSignal.timeout(8000),
-    },
-  );
-  const result = (await response.json()) as {
-    success: boolean;
-    hostname?: string;
-  };
-  return (
-    response.ok &&
-    result.success &&
-    result.hostname === new URL(c.req.url).hostname
-  );
+  try {
+    const response = await fetch(
+      "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          secret: c.env.TURNSTILE_SECRET_KEY,
+          response: token,
+          remoteip: c.req.header("CF-Connecting-IP"),
+        }),
+        signal: AbortSignal.timeout(8000),
+      },
+    );
+    const result = (await response.json()) as {
+      success: boolean;
+      hostname?: string;
+    };
+    return (
+      response.ok &&
+      result.success &&
+      result.hostname === new URL(c.req.url).hostname
+    );
+  } catch {
+    // Provider outages, timeouts and malformed responses fail closed without leaking details.
+    return false;
+  }
 }
