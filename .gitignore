@@ -15,6 +15,8 @@ artifacts/
 reports/
 *.log
 .test-bootstrap-secret
+# Local compliance screenshots can contain synthetic identifiers; review before sharing.
+compliance/rapid-gateway/screenshots/
 .DS_Store
 # Original agency-site Node.js ignore rules (preserved during history repair)
 # Logs

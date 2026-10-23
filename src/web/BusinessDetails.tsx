@@ -1,6 +1,6 @@
 import { business } from "../shared/content";
 
-/** Address and map publication are deliberately gated on documentary review. */
+/** Owner-approved publication does not assert independent documentary verification. */
 export function BusinessDetails() {
   return (
     <div className="business-details">
@@ -29,7 +29,7 @@ export function BusinessDetails() {
         <div>
           <dt>Business address</dt>
           <dd>
-            {business.addressVerified ? (
+            {business.addressPublicationApproved ? (
               <>
                 <address>{business.address}</address>
                 <a

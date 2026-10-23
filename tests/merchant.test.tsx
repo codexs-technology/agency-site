@@ -34,9 +34,11 @@ describe("merchant content and security boundaries", () => {
         `href="${social.url}" target="_blank" rel="noopener noreferrer"`,
       );
     const details = renderToString(<BusinessDetails />);
-    expect(details).not.toContain(business.address);
-    expect(details).not.toContain("google.com/maps");
-    expect(details).toContain("address-proof verification");
+    expect(business.addressPublicationApproved).toBe(true);
+    expect(business.address).toContain("Nursery, PECHS Block 6");
+    expect(details).toContain("Plot No. 1/1");
+    expect(details).toContain("google.com/maps");
+    expect(business.addressVerified).toBe(false);
   });
   it("provides complete, explicitly unapproved policy sections", () => {
     expect(Object.keys(policySections)).toHaveLength(5);

@@ -2,12 +2,23 @@ import { Hono } from "hono";
 import { z } from "zod";
 import type { AppEnv } from "./types";
 import { randomToken } from "./security";
+import { services } from "../shared/content";
 
 // Mounted beneath the existing session + CSRF middleware. Never mount publicly.
 export const commerce = new Hono<AppEnv>();
 export const pricingSchema = z
   .object({
-    slug: z.enum(["starter", "business", "enterprise"]),
+    slug: z.string().regex(/^[a-z0-9-]{2,100}$/),
+    service_slug: z
+      .string()
+      .regex(/^[a-z0-9-]{2,100}$/)
+      .or(z.literal(""))
+      .refine(
+        (value) => !value || services.some((service) => service.slug === value),
+        "Choose an existing service",
+      )
+      .default(""),
+    billing_interval: z.enum(["", "monthly", "yearly"]).default(""),
     title: z.string().trim().min(3).max(100),
     description: z.string().trim().min(10).max(500),
     features_json: z
@@ -55,7 +66,9 @@ export const pricingSchema = z
         !!p.revisions &&
         !!p.exclusions &&
         !!p.disclosures &&
-        (p.billing === "quote" || p.amount_minor !== null)),
+        (p.billing === "quote" ||
+          (p.amount_minor !== null && !!p.service_slug)) &&
+        (p.billing !== "recurring" || !!p.billing_interval)),
     "Approved publication requires delivery, revisions, exclusions, disclosures and a price or quote classification",
   );
 const testimonial = z
@@ -91,6 +104,24 @@ const entities = {
 } as const;
 commerce.get("/:entity", async (c) => {
   const entity = c.req.param("entity");
+  if (entity === "invoice-requests") {
+    const page = Math.max(
+      1,
+      Math.min(10000, Math.trunc(Number(c.req.query("page")) || 1)),
+    );
+    const search = `%${(c.req.query("search") || "").slice(0, 100)}%`;
+    const rows = await c.env.DB.prepare(
+      "SELECT r.id,r.request_type,r.status,r.display_currency,r.created_at,c.name,c.email,c.country,c.company FROM guest_requests r JOIN guest_customers c ON c.id=r.customer_id WHERE c.email LIKE ? ORDER BY r.created_at DESC,r.id LIMIT 20 OFFSET ?",
+    )
+      .bind(search, (page - 1) * 20)
+      .all();
+    const total = await c.env.DB.prepare(
+      "SELECT COUNT(*) AS total FROM guest_requests r JOIN guest_customers c ON c.id=r.customer_id WHERE c.email LIKE ?",
+    )
+      .bind(search)
+      .first<{ total: number }>();
+    return c.json({ items: rows.results, total: total?.total || 0, page });
+  }
   const config = entities[entity as keyof typeof entities];
   const table = config?.table || (entity === "orders" ? "orders" : undefined);
   if (!table) return c.json({ error: "Unknown collection" }, 404);
@@ -121,7 +152,7 @@ commerce.get("/:entity", async (c) => {
 });
 commerce.post("/:entity", async (c) => {
   const entity = c.req.param("entity");
-  if (entity !== "testimonials")
+  if (entity !== "testimonials" && entity !== "pricing")
     return c.json(
       {
         error:
@@ -129,7 +160,9 @@ commerce.post("/:entity", async (c) => {
       },
       405,
     );
-  const parsed = testimonial.safeParse(await c.req.json());
+  const parsed = (entity === "pricing" ? pricingSchema : testimonial).safeParse(
+    await c.req.json(),
+  );
   if (!parsed.success)
     return c.json(
       { error: parsed.error.issues.map((i) => i.message).join("; ") },
@@ -140,7 +173,7 @@ commerce.post("/:entity", async (c) => {
     values = Object.values(parsed.data);
   await c.env.DB.batch([
     c.env.DB.prepare(
-      `INSERT INTO testimonials(id,${fields.join(",")}) VALUES(${[id, ...values].map(() => "?").join(",")})`,
+      `INSERT INTO ${entity === "pricing" ? "pricing_packages" : "testimonials"}(id,${fields.join(",")}) VALUES(${[id, ...values].map(() => "?").join(",")})`,
     ).bind(id, ...values),
     c.env.DB.prepare(
       "INSERT INTO audit_logs(id,admin_id,action,entity,entity_id) VALUES(?,?,?,?,?)",

@@ -13,6 +13,7 @@ describe("commercial pricing safety", () => {
   it("rejects unknown currencies and whitespace-only approved delivery terms", () => {
     const record = {
       slug: "starter",
+      service_slug: "web-development",
       title: "Starter",
       description: "A clearly scoped starter engagement.",
       features_json: '["Responsive website"]',

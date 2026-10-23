@@ -67,29 +67,47 @@ export function CommercialAdmin({
           }}
         />
       </label>
-      {entity === "testimonials" && (
+      {(entity === "testimonials" || entity === "pricing") && (
         <button
           className="button"
           onClick={() => {
             setId("");
             setEditor(
               JSON.stringify(
-                {
-                  name: "",
-                  role: "",
-                  company: "",
-                  review: "",
-                  permission_reference: "",
-                  verified: 0,
-                  status: "draft",
-                },
+                entity === "pricing"
+                  ? {
+                      slug: "",
+                      service_slug: "",
+                      billing_interval: "",
+                      title: "",
+                      description: "",
+                      features_json: "[]",
+                      amount_minor: null,
+                      currency: "USD",
+                      billing: "quote",
+                      delivery: "",
+                      revisions: "",
+                      exclusions: "",
+                      disclosures: "",
+                      approved: 0,
+                      status: "draft",
+                    }
+                  : {
+                      name: "",
+                      role: "",
+                      company: "",
+                      review: "",
+                      permission_reference: "",
+                      verified: 0,
+                      status: "draft",
+                    },
                 null,
                 2,
               ),
             );
           }}
         >
-          Create testimonial
+          Create {entity === "pricing" ? "draft package" : "testimonial"}
         </button>
       )}
       {editor && (
@@ -160,7 +178,7 @@ export function CommercialAdmin({
                 </td>
                 <td>{String(row.status)}</td>
                 <td>
-                  {entity !== "orders" && (
+                  {entity !== "orders" && entity !== "invoice-requests" && (
                     <button
                       className="button button-secondary"
                       onClick={() => {

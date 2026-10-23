@@ -1,4 +1,5 @@
 /** Review copy only: no unapproved refund guarantees, deadlines or legal waivers. */
+import { approvedBusinessAddress } from "./business-address";
 export const policySections: Record<string, [string, string][]> = {
   "/terms-of-service": [
     [
@@ -135,3 +136,6 @@ export const policySections: Record<string, [string, string][]> = {
     ],
   ],
 };
+for (const sections of Object.values(policySections)) {
+  sections.push(["Business contact", `CodesBoxs. Business address (owner-confirmed, not independently document-verified): ${approvedBusinessAddress()} Support: support@codesboxs.com. Business inquiries: codexstechnology@gmail.com. Telephone: +92 341 2768875.`]);
+}

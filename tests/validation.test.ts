@@ -65,8 +65,8 @@ describe("content inventory", () => {
     ).toBe(false);
   });
   it("preserves existing service pages and adds branding and cloud integration", () => {
-    expect(services).toHaveLength(15);
-    expect(new Set(services.map((s) => s.slug)).size).toBe(15);
+    expect(services).toHaveLength(18);
+    expect(new Set(services.map((s) => s.slug)).size).toBe(18);
   });
   it("has all main route metadata", () => {
     for (const path of [

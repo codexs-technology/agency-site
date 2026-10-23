@@ -1,3 +1,5 @@
+import { approvedBusinessAddress } from "./business-address";
+
 export type Service = {
   slug: string;
   title: string;
@@ -18,9 +20,10 @@ export const business = {
   email: "codexstechnology@gmail.com",
   supportEmail: "support@codesboxs.com",
   phone: "+923412768875",
-  address:
-    "Plot No. 1/1, Near Ghazi Overseas Employment Pakistan, Nersari, PECHS Block 6, Shahrah-e-Faisal, Karachi, Pakistan.",
+  address: approvedBusinessAddress(),
+  addressPublicationApproved: !!approvedBusinessAddress(),
   addressVerified: false,
+  addressVerificationStatus: "owner-confirmed; not independently document-verified",
   socials: [
     { name: "Instagram", url: "https://www.instagram.com/codex.technology/" },
     { name: "Pinterest", url: "https://www.pinterest.com/codexst/" },
@@ -514,6 +517,39 @@ services.push(
   },
 );
 
+services.push(
+  {
+    slug: "ai-chatbot-development", title: "AI Chatbot Development", eyebrow: "Answers with context and clear limits",
+    summary: "Knowledge-grounded assistants for support and internal workflows, with human escalation.",
+    description: "Plan an assistant around approved knowledge, user intent and measurable response quality. We design retrieval, access boundaries, fallback behavior and evaluation before release. AI responses require appropriate review and are not a substitute for qualified professional decisions.",
+    capabilities: ["Knowledge-source assessment", "Retrieval and conversation design", "Human escalation workflows", "Evaluation and safe fallback states"],
+    benefits: ["Consistent access to approved information", "Clear automation boundaries", "Reviewable quality benchmarks"],
+    deliverables: ["Agreed conversation flows", "Integrated assistant implementation", "Evaluation results and operating guide"],
+    technologies: ["APIs", "Retrieval", "TypeScript", "Model evaluation"],
+    question: "Can a chatbot guarantee correct answers?", answer: "No. The scope defines evaluation, source boundaries, human review and escalation. Provider usage fees, ongoing monitoring and support require explicit agreement.", image: "ai",
+  },
+  {
+    slug: "seo", title: "Search Engine Optimization", eyebrow: "Improve discoverability with evidence",
+    summary: "Technical SEO, on-page recommendations and measurable search-health improvements.",
+    description: "Review crawlability, site structure, content relevance and performance to prioritize useful improvements. Recommendations are based on the accessible site and agreed goals, not guaranteed rankings. Implementation access, editorial responsibilities and reporting periods are defined in the proposal.",
+    capabilities: ["Technical crawl and index review", "On-page content recommendations", "Structured metadata planning", "Search-health reporting"],
+    benefits: ["Prioritized technical improvements", "Clear implementation ownership", "Transparent measurement"],
+    deliverables: ["SEO assessment and prioritized actions", "Agreed metadata and on-page updates", "Scoped reporting and handover"],
+    technologies: ["Structured data", "Sitemaps", "Web performance", "Search diagnostics"],
+    question: "Do you guarantee a first-page ranking?", answer: "No. Search engines control rankings. Timing, content production, subscriptions and implementation responsibilities are agreed in writing; no placement or revenue guarantee is offered.", image: "engineering",
+  },
+  {
+    slug: "banner-graphic-design", title: "Banner & Graphic Design", eyebrow: "Creative assets designed for their destination",
+    summary: "Campaign banners, social graphics and reusable digital artwork with agreed formats.",
+    description: "Translate an approved brief and brand direction into coherent artwork for the specified channels. We confirm dimensions, copy, asset rights and approval contacts before production. Print production, stock licensing, advertising placement and unlimited revisions are not implied.",
+    capabilities: ["Creative brief and visual direction", "Campaign banner concepts", "Channel-specific asset variants", "Export and handover preparation"],
+    benefits: ["Consistent campaign presentation", "Clear review checkpoints", "Reusable agreed asset formats"],
+    deliverables: ["Approved artwork in contracted sizes", "Agreed export files", "Usage and handover notes"],
+    technologies: ["Vector artwork", "SVG", "Raster exports", "Brand guidelines"],
+    question: "Are editable files and stock licenses included?", answer: "Only where specified. The quote identifies editable source files, export formats, revision rounds and any external asset licenses before work begins.", image: "engineering",
+  },
+);
+
 export const stages = [
   [
     "Discovery",
@@ -702,6 +738,15 @@ export type SiteData = {
   adminSection?: string;
 };
 export const pages: Record<string, [string, string]> = {
+  "/cart": ["Your service selection", "Review services and request a written quote without creating an account."],
+  "/checkout": ["Guest checkout", "Request a quote or invoice. Online payment is pending provider activation."],
+  "/checkout/success": ["Check your request", "A return page is not proof of payment. Check your private request reference."],
+  "/checkout/cancel": ["Checkout cancelled", "No payment is confirmed by this page. Review your service selection or contact support."],
+  "/order-status": ["Private request status", "Use your reference and separate access key. No account registration is required."],
+  "/payments/sandbox": [
+    "Sandbox checkout preparation",
+    "RapidGateway sandbox integration is not enabled. No payment can be initiated on this page.",
+  ],
   "/newsletter/confirm": [
     "Confirm your newsletter subscription",
     "Confirm your email subscription using the private link sent to your inbox. No subscription is activated by visiting this page alone.",

@@ -1,0 +1,10 @@
+{
+  "status": "owner-review-required",
+  "publication": "Use authenticated Commercial Admin; each package must be explicitly approved and published. This file never publishes prices.",
+  "requiredPerService": ["service_slug", "title", "description", "features_json", "amount_minor or quote", "currency", "billing", "billing_interval if recurring", "delivery estimate and dependencies", "revisions", "tax treatment", "exclusions", "disclosures", "owner approval reference"],
+  "amount_minor": null,
+  "taxTreatment": null,
+  "deliveryCommitment": null,
+  "refundTermsApproval": null,
+  "ownerApprovalReference": null
+}

@@ -31,11 +31,8 @@ import { policySections } from "../shared/policies";
 import { SignatureProcess, SignatureWorkflow } from "./SignatureSystems";
 import { CareersPage } from "./CareersPage";
 import { NewsletterConfirm } from "./NewsletterConfirm";
-import {
-  Photography,
-  photographForContent,
-  photographForProject,
-} from "./Photography";
+import { Photography, photographForContent, photographForProject } from "./Photography";
+import { GuestCatalog, GuestCommercePage, ServicePurchase } from "./GuestCommerce";
 
 class ErrorBoundary extends Component<
   { children: ReactNode },
@@ -599,6 +596,7 @@ function ServicePage({ slug, data }: { slug: string; data: SiteData }) {
           </details>
         </div>
       </Section>
+      <ServicePurchase slug={slug} />
       <Section title="Connected expertise.">
         <div className="three-grid">
           {services
@@ -852,10 +850,12 @@ function Unsubscribe() {
 }
 function PublicPage({ data }: { data: SiteData }) {
   const path = data.path;
+  if (["/cart", "/checkout", "/checkout/success", "/checkout/cancel", "/order-status"].includes(path))
+    return <><Hero title={pages[path][0]} description={pages[path][1]} /><GuestCommercePage data={data} /></>;
   if (path === "/") return <PremiumHome data={data} />;
   if (path === "/pricing" || path.startsWith("/pricing/"))
     return (
-      <PackagePage slug={path.split("/")[2] || ""} records={data.pricing} />
+      <><PackagePage slug={path.split("/")[2] || ""} records={data.pricing} /><GuestCatalog /></>
     );
   if (path.startsWith("/services/"))
     return <ServicePage slug={path.split("/")[2]} data={data} />;

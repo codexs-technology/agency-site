@@ -1,3 +1,4 @@
+import { guestCommerce } from "./guest-commerce";
 import { Hono } from "hono";
 import { commerce } from "./commerce";
 import { paymentReadiness } from "./payments";
@@ -37,6 +38,10 @@ api.use(
     onError: (c) => c.json({ error: "Request too large" }, 413),
   }),
 );
+api.post("/payments/rapidgateway/webhook", (c) => {
+  c.header("Cache-Control", "no-store");
+  return c.json({ error: "RapidGateway webhook processing is not configured." }, 503);
+});
 api.use("*", async (c, next) => {
   c.header("Cache-Control", "no-store");
   if (!["GET", "HEAD"].includes(c.req.method)) {
@@ -141,6 +146,8 @@ api.use("/admin/*", async (c, next) => {
   c.set("session", session);
   await next();
 });
+api.route("/guest", guestCommerce);
+
 api.get("/admin/session", (c) =>
   c.json({
     email: c.get("session").email,

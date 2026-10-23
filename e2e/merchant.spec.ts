@@ -23,7 +23,7 @@ test("business contacts, policy navigation and mobile layouts", async ({
         .getByRole("link", { name: "support@codesboxs.com", exact: true }),
     ).toHaveAttribute("href", "mailto:support@codesboxs.com");
     await expect(page.locator("footer .social-links a")).toHaveCount(6);
-    await expect(page.locator('a[href*="google.com/maps"]')).toHaveCount(0);
+    await expect(page.locator("footer address")).toHaveText("Plot No. 1/1, Near Ghazi Overseas Employment Pakistan, Nursery, PECHS Block 6, Shahrah-e-Faisal, Karachi, Pakistan.");
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= window.innerWidth,

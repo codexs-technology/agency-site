@@ -34,6 +34,7 @@ const sections = [
   ["pricing", "Pricing packages", Layers],
   ["testimonials", "Testimonials", Users],
   ["orders", "Orders", Inbox],
+  ["invoice-requests", "Quote / invoice requests", Inbox],
   ["compliance", "Merchant readiness", Settings],
 ] as const;
 const contentEntities = ["blog", "portfolio", "services", "jobs"];
@@ -91,7 +92,13 @@ export function Admin({
   useEffect(() => {
     if (
       !session ||
-      ["pricing", "testimonials", "orders", "compliance"].includes(entity)
+      [
+        "pricing",
+        "testimonials",
+        "orders",
+        "invoice-requests",
+        "compliance",
+      ].includes(entity)
     )
       return;
     let current = true;
@@ -267,9 +274,13 @@ export function Admin({
             Loading or saving…
           </p>
         )}
-        {["pricing", "testimonials", "orders", "compliance"].includes(
-          entity,
-        ) ? (
+        {[
+          "pricing",
+          "testimonials",
+          "orders",
+          "invoice-requests",
+          "compliance",
+        ].includes(entity) ? (
           <CommercialAdmin
             key={entity}
             entity={entity}

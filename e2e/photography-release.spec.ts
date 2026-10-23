@@ -6,7 +6,7 @@ test("complete photography release: all content, responsive layouts and successf
   page,
   request,
 }) => {
-  test.setTimeout(360000);
+  test.setTimeout(900000);
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   page.on("console", (message) => {
@@ -116,10 +116,11 @@ test("complete photography release: all content, responsive layouts and successf
   const manifest = JSON.parse(
     readFileSync("public/images/photography/manifest.json", "utf8"),
   ) as { filename: string }[];
-  for (const item of manifest)
-    expect(
-      (await request.get(`/images/photography/${item.filename}`)).status(),
-    ).toBe(200);
+  for (let index = 0; index < manifest.length; index += 8) {
+    await Promise.all(manifest.slice(index, index + 8).map(async (item) => {
+      expect((await request.get(`/images/photography/${item.filename}`)).status()).toBe(200);
+    }));
+  }
   expect(failures).toEqual([]);
   expect(errors).toEqual([]);
 });

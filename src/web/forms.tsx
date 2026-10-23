@@ -71,7 +71,7 @@ export async function request(
           : "The request could not be completed. Please try again.",
       );
     const publicSubmission =
-      /^\/api\/(contact|consultations\/inquiry|projects\/inquiry|newsletter\/subscribe|jobs\/[^/]+\/apply)$/.test(
+      /^\/api\/(contact|consultations\/inquiry|projects\/inquiry|newsletter\/subscribe|guest\/requests|jobs\/[^/]+\/apply)$/.test(
         url,
       );
     if (
@@ -89,7 +89,7 @@ export async function request(
   } finally {
     if (
       typeof document !== "undefined" &&
-      /^\/api\/(contact|consultations\/inquiry|projects\/inquiry|newsletter\/subscribe|jobs\/[^/]+\/apply)$/.test(
+      /^\/api\/(contact|consultations\/inquiry|projects\/inquiry|newsletter\/subscribe|guest\/requests|jobs\/[^/]+\/apply)$/.test(
         url,
       )
     ) {

@@ -19,12 +19,9 @@ import { business, services, type SiteData } from "../shared/content";
 import { BusinessDetails } from "./BusinessDetails";
 import { Button, Section } from "./components";
 import { Newsletter } from "./forms";
-import { formatMinorAmount } from "../shared/pricing";
-import {
-  Photography,
-  photographForProject,
-  servicePhotography,
-} from "./Photography";
+import { Photography, photographForProject, servicePhotography } from "./Photography";
+import { ConvertedPrice } from "./ConvertedPrice";
+import { CurrencySelector } from "./DisplayCurrency";
 
 export const featuredServices = [
   [
@@ -281,9 +278,9 @@ export function PricingCards({
   records?: Record<string, unknown>[];
 }) {
   return (
-    <div className="premium-pricing-grid">
+    <><CurrencySelector /><div className="premium-pricing-grid">
       {packages.map((fallback, i) => {
-        const record = records.find((r) => r.slug === fallback.slug);
+        const record = records.find((r) => r.slug === fallback.slug && r.approved === 1 && r.status === "published");
         const p = record
           ? {
               ...fallback,
@@ -294,10 +291,7 @@ export function PricingCards({
           : fallback;
         const price =
           record && record.amount_minor !== null && record.billing !== "quote"
-            ? formatMinorAmount(
-                Number(record.amount_minor),
-                String(record.currency),
-              )
+            ? <ConvertedPrice record={record} />
             : p.engagement;
         return (
           <article
@@ -356,7 +350,7 @@ export function PricingCards({
           </article>
         );
       })}
-    </div>
+    </div></>
   );
 }
 
@@ -368,7 +362,7 @@ export function PackagePage({
   records?: Record<string, unknown>[];
 }) {
   const fallback = packages.find((item) => item.slug === slug);
-  const record = records.find((item) => item.slug === slug);
+  const record = records.find((item) => item.slug === slug && item.approved === 1 && item.status === "published");
   const p =
     fallback && record
       ? {
@@ -394,17 +388,14 @@ export function PackagePage({
             ))}
           </ul>
           {records
-            .filter((r) => r.slug === slug)
+            .filter((r) => r.slug === slug && r.approved === 1 && r.status === "published")
             .map((r) => (
               <div key={String(r.id)} className="panel">
                 <h2>Approved package details</h2>
                 <p>
                   Price:{" "}
                   {r.amount_minor !== null && r.billing !== "quote"
-                    ? formatMinorAmount(
-                        Number(r.amount_minor),
-                        String(r.currency),
-                      )
+                    ? <ConvertedPrice record={r} />
                     : p.engagement}{" "}
                   · {String(r.billing).replaceAll("_", " ")}
                 </p>

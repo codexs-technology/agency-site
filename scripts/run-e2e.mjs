@@ -16,7 +16,7 @@ try {
   run('node scripts/prepare-local-tests.mjs');
   run(`npx wrangler d1 migrations apply codesboxs --local --persist-to ${directory}`);
   const files = process.argv.slice(2);
-  if (files.some(file => !/^e2e\/[a-z-]+\.spec\.ts$/.test(file))) throw new Error('Only explicit e2e spec paths are accepted');
+  if (files.some(file => !/^e2e\/[a-z0-9-]+\.spec\.ts$/.test(file))) throw new Error('Only explicit e2e spec paths are accepted');
   run(`npx playwright test ${files.join(' ')}`, { E2E_PERSIST_DIR: directory });
 } catch (error) {
   console.error(error.message);

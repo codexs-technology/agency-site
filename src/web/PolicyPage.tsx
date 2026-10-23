@@ -21,7 +21,7 @@ export function PolicyPage({ path }: { path: string }) {
         <div className="notice">
           <strong>OWNER / LEGAL REVIEW REQUIRED.</strong> Review draft, not an
           approved commercial policy or legal advice. Online payments remain
-          disabled. Address verification and the unresolved commercial terms
+          disabled. The address is owner-confirmed, not independently document-verified. Unresolved commercial terms
           must be completed before production publication or merchant
           submission.
         </div>
