@@ -20,6 +20,11 @@ import { BusinessDetails } from "./BusinessDetails";
 import { Button, Section } from "./components";
 import { Newsletter } from "./forms";
 import { formatMinorAmount } from "../shared/pricing";
+import {
+  Photography,
+  photographForProject,
+  servicePhotography,
+} from "./Photography";
 
 export const featuredServices = [
   [
@@ -203,31 +208,17 @@ export function DeviceStudio({
 export function PremiumServiceGrid() {
   return (
     <div className="premium-service-grid">
-      {featuredServices.map(([slug, title, copy, Icon], i) => (
+      {featuredServices.map(([slug, title, copy], i) => (
         <a
           className={`premium-service service-art-${i}`}
           key={slug}
           href={`/services/${slug}`}
         >
           <div className="service-visual">
-            <div className="mini-window">
-              <div className="mini-toolbar">
-                <i />
-                <i />
-                <i />
-              </div>
-              <div className="mini-content">
-                <Icon size={42} />
-                <div className="mini-bars">
-                  <i />
-                  <i />
-                  <i />
-                </div>
-              </div>
-            </div>
-            <span className="service-icon-float">
-              <Icon size={28} />
-            </span>
+            <Photography
+              photo={servicePhotography[slug]}
+              sizes="(max-width: 600px) 45vw, (max-width: 1000px) 30vw, 250px"
+            />
           </div>
           <h3>{title}</h3>
           <p>{copy}</p>
@@ -747,13 +738,30 @@ export function PremiumHome({ data }: { data: SiteData }) {
         </div>
         {data.projects.length ? (
           <div className="premium-project-grid">
-            {data.projects.slice(0, 6).map((p, i) => (
+            {data.projects.slice(0, 6).map((p) => (
               <a
                 key={p.id}
                 href={`/portfolio/${p.slug}`}
                 className="premium-project"
               >
-                <DeviceStudio compact variant={i + 1} />
+                <div className="project-photo-frame">
+                  {photographForProject(p) ? (
+                    <Photography
+                      photo={photographForProject(p)!}
+                      sizes="(max-width: 700px) 92vw, (max-width: 1000px) 45vw, 430px"
+                    />
+                  ) : (
+                    <img
+                      className="editorial-photo"
+                      src={p.image}
+                      width={960}
+                      height={640}
+                      alt={`${p.title} project visual`}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  )}
+                </div>
                 <div>
                   <small>
                     {p.is_concept
