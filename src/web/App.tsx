@@ -27,12 +27,26 @@ import {
 } from "./PremiumHome";
 import { BusinessDetails } from "./BusinessDetails";
 import { PolicyPage } from "./PolicyPage";
+import { GDPRCompliance } from "./GDPRCompliance";
+import { PaymentPolicy } from "./PaymentPolicy";
+import { CancellationPolicy } from "./CancellationPolicy";
+import { ChargebackDisputePolicy } from "./ChargebackDisputePolicy";
 import { policySections } from "../shared/policies";
 import { SignatureProcess, SignatureWorkflow } from "./SignatureSystems";
 import { CareersPage } from "./CareersPage";
 import { NewsletterConfirm } from "./NewsletterConfirm";
+<<<<<<< HEAD
 import { Photography, photographForContent, photographForProject } from "./Photography";
 import { GuestCatalog, GuestCommercePage, ServicePurchase } from "./GuestCommerce";
+=======
+import { SandboxCheckout } from "./CheckoutSandbox";
+import { GuestCatalog, GuestCommercePage, ServicePurchase } from "./GuestCommerce";
+import {
+  Photography,
+  photographForContent,
+  photographForProject,
+} from "./Photography";
+>>>>>>> a82802f4 (technical audit and repair: premium upgrade and compliance documentation)
 
 class ErrorBoundary extends Component<
   { children: ReactNode },
@@ -852,6 +866,10 @@ function PublicPage({ data }: { data: SiteData }) {
   const path = data.path;
   if (["/cart", "/checkout", "/checkout/success", "/checkout/cancel", "/order-status"].includes(path))
     return <><Hero title={pages[path][0]} description={pages[path][1]} /><GuestCommercePage data={data} /></>;
+<<<<<<< HEAD
+=======
+  if (path === "/payments/sandbox") return <SandboxCheckout />;
+>>>>>>> a82802f4 (technical audit and repair: premium upgrade and compliance documentation)
   if (path === "/") return <PremiumHome data={data} />;
   if (path === "/pricing" || path.startsWith("/pricing/"))
     return (
