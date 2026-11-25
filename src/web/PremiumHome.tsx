@@ -19,7 +19,14 @@ import { business, services, type SiteData } from "../shared/content";
 import { BusinessDetails } from "./BusinessDetails";
 import { Button, Section } from "./components";
 import { Newsletter } from "./forms";
+
+/** Currency context to share currency state across components */
+export const CurrencyContext = React.createContext({
+  currency: "USD",
+  setCurrency: (currency: string) => void,
+});
 import { formatMinorAmount } from "../shared/pricing";
+import { DisplayCurrencyDropdown } from "./DisplayCurrency";
 
 export const featuredServices = [
   [
@@ -286,9 +293,42 @@ const packages = [
 ];
 export function PricingCards({
   records = [],
+  currency = "USD",
 }: {
   records?: Record<string, unknown>[];
+  currency: string;
 }) {
+  // Base prices in dollars for each package
+  const basePrices = {
+    starter: 499,      // Project-Based Development
+    business: 1499,    // Milestone-Based Development
+    enterprise: 1999,  // Tailored AI Solutions
+  };
+
+  /** Format a number as currency with the given currency code */
+  function formatAmount(amount: number, currency: string): string {
+    const symbols: Record<string, string> = {
+      USD: "$",
+      EUR: "€",
+      GBP: "£",
+      PKR: "Rs.",
+      AED: "د.ّ",
+      CAD: "C$",
+      AUD: "A$",
+    };
+    const symbol = symbols[currency] || "$";
+    // Use Intl.NumberFormat for number formatting, then prepend selected symbol
+    const numericFormat = new Intl.NumberFormat("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+    return `${symbol}${numericFormat.format(amount)}`;
+  };
+    const symbol = symbols[currency] || "$";
+    // Use Intl.NumberFormat for proper locale-aware formatting,
+    return formatted.replace(/\$/g, symbol);
+  }
+
   return (
     <div className="premium-pricing-grid">
       {packages.map((fallback, i) => {
@@ -297,17 +337,17 @@ export function PricingCards({
           ? {
               ...fallback,
               name: String(record.title),
-              copy: String(record.description),
-              features: JSON.parse(String(record.features_json)) as string[],
-            }
-          : fallback;
-        const price =
-          record && record.amount_minor !== null && record.billing !== "quote"
-            ? formatMinorAmount(
-                Number(record.amount_minor),
-                String(record.currency),
-              )
-            : p.engagement;
+
+        // Determine the price: use record amount if available, otherwise base price
+        let amountInUSD: number;
+        if (record && record.amount_minor !== null && record.billing !== "quote") {
+          amountInUSD = Number(record.amount_minor) / 100;
+        } else {
+          amountInUSD = basePrices[fallback.slug] || 0;
+        }
+
+        const priceDisplay = formatAmount(amountInUSD, currency);
+
         return (
           <article
             className={`premium-price ${i === 1 ? "price-featured" : ""}`}
@@ -317,10 +357,10 @@ export function PricingCards({
               <Layers size={28} />
               <div>
                 <h3>{p.name}</h3>
+                <p className="price-subtitle">{priceDisplay}</p>
                 <p>{p.copy}</p>
               </div>
             </div>
-            <strong className="package-price">{price}</strong>
             <p className="price-note">
               {record
                 ? `${record.billing === "recurring" ? "Recurring engagement — billing interval agreed in quote." : record.billing === "one_time" ? "One-time engagement." : "Scope and fees agreed before work begins."} ${String(record.disclosures)}`

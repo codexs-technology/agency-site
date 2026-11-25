@@ -1052,8 +1052,100 @@ textarea:focus-visible {
 }
 .premium-pricing-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 15px;
+  width: 100%;
+}
+
+/* Desktop: 3 columns, Tablet: 2 columns, Mobile: 1 column */
+@media (min-width: 1200px) {
+  .premium-pricing-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  .premium-pricing-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .premium-pricing-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Desktop: 3 columns, Tablet: 2 columns, Mobile: 1 column */
+@media (min-width: 1200px) {
+  .premium-pricing-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  .premium-pricing-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .premium-pricing-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.premium-price {
+  border: 1px solid #8a6d4c80;
+  border-radius: 10px;
+  padding: 24px 18px;
+  background: linear-gradient(140deg, #25221e90, #11161b);
+  position: relative;
+  transition: transform 0.25s;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.premium-price:hover {
+  transform: translateY(-4px);
+}
+
+.premium-price.price-featured {
+  border-color: #ffbd69;
+  box-shadow: 0 0 24px #ffae451c,
+    inset 0 2px 18px #ffae4520;
+  background: radial-gradient(ellipse at 50% 0, #9a5d2290, #14181d 75%);
+}
+
+.package-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #ffffff1a;
+}
+
+.package-label > svg {
+  color: #ffcf8b;
+  width: 24px;
+}
+
+.package-label h3 {
+  font-size: 14px;
+  margin: 0 0 4px;
+}
+
+.package-label p {
+  font-size: 9px;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.package-price {
+  display: block;
+  font-size: clamp(18px, 1.7vw, 27px);
+  letter-spacing: -0.04em;
+  margin: 22px 0 4px;
 }
 .premium-price {
   border: 1px solid #8a6d4c80;
@@ -1104,34 +1196,6 @@ textarea:focus-visible {
   line-height: 1.5;
   color: #a8adb4;
 }
-.premium-price ul {
-  padding: 0;
-  margin: 22px 0;
-  list-style: none;
-  display: grid;
-  gap: 12px;
-  min-height: 145px;
-}
-.premium-price li {
-  display: flex;
-  align-items: flex-start;
-  gap: 6px;
-  font-size: 10px;
-  color: #dbdce0;
-  line-height: 1.4;
-}
-.premium-price li svg {
-  color: #f6c477;
-  margin-top: 1px;
-  width: 12px;
-}
-.premium-price .button {
-  width: 100%;
-  font-size: 10px;
-  padding: 10px;
-  min-height: 38px;
-}
-.premium-closing {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 70px;
@@ -1288,8 +1352,7 @@ textarea:focus-visible {
   margin-block: 30px;
 }
 .package-detail .premium-pricing-grid {
-  max-width: 1050px;
-  margin-top: 30px;
+  /* No max-width constraint - grid takes full width */
 }
 .page-hero h1 {
   font-size: clamp(36px, 5vw, 72px);

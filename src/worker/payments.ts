@@ -34,8 +34,10 @@ export interface PaymentProvider {
 export function paymentReadiness() {
   return {
     enabled: false as const,
-    provider: null,
+    provider: "paymegate",
     reason:
-      "No approved payment provider adapter or credentials configured. Checkout, receipts, refunds and reconciliation are unavailable.",
+      "PayMeGate provider is configured but not operational. " +
+      "Official API documentation and credentials are required. " +
+      "Contact administration to complete PayMeGate integration.",
   };
 }
