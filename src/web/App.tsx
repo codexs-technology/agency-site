@@ -27,10 +27,21 @@ import {
 } from "./PremiumHome";
 import { BusinessDetails } from "./BusinessDetails";
 import { PolicyPage } from "./PolicyPage";
+import { GDPRCompliance } from "./GDPRCompliance";
+import { PaymentPolicy } from "./PaymentPolicy";
+import { CancellationPolicy } from "./CancellationPolicy";
+import { ChargebackDisputePolicy } from "./ChargebackDisputePolicy";
 import { policySections } from "../shared/policies";
 import { SignatureProcess, SignatureWorkflow } from "./SignatureSystems";
 import { CareersPage } from "./CareersPage";
 import { NewsletterConfirm } from "./NewsletterConfirm";
+import { SandboxCheckout } from "./CheckoutSandbox";
+import { GuestCatalog, GuestCommercePage, ServicePurchase } from "./GuestCommerce";
+import {
+  Photography,
+  photographForContent,
+  photographForProject,
+} from "./Photography";
 
 class ErrorBoundary extends Component<
   { children: ReactNode },
@@ -380,13 +391,20 @@ function Collection({
       <div className="project-grid">
         {visible.map((p) => (
           <a key={p.id} className="project-card" href={`/${type}/${p.slug}`}>
-            <img
-              src={p.image || "/images/dashboard.svg"}
-              width={800}
-              height={600}
-              loading="lazy"
-              alt={`${p.title} ${type === "portfolio" ? "original concept illustration" : "editorial illustration"}`}
-            />
+            {photographForContent(p, type) ? (
+              <Photography
+                photo={photographForContent(p, type)!}
+                sizes="(max-width: 640px) 92vw, (max-width: 1000px) 45vw, 400px"
+              />
+            ) : (
+              <img
+                src={p.image || "/images/dashboard.svg"}
+                width={800}
+                height={600}
+                loading="lazy"
+                alt={`${p.title} ${type === "portfolio" ? "original concept illustration" : "editorial illustration"}`}
+              />
+            )}
             <div>
               <span className="eyebrow">
                 {type === "portfolio"
@@ -587,6 +605,7 @@ function ServicePage({ slug, data }: { slug: string; data: SiteData }) {
           </details>
         </div>
       </Section>
+      <ServicePurchase slug={slug} />
       <Section title="Connected expertise.">
         <div className="three-grid">
           {services
@@ -634,13 +653,28 @@ function Detail({
         }
       />
       <Section>
-        <img
-          className="detail-image"
-          src={item.image}
-          width={800}
-          height={600}
-          alt={`${item.title} original illustration`}
-        />
+        {photographForContent(item, type) ? (
+          <Photography
+            className="detail-image"
+            photo={photographForContent(item, type)!}
+            sizes="(max-width: 900px) 92vw, 900px"
+            eager
+          />
+        ) : (
+          <img
+            className="detail-image"
+            src={item.image}
+            width={800}
+            height={600}
+            alt={`${item.title} original illustration`}
+          />
+        )}
+        {type === "portfolio" && photographForProject(item) && (
+          <p className="muted">
+            Illustrative stock photography, not a screenshot of this concept or
+            evidence of delivered client work.
+          </p>
+        )}
         {type === "blog" && (
           <p className="muted">
             {item.author} · {item.published_at?.slice(0, 10)} ·{" "}
@@ -708,16 +742,34 @@ function Detail({
               <div className="two-grid" aria-label="Concept project gallery">
                 {item.gallery.map((image, i) => (
                   <figure key={`${image.url}-${i}`}>
-                    <img
-                      className="art"
-                      src={image.url}
-                      alt={image.alt}
-                      width={800}
-                      height={600}
-                      loading="lazy"
-                      decoding="async"
-                    />
-                    <figcaption>{image.alt}</figcaption>
+                    {photographForProject(item) &&
+                    /^\/images\/(?:concepts\/[^/]+|dashboard|ai|mobile|engineering|cloud)\.svg$/.test(
+                      image.url,
+                    ) ? (
+                      <Photography
+                        photo={photographForProject(item)!}
+                        className="art"
+                        sizes="(max-width: 640px) 92vw, 45vw"
+                      />
+                    ) : (
+                      <img
+                        className="art"
+                        src={image.url}
+                        alt={image.alt}
+                        width={800}
+                        height={600}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    )}
+                    <figcaption>
+                      {photographForProject(item) &&
+                      /^\/images\/(?:concepts\/[^/]+|dashboard|ai|mobile|engineering|cloud)\.svg$/.test(
+                        image.url,
+                      )
+                        ? "Illustrative stock photography; not a screenshot or evidence of delivered client work."
+                        : image.alt}
+                    </figcaption>
                   </figure>
                 ))}
               </div>
@@ -807,10 +859,13 @@ function Unsubscribe() {
 }
 function PublicPage({ data }: { data: SiteData }) {
   const path = data.path;
+  if (["/cart", "/checkout", "/checkout/success", "/checkout/cancel", "/order-status"].includes(path))
+    return <><Hero title={pages[path][0]} description={pages[path][1]} /><GuestCommercePage data={data} /></>;
+  if (path === "/payments/sandbox") return <SandboxCheckout />;
   if (path === "/") return <PremiumHome data={data} />;
   if (path === "/pricing" || path.startsWith("/pricing/"))
     return (
-      <PackagePage slug={path.split("/")[2] || ""} records={data.pricing} />
+      <><PackagePage slug={path.split("/")[2] || ""} records={data.pricing} /><GuestCatalog /></>
     );
   if (path.startsWith("/services/"))
     return <ServicePage slug={path.split("/")[2]} data={data} />;

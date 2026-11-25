@@ -13,7 +13,7 @@ export type Service = {
   image: string;
 };
 export const business = {
-  name: "CODES BOXS (SMC-PRIVATE) LIMITED",
+  name: "CodesBoxs SMC Pvt Ltd",
   brand: "CodesBoxs",
   email: "codexstechnology@gmail.com",
   supportEmail: "support@codesboxs.com",
@@ -63,6 +63,14 @@ export const services: Service[] = [
     answer:
       "Yes. We start with a technical and UX review, then agree which parts to retain, improve or replace. A complete rebuild is not always necessary.",
     image: "engineering",
+    faqs: [
+      { q: "How do we start a project?", a: "Send a project inquiry or book a consultation. We will discuss your goals, constraints and existing systems before proposing a scope and next steps." },
+      { q: "Do you work with international businesses?", a: "Our collaboration approach supports remote discovery, documented decisions and milestone reviews. Communication windows and delivery arrangements are agreed for each project." },
+      { q: "How much does a project cost?", a: "Pricing depends on scope, integrations, complexity and engagement model. We do not publish a guaranteed price before understanding those factors." },
+      { q: "How long will development take?", a: "A timeline is estimated after discovery. Dependencies, approval turnaround and changes to scope can affect delivery; milestones should remain visible throughout the engagement." },
+      { q: "Can you work with our existing codebase?", a: "Yes. A technical review helps identify what can be preserved and where changes are needed. We do not assume that a rewrite is the right answer." },
+      { q: "Who owns the source code?", a: "Ownership, licenses and handover terms are defined in the project agreement. Clarify these terms before work begins." },
+    ],
   },
   {
     slug: "mobile-app-development",
@@ -96,6 +104,14 @@ export const services: Service[] = [
     answer:
       "Often, but not always. We assess hardware integrations, animation complexity and platform requirements before recommending an approach.",
     image: "mobile",
+    faqs: [
+      { q: "Do you work with international businesses?", a: "Our collaboration approach supports remote discovery, documented decisions and milestone reviews. Communication windows and delivery arrangements are agreed for each project." },
+      { q: "How much does a project cost?", a: "Pricing depends on scope, integrations, complexity and engagement model. We do not publish a guaranteed price before understanding those factors." },
+      { q: "How long will development take?", a: "A timeline is estimated after discovery. Dependencies, approval turnaround and changes to scope can affect delivery; milestones should remain visible throughout the engagement." },
+      { q: "Can you work with our existing codebase?", a: "Yes. A technical review helps identify what can be preserved and where changes are needed. We do not assume that a rewrite is the right answer." },
+      { q: "What platforms do you target?", a: "iOS, Android, or cross-platform solutions using React Native or Flutter, depending on your requirements and budget." },
+      { q: "Do you publish apps to App Store and Google Play?", a: "Yes. We handle the submission process, including review guidelines, metadata, and ongoing maintenance for both stores." },
+    ],
   },
   {
     slug: "custom-software",
@@ -126,6 +142,14 @@ export const services: Service[] = [
     answer:
       "Discovery identifies the smallest valuable workflow. We prioritize it, test it with users and expand only when evidence supports the next investment.",
     image: "engineering",
+    faqs: [
+      { q: "Do you work with existing systems?", a: "Yes. A technical review helps identify what can be preserved and where changes are needed. We do not assume that a rewrite is the right answer." },
+      { q: "How much does a project cost?", a: "Pricing depends on scope, integrations, complexity and engagement model. We do not publish a guaranteed price before understanding those factors." },
+      { q: "How long will development take?", a: "A timeline is estimated after discovery. Dependencies, approval turnaround and changes to scope can affect delivery; milestones should remain visible throughout the engagement." },
+      { q: "What technologies do you use?", a: "We compare your integration requirements, team experience and maintenance considerations to recommend the right tools for your situation." },
+      { q: "Do you provide ongoing support?", a: "Support can be scoped separately or as part of a partnership. Coverage, response expectations and maintenance responsibilities must be agreed rather than assumed." },
+      { q: "Can you help with legacy systems?", a: "Yes. A technical review helps identify preservation opportunities and where changes are needed. We do not assume that a rewrite is the right answer." },
+    ],
   },
   {
     slug: "ai-development",
@@ -156,6 +180,14 @@ export const services: Service[] = [
     answer:
       "No. We design evaluations, source attribution, fallback behavior and human review rather than presenting model output as infallible.",
     image: "ai",
+    faqs: [
+      { q: "How do you handle AI reliability?", a: "We evaluate defined tasks, design source attribution and fallbacks, and include human review where appropriate. AI output is not treated as inherently correct." },
+      { q: "Who owns the source code?", a: "Ownership, licenses and handover terms are defined in the project agreement. Clarify these terms before work begins." },
+      { q: "Can you work with our existing codebase?", a: "Yes. A technical review helps identify what can be preserved and where changes are needed. We do not assume that a rewrite is the right answer." },
+      { q: "What types of AI integration do you offer?", a: "We offer conversational AI, workflow automation, predictive analytics and custom model development with human review boundaries." },
+      { q: "How do you ensure data privacy?", a: "We follow strict data handling protocols and ensure AI models don't train on customer data without explicit consent." },
+      { q: "What happens when AI makes a mistake?", a: "We design source attribution and fallbacks, and include human review where appropriate to catch and correct errors." },
+    ],
   },
   {
     slug: "ai-agents-automation",
@@ -188,6 +220,14 @@ export const services: Service[] = [
     answer:
       "Only for actions explicitly approved in the project scope. High-impact actions should require human confirmation and have a rollback strategy.",
     image: "ai",
+    faqs: [
+      { q: "Can an agent act without approval?", a: "Only for actions explicitly approved in the project scope. High-impact actions should require human confirmation and have a rollback strategy." },
+      { q: "How are agents different from AI development?", a: "Agents operate with bounded tasks, evaluation boundaries and human review where appropriate. AI development may involve custom model building and integration." },
+      { q: "What types of business processes can be automated?", a: "Lead qualification workflows, AI voice agents and conversation flows, customer support chatbots with human escalation, and CRM or API integrations with scoped permissions." },
+      { q: "How do you ensure agent reliability?", a: "We design source attribution and fallbacks, and include human review where appropriate. Agent output is not treated as inherently correct." },
+      { q: "Can agents work with our existing systems?", a: "Yes. A technical review helps identify integration points and where changes are needed. We do not assume that a full rewrite is the right answer." },
+      { q: "What happens when an agent makes a mistake?", a: "We design source attribution and fallbacks, and include human review where appropriate to catch and correct errors." },
+    ],
   },
   {
     slug: "saas-development",
@@ -218,6 +258,14 @@ export const services: Service[] = [
     answer:
       "The smallest complete journey that solves the target customer’s core problem. Billing, reliability and support should be scoped intentionally, not added as afterthoughts.",
     image: "dashboard",
+    faqs: [
+      { q: "What belongs in the first version?", a: "The smallest complete journey that solves the target customer's core problem. Billing, reliability and support should be scoped intentionally, not added as afterthoughts." },
+      { q: "How is SaaS different from custom software?", a: "SaaS involves multi-tenant architecture, subscription billing, and ongoing maintenance with tenant isolation and permissions. Custom software is typically scope-based." },
+      { q: "How is pricing handled for SaaS?", a: "SaaS pricing is typically subscription-based (monthly/yearly) with tiered plans. Unlike project-based pricing for custom work, SaaS has recurring revenue and requires ongoing feature delivery." },
+      { q: "What is the typical implementation timeline?", a: "A focused first release validates a problem before the roadmap grows. Typical timelines range from 3-6 months for an MVP, depending on complexity and integrations." },
+      { q: "Do you help with tenant onboarding?", a: "Yes. We plan tenant boundaries, billing integration, support tools and product analytics alongside the core experience. Early releases validate a focused problem before the roadmap grows." },
+      { q: "What happens after launch?", a: "Operational tools for your product team, subscription management, and ongoing feature delivery based on validated learning and roadmap priorities." },
+    ],
   },
   {
     slug: "ecommerce-development",
@@ -283,6 +331,14 @@ export const services: Service[] = [
     answer:
       "Yes. A standalone discovery and design engagement can produce tested flows and a handoff package for your own engineering team.",
     image: "mobile",
+    faqs: [
+      { q: "Can design work happen before development?", a: "Yes. A standalone discovery and design engagement can produce tested flows and a handoff package for your own engineering team." },
+      { q: "What is the design process?", a: "We translate user needs and business constraints into usable product experiences. Mapping tasks, testing prototypes and specifying accessible states helps engineering teams build the right thing with fewer ambiguous handoffs." },
+      { q: "How do you ensure accessibility?", a: "We map tasks, test prototypes and specify accessible states to help engineering teams build the right thing with fewer ambiguous handoffs." },
+      { q: "What tools do you use for design systems?", a: "We use design systems to create consistent reusable components and earlier feedback before expensive implementation." },
+      { q: "How involved will my team be?", a: "Research-led design involves user needs and business constraints. We collaborate on task mapping, prototype testing and accessible state specification." },
+      { q: "Can designs be handed off to development without gaps?", a: "Yes. We specify accessible states and component specifications to help engineering teams build the right thing with fewer ambiguous handoffs." },
+    ],
   },
   {
     slug: "cloud-devops",
@@ -313,6 +369,9 @@ export const services: Service[] = [
     answer:
       "The answer depends on workload, data residency, existing expertise and cost. We compare appropriate options instead of defaulting every project to one vendor.",
     image: "cloud",
+    faqs: [
+      "Which cloud provider should we use?", a: "The answer depends on workload, data residency, existing expertise and cost. We compare appropriate options instead of defaulting every project to one vendor.\" },\n    { q: "How are pipelines monitored?", a: "We design monitoring and incident runbooks to provide better visibility into failures and repeatable release processes." },\n    { q: "What backup and recovery strategies are in place?", a: "We design backup and recovery planning as part of the infrastructure, matched to your workload and availability requirements." },\n    { q: "Can infrastructure be reproduced environments?", a: "Yes. We design repeatable deployment pipelines and infrastructure choices matched to your workload." },\n    { q: "How are costs optimized?", a: "Infrastructure choices are matched to your workload, avoiding over-provisioning while maintaining reliability." },\n    { q: "What happens during incidents?", a: "We have runbooks and operational procedures for incident response and recovery." },
+    ],
   },
   {
     slug: "api-integrations",
@@ -822,4 +881,9 @@ export const pages: Record<string, [string, string]> = {
     "This page is off the map.",
     "The page may have moved or the address may be incorrect. Return home or explore our services.",
   ],
+
+  "/gdpr-compliance": ["GDPR Compliance","General Data Protection Regulation information, data subject rights and controller responsibilities. Review draft."],
+  "/cancellation-policy": ["Cancellation Policy","How to cancel services, retainers and prepaid periods. Cross-references the Refund Policy."],
+  "/payment-policy": ["Payment Policy","Accepted payment methods, currencies, checkout process and gateway information."],
+  "/chargeback-dispute-policy": ["Chargeback & Dispute Policy","Customer dispute process, evidence requirements and cooperation with payment providers."],
 };
