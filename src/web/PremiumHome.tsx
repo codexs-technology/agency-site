@@ -302,16 +302,25 @@ export function PricingCards({
                 features: JSON.parse(String(record.features_json)) as string[],
               }
             : fallback;
-          const price =
+          const usdMinor =
             record &&
             record.amount_minor !== null &&
-            record.billing !== "quote" ? (
-              <ConvertedPrice record={record} />
-            ) : packageStartingPrices[p.slug] ? (
+            record.billing !== "quote" &&
+            record.currency === "USD"
+              ? Number(record.amount_minor)
+              : record
+                ? null
+                : (packageStartingPrices[p.slug] ?? null);
+          const price =
+            usdMinor !== null ? (
               <>
                 <small className="price-from">Starting from</small>{" "}
-                <StartingPrice usdMinor={packageStartingPrices[p.slug]} />
+                <StartingPrice usdMinor={usdMinor} />
               </>
+            ) : record &&
+              record.amount_minor !== null &&
+              record.billing !== "quote" ? (
+              <ConvertedPrice record={record} />
             ) : (
               p.engagement
             );

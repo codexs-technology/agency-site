@@ -221,7 +221,17 @@ export function GuestCatalog() {
               <a href={`/services/${s.slug}`}>{s.title}</a>
             </h3>
             <p>{s.summary}</p>
-            <p>Custom quotation · timeline confirmed after discovery.</p>
+            <p>
+              {serviceStartingPrice(s.slug) !== null ? (
+                <>
+                  Starting from{" "}
+                  <StartingPrice usdMinor={serviceStartingPrice(s.slug)!} />
+                </>
+              ) : (
+                "Custom quotation"
+              )}{" "}
+              · final price confirmed in your written quote.
+            </p>
             <button
               className="button button-secondary"
               onClick={() => add(s.slug)}
