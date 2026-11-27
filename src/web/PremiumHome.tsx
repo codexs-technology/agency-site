@@ -1,3 +1,5 @@
+import { packageStartingPrices } from "../shared/service-pricing";
+import { formatMinorAmount } from "../shared/pricing";
 import {
   ArrowRight,
   Check,
@@ -305,6 +307,11 @@ export function PricingCards({
             record.amount_minor !== null &&
             record.billing !== "quote" ? (
               <ConvertedPrice record={record} />
+            ) : packageStartingPrices[p.slug] ? (
+              <>
+                <small className="price-from">Starting from</small>{" "}
+                {formatMinorAmount(packageStartingPrices[p.slug], "USD")}
+              </>
             ) : (
               p.engagement
             );
@@ -324,7 +331,7 @@ export function PricingCards({
               <p className="price-note">
                 {record
                   ? `${record.billing === "recurring" ? "Recurring engagement — billing interval agreed in quote." : record.billing === "one_time" ? "One-time engagement." : "Scope and fees agreed before work begins."} ${String(record.disclosures)}`
-                  : "Engagement model, not a price. Final fees are agreed in a written proposal."}
+                  : `${p.engagement}. Starting price in USD; the final price for your scope is confirmed in a written quote before payment.`}
               </p>
               <ul>
                 {p.features.map((f) => (
@@ -453,8 +460,8 @@ export function PackagePage({
       ) : (
         <>
           <p>
-            Choose a starting point. No online payment is collected; all
-            engagements require an approved written scope and quote.
+            Choose a starting point. Prices are shown in USD; the final price
+            for your scope is confirmed in a written quote before payment.
           </p>
           <div>
             <h2 className="pricing-options-title">Choose your project focus</h2>
@@ -819,8 +826,8 @@ export function PremiumHome({ data }: { data: SiteData }) {
             </p>
             <Button href="/start-project">Request a Project Proposal</Button>
             <p className="pricing-disclosure">
-              Package outlines are subject to an agreed scope. No unapproved
-              fixed prices or live checkout.
+              Prices shown are starting prices in USD. The final price for your
+              scope is confirmed in a written quote before any payment.
             </p>
           </div>
           <PricingCards records={data.pricing} />

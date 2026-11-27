@@ -17,3 +17,34 @@ export const servicePricing = Object.fromEntries(
     },
   ]),
 );
+
+/** Owner-approved starting prices in USD minor units (approved 2026-11-28). */
+export const packageStartingPrices: Record<string, number> = {
+  starter: 49900,
+  business: 149900,
+  enterprise: 199900,
+};
+const serviceTier: Record<string, keyof typeof packageStartingPrices> = {
+  "web-development": "starter",
+  "ui-ux-design": "starter",
+  "digital-marketing": "starter",
+  "branding-logo-design": "starter",
+  seo: "starter",
+  "banner-graphic-design": "starter",
+  "mobile-app-development": "business",
+  "custom-software": "business",
+  "saas-development": "business",
+  "ecommerce-development": "business",
+  "cloud-devops": "business",
+  "api-integrations": "business",
+  "erp-crm": "business",
+  cybersecurity: "business",
+  "cloud-api-integration": "business",
+  "ai-development": "enterprise",
+  "ai-agents-automation": "enterprise",
+  "ai-chatbot-development": "enterprise",
+};
+export function serviceStartingPrice(slug: string): number | null {
+  const tier = serviceTier[slug];
+  return tier ? packageStartingPrices[tier] : null;
+}

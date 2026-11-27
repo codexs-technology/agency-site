@@ -10,7 +10,10 @@ import { formatMinorAmount } from "../shared/pricing";
 import { Section, Turnstile } from "./components";
 import { request } from "./forms";
 import { CurrencySelector, useDisplayCurrency } from "./DisplayCurrency";
-import { servicePricing } from "../shared/service-pricing";
+import {
+  servicePricing,
+  serviceStartingPrice,
+} from "../shared/service-pricing";
 
 type Package = {
   id: string;
@@ -61,10 +64,19 @@ export function ServicePurchase({ slug }: { slug: string }) {
     <Section title="Scope, pricing and delivery">
       <div className="panel">
         <CurrencySelector />
+        {serviceStartingPrice(slug) !== null && (
+          <p className="service-price">
+            <strong>
+              Starting from{" "}
+              {formatMinorAmount(serviceStartingPrice(slug)!, "USD")}
+            </strong>
+          </p>
+        )}
         <p>
-          Custom quotation. Fees, delivery estimates, revision limits, taxes and
-          third-party costs are confirmed in your written agreement. No fixed
-          price has been approved for this service by this page alone.
+          The final price for your scope, delivery estimate and revision rounds
+          are confirmed in a written quote before any payment. Taxes and
+          third-party costs (such as domains, hosting or licences) are itemized
+          separately.
         </p>
         <p>Delivery estimate: {terms?.delivery}</p>
         <h3>Proposed deliverables for scope review</h3>

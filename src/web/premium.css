@@ -2087,3 +2087,17 @@ textarea:focus-visible {
     translate: none;
   }
 }
+
+.package-price .price-from {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #a8adb4;
+  margin-bottom: 6px;
+}
+.service-price strong {
+  font-size: 22px;
+  color: #ffbd69;
+}
