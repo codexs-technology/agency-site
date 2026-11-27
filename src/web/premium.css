@@ -1095,7 +1095,7 @@ textarea:focus-visible {
 .premium-pricing-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 15px;
+  gap: 28px;
 }
 .premium-price {
   border: 1px solid #8a6d4c80;
