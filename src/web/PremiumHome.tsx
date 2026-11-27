@@ -888,7 +888,11 @@ export function PremiumFooter({ data }: { data: SiteData }) {
     Legal: [
       ["Terms & Conditions", "/terms-of-service"],
       ["Privacy Policy", "/privacy-policy"],
-      ["Refund & Cancellation", "/refund-policy"],
+      ["Refund Policy", "/refund-policy"],
+      ["Cancellation Policy", "/cancellation-policy"],
+      ["Payment Policy", "/payment-policy"],
+      ["Chargeback & Dispute Policy", "/chargeback-dispute-policy"],
+      ["GDPR Compliance", "/gdpr-compliance"],
       ["Service Delivery Policy", "/service-delivery-policy"],
       ["Cookie Policy", "/cookie-policy"],
     ],
