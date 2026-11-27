@@ -3,7 +3,9 @@ import { services } from "../shared/content";
 import {
   convertMinor,
   displayCurrencies,
+  validateRates,
   type DisplayCurrency,
+  type RateSnapshot,
 } from "../shared/currency";
 import {
   guestRequestSchema,
@@ -63,6 +65,28 @@ async function resolve(db: D1Database, input: Selection): Promise<CartItem[]> {
     };
   });
 }
+/** Public display rates; works even before commerce tables exist in D1. */
+guestCommerce.get("/rates", async (c) => {
+  let fx: RateSnapshot | null = null;
+  try {
+    if (c.env.DB) fx = await currencySnapshot(c.env.DB);
+  } catch {
+    /* D1 rate cache unavailable; fall back to the edge-cached provider. */
+  }
+  if (!fx) {
+    try {
+      const response = await fetch("https://open.er-api.com/v6/latest/USD", {
+        signal: AbortSignal.timeout(6000),
+        cf: { cacheTtl: 3600, cacheEverything: true },
+      } as RequestInit);
+      if (response.ok) fx = validateRates(await response.json());
+    } catch {
+      /* Never invent rates. */
+    }
+  }
+  if (!fx) return c.json({ error: "Rates unavailable" }, 503);
+  return c.json({ ...fx, attribution: "Rates By ExchangeRate-API" });
+});
 guestCommerce.get("/catalog", async (c) => {
   const approved = await packages(c.env.DB);
   const selected = c.req.query("currency") || "USD";

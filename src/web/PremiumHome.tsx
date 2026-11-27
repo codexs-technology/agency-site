@@ -1,5 +1,5 @@
 import { packageStartingPrices } from "../shared/service-pricing";
-import { formatMinorAmount } from "../shared/pricing";
+import { StartingPrice } from "./StartingPrice";
 import {
   ArrowRight,
   Check,
@@ -310,7 +310,7 @@ export function PricingCards({
             ) : packageStartingPrices[p.slug] ? (
               <>
                 <small className="price-from">Starting from</small>{" "}
-                {formatMinorAmount(packageStartingPrices[p.slug], "USD")}
+                <StartingPrice usdMinor={packageStartingPrices[p.slug]} />
               </>
             ) : (
               p.engagement

@@ -7,6 +7,7 @@ import {
   type CartItem,
 } from "../shared/guest-commerce";
 import { formatMinorAmount } from "../shared/pricing";
+import { StartingPrice } from "./StartingPrice";
 import { Section, Turnstile } from "./components";
 import { request } from "./forms";
 import { CurrencySelector, useDisplayCurrency } from "./DisplayCurrency";
@@ -68,7 +69,7 @@ export function ServicePurchase({ slug }: { slug: string }) {
           <p className="service-price">
             <strong>
               Starting from{" "}
-              {formatMinorAmount(serviceStartingPrice(slug)!, "USD")}
+              <StartingPrice usdMinor={serviceStartingPrice(slug)!} />
             </strong>
           </p>
         )}
