@@ -36,7 +36,9 @@ describe("phase two approval and calculation boundaries", () => {
       expect(service.deliverables.length).toBeGreaterThan(0);
     expect(business.addressVerified).toBe(false);
     expect(business.addressPublicationApproved).toBe(true);
-    expect(business.address).toBe("Plot No. 1/1, Near Ghazi Overseas Employment Pakistan, Nursery, PECHS Block 6, Shahrah-e-Faisal, Karachi, Pakistan.");
+    expect(business.address).toBe(
+      "Plot No. 1/1, Near Ghazi Overseas Employment Pakistan, Nursery, PECHS Block 6, Shahrah-e-Faisal, Karachi, Pakistan.",
+    );
   });
   it("rounds the same approved unit on every surface before multiplying", () => {
     const fx: RateSnapshot = {

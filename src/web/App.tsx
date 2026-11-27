@@ -27,26 +27,24 @@ import {
 } from "./PremiumHome";
 import { BusinessDetails } from "./BusinessDetails";
 import { PolicyPage } from "./PolicyPage";
-import { GDPRCompliance } from "./GDPRCompliance";
-import { PaymentPolicy } from "./PaymentPolicy";
 import { CancellationPolicy } from "./CancellationPolicy";
 import { ChargebackDisputePolicy } from "./ChargebackDisputePolicy";
+import { GDPRCompliance } from "./GDPRCompliance";
+import { PaymentPolicy } from "./PaymentPolicy";
 import { policySections } from "../shared/policies";
 import { SignatureProcess, SignatureWorkflow } from "./SignatureSystems";
 import { CareersPage } from "./CareersPage";
 import { NewsletterConfirm } from "./NewsletterConfirm";
-<<<<<<< HEAD
-import { Photography, photographForContent, photographForProject } from "./Photography";
-import { GuestCatalog, GuestCommercePage, ServicePurchase } from "./GuestCommerce";
-=======
-import { SandboxCheckout } from "./CheckoutSandbox";
-import { GuestCatalog, GuestCommercePage, ServicePurchase } from "./GuestCommerce";
 import {
   Photography,
   photographForContent,
   photographForProject,
 } from "./Photography";
->>>>>>> a82802f4 (technical audit and repair: premium upgrade and compliance documentation)
+import {
+  GuestCatalog,
+  GuestCommercePage,
+  ServicePurchase,
+} from "./GuestCommerce";
 
 class ErrorBoundary extends Component<
   { children: ReactNode },
@@ -864,16 +862,28 @@ function Unsubscribe() {
 }
 function PublicPage({ data }: { data: SiteData }) {
   const path = data.path;
-  if (["/cart", "/checkout", "/checkout/success", "/checkout/cancel", "/order-status"].includes(path))
-    return <><Hero title={pages[path][0]} description={pages[path][1]} /><GuestCommercePage data={data} /></>;
-<<<<<<< HEAD
-=======
-  if (path === "/payments/sandbox") return <SandboxCheckout />;
->>>>>>> a82802f4 (technical audit and repair: premium upgrade and compliance documentation)
+  if (
+    [
+      "/cart",
+      "/checkout",
+      "/checkout/success",
+      "/checkout/cancel",
+      "/order-status",
+    ].includes(path)
+  )
+    return (
+      <>
+        <Hero title={pages[path][0]} description={pages[path][1]} />
+        <GuestCommercePage data={data} />
+      </>
+    );
   if (path === "/") return <PremiumHome data={data} />;
   if (path === "/pricing" || path.startsWith("/pricing/"))
     return (
-      <><PackagePage slug={path.split("/")[2] || ""} records={data.pricing} /><GuestCatalog /></>
+      <>
+        <PackagePage slug={path.split("/")[2] || ""} records={data.pricing} />
+        <GuestCatalog />
+      </>
     );
   if (path.startsWith("/services/"))
     return <ServicePage slug={path.split("/")[2]} data={data} />;
@@ -900,7 +910,17 @@ function PublicPage({ data }: { data: SiteData }) {
         eyebrow={path.slice(1).replaceAll("-", " ").toUpperCase()}
       />
       {path === "/newsletter/unsubscribe" && <Unsubscribe />}
-      {policySections[path] && <PolicyPage path={path} />}
+      {path === "/gdpr-compliance" ? (
+        <GDPRCompliance />
+      ) : path === "/payment-policy" ? (
+        <PaymentPolicy />
+      ) : path === "/cancellation-policy" ? (
+        <CancellationPolicy />
+      ) : path === "/chargeback-dispute-policy" ? (
+        <ChargebackDisputePolicy />
+      ) : (
+        policySections[path] && <PolicyPage path={path} />
+      )}
       {path === "/services" && (
         <Section>
           <PremiumServiceGrid />
@@ -1235,9 +1255,7 @@ function PublicPage({ data }: { data: SiteData }) {
         "/contact",
         "/start-project",
         "/thank-you",
-        "/privacy-policy",
-        "/terms-of-service",
-        "/cookie-policy",
+        ...Object.keys(policySections),
       ].includes(path) && <ConsultationCTA />}
     </>
   );

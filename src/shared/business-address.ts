@@ -5,7 +5,8 @@ export const businessAddress = {
   documentMatchedAddress: "",
   documentReference: "",
   ownerApprovalReference: "",
-  ownerConfirmedAddress: "Plot No. 1/1, Near Ghazi Overseas Employment Pakistan, Nursery, PECHS Block 6, Shahrah-e-Faisal, Karachi, Pakistan.",
+  ownerConfirmedAddress:
+    "Plot No. 1/1, Near Ghazi Overseas Employment Pakistan, Nursery, PECHS Block 6, Shahrah-e-Faisal, Karachi, Pakistan.",
   publicationApprovalReference: "Owner Phase 3 instruction, 2026-10-23",
   independentlyDocumentVerified: false,
 };

@@ -359,7 +359,7 @@ export function CareersPage({ data }: { data: SiteData }) {
               <label className="checkbox">
                 <input type="checkbox" name="consent" required />I consent to
                 processing this application and documents for the published
-                role. <a href="/privacy-policy">Read the privacy draft</a>.
+                role. <a href="/privacy-policy">Read our Privacy Policy</a>.
               </label>
               <Turnstile data={data} onToken={setToken} />
               <button

@@ -1,4 +1,4 @@
-import { policySections } from "../shared/policies";
+import { policyEffectiveDate, policySections } from "../shared/policies";
 import { Section } from "./components";
 import { BusinessDetails } from "./BusinessDetails";
 
@@ -7,7 +7,7 @@ export function PolicyPage({ path }: { path: string }) {
   return (
     <Section className="policy-layout">
       <aside className="policy-index">
-        <p className="eyebrow">POLICY GUIDE</p>
+        <p className="eyebrow">POLICY</p>
         <nav aria-label="Policy sections">
           {sections.map(([title], i) => (
             <a key={title} href={`#policy-${i}`}>
@@ -18,13 +18,7 @@ export function PolicyPage({ path }: { path: string }) {
         <a href="/contact">Ask a question →</a>
       </aside>
       <div>
-        <div className="notice">
-          <strong>OWNER / LEGAL REVIEW REQUIRED.</strong> Review draft, not an
-          approved commercial policy or legal advice. Online payments remain
-          disabled. The address is owner-confirmed, not independently document-verified. Unresolved commercial terms
-          must be completed before production publication or merchant
-          submission.
-        </div>
+        <p className="muted">Effective date: {policyEffectiveDate}</p>
         <article className="prose">
           {sections.map(([title, text], i) => (
             <section id={`policy-${i}`} key={title}>

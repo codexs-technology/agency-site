@@ -34,7 +34,8 @@ const safeJson = (value: unknown) =>
     .replace(/\u2028/g, "\\u2028")
     .replace(/\u2029/g, "\\u2029");
 app.use("*", async (c, next) => {
-  if (c.env.ENVIRONMENT === "preview") c.header("X-Robots-Tag", "noindex, nofollow");
+  if (c.env.ENVIRONMENT === "preview")
+    c.header("X-Robots-Tag", "noindex, nofollow");
   c.set("requestId", randomToken());
   c.header("X-Content-Type-Options", "nosniff");
   c.header("Referrer-Policy", "strict-origin-when-cross-origin");
@@ -292,7 +293,16 @@ app.get("*", async (c) => {
           },
           sameAs: business.socials.map((social) => social.url),
         };
-  if (["/cart", "/checkout", "/checkout/success", "/checkout/cancel", "/order-status"].includes(path)) c.header("X-Robots-Tag", "noindex, nofollow");
+  if (
+    [
+      "/cart",
+      "/checkout",
+      "/checkout/success",
+      "/checkout/cancel",
+      "/order-status",
+    ].includes(path)
+  )
+    c.header("X-Robots-Tag", "noindex, nofollow");
   if (privatePage) c.header("X-Robots-Tag", "noindex, nofollow");
   const articlePhoto = post ? photographForArticle(post) : undefined;
   const socialImage = `${c.env.PUBLIC_SITE_URL}${articlePhoto ? `/images/photography/${articlePhoto.key}-960.webp` : "/images/social-preview.png"}`;

@@ -257,7 +257,7 @@ export function ContactForm({ data }: { data: SiteData }) {
       <label className="checkbox">
         <input type="checkbox" {...register("consent")} />I agree to the
         processing of my inquiry information as described in the{" "}
-        <a href="/privacy-policy">privacy draft</a>.
+        <a href="/privacy-policy">Privacy Policy</a>.
       </label>
       {errors.consent && <p className="field-error">Consent is required.</p>}
       <Turnstile data={data} onToken={setToken} />
@@ -501,7 +501,7 @@ export function ProjectForm({ data }: { data: SiteData }) {
                   onChange={(e) => update("consent", e.target.checked)}
                 />
                 I consent to processing this inquiry.{" "}
-                <a href="/privacy-policy">Read the privacy draft</a>.
+                <a href="/privacy-policy">Read our Privacy Policy</a>.
               </label>
             </>
           )}
@@ -610,7 +610,7 @@ export function Newsletter({ data }: { data: SiteData }) {
           onChange={(e) => setConsent(e.target.checked)}
         />
         I consent to newsletter updates.{" "}
-        <a href="/privacy-policy">Privacy draft</a>
+        <a href="/privacy-policy">Privacy Policy</a>
       </label>
       <Turnstile data={data} onToken={setToken} />
       <button

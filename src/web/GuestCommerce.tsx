@@ -84,8 +84,8 @@ export function ServicePurchase({ slug }: { slug: string }) {
         <p>
           <a href="/terms-of-service">Terms</a> ·{" "}
           <a href="/refund-policy">Refunds and cancellation</a> ·{" "}
-          <a href="/service-delivery-policy">Digital delivery</a>. Policies
-          remain owner-review drafts.
+          <a href="/service-delivery-policy">Digital delivery</a> ·{" "}
+          <a href="/payment-policy">Payments</a>.
         </p>
       </div>
     </Section>
@@ -607,9 +607,8 @@ export function GuestCommercePage({ data }: { data: SiteData }) {
                     </p>
                     <label>
                       <input name="consent" type="checkbox" required /> I
-                      consent to processing this inquiry and acknowledge that
-                      the linked policies are review drafts, no payment is
-                      taken, and a final agreement is required.
+                      consent to processing this inquiry and agree to the linked
+                      Terms, Privacy, Refund and Delivery policies.
                     </label>
                     <Turnstile data={data} onToken={setToken} />
                     <button

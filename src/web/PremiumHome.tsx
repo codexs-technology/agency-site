@@ -19,7 +19,11 @@ import { business, services, type SiteData } from "../shared/content";
 import { BusinessDetails } from "./BusinessDetails";
 import { Button, Section } from "./components";
 import { Newsletter } from "./forms";
-import { Photography, photographForProject, servicePhotography } from "./Photography";
+import {
+  Photography,
+  photographForProject,
+  servicePhotography,
+} from "./Photography";
 import { ConvertedPrice } from "./ConvertedPrice";
 import { CurrencySelector } from "./DisplayCurrency";
 
@@ -278,79 +282,91 @@ export function PricingCards({
   records?: Record<string, unknown>[];
 }) {
   return (
-    <><CurrencySelector /><div className="premium-pricing-grid">
-      {packages.map((fallback, i) => {
-        const record = records.find((r) => r.slug === fallback.slug && r.approved === 1 && r.status === "published");
-        const p = record
-          ? {
-              ...fallback,
-              name: String(record.title),
-              copy: String(record.description),
-              features: JSON.parse(String(record.features_json)) as string[],
-            }
-          : fallback;
-        const price =
-          record && record.amount_minor !== null && record.billing !== "quote"
-            ? <ConvertedPrice record={record} />
-            : p.engagement;
-        return (
-          <article
-            className={`premium-price ${i === 1 ? "price-featured" : ""}`}
-            key={p.slug}
-          >
-            <div className="package-label">
-              <Layers size={28} />
-              <div>
-                <h3>{p.name}</h3>
-                <p>{p.copy}</p>
+    <>
+      <CurrencySelector />
+      <div className="premium-pricing-grid">
+        {packages.map((fallback, i) => {
+          const record = records.find(
+            (r) =>
+              r.slug === fallback.slug &&
+              r.approved === 1 &&
+              r.status === "published",
+          );
+          const p = record
+            ? {
+                ...fallback,
+                name: String(record.title),
+                copy: String(record.description),
+                features: JSON.parse(String(record.features_json)) as string[],
+              }
+            : fallback;
+          const price =
+            record &&
+            record.amount_minor !== null &&
+            record.billing !== "quote" ? (
+              <ConvertedPrice record={record} />
+            ) : (
+              p.engagement
+            );
+          return (
+            <article
+              className={`premium-price ${i === 1 ? "price-featured" : ""}`}
+              key={p.slug}
+            >
+              <div className="package-label">
+                <Layers size={28} />
+                <div>
+                  <h3>{p.name}</h3>
+                  <p>{p.copy}</p>
+                </div>
               </div>
-            </div>
-            <strong className="package-price">{price}</strong>
-            <p className="price-note">
-              {record
-                ? `${record.billing === "recurring" ? "Recurring engagement — billing interval agreed in quote." : record.billing === "one_time" ? "One-time engagement." : "Scope and fees agreed before work begins."} ${String(record.disclosures)}`
-                : "Engagement model, not a price. Final fees are agreed in a written proposal."}
-            </p>
-            <ul>
-              {p.features.map((f) => (
-                <li key={f}>
-                  <Check size={14} />
-                  {f}
-                </li>
-              ))}
-            </ul>
-            <dl className="package-terms">
-              <div>
-                <dt>Timeline</dt>
-                <dd>
-                  {record
-                    ? String(record.delivery)
-                    : "Estimated after discovery; confirmed in your quote."}
-                </dd>
-              </div>
-              <div>
-                <dt>Revisions</dt>
-                <dd>
-                  {record
-                    ? String(record.revisions)
-                    : "Rounds and acceptance criteria agreed before work."}
-                </dd>
-              </div>
-              <div>
-                <dt>Support</dt>
-                <dd>
-                  Coverage and duration quoted separately unless included in
-                  writing.
-                </dd>
-              </div>
-            </dl>
-            <Button secondary={i !== 1} href="/start-project">
-              {p.cta}
-            </Button>
-          </article>
-        );
-      })}
-    </div></>
+              <strong className="package-price">{price}</strong>
+              <p className="price-note">
+                {record
+                  ? `${record.billing === "recurring" ? "Recurring engagement — billing interval agreed in quote." : record.billing === "one_time" ? "One-time engagement." : "Scope and fees agreed before work begins."} ${String(record.disclosures)}`
+                  : "Engagement model, not a price. Final fees are agreed in a written proposal."}
+              </p>
+              <ul>
+                {p.features.map((f) => (
+                  <li key={f}>
+                    <Check size={14} />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <dl className="package-terms">
+                <div>
+                  <dt>Timeline</dt>
+                  <dd>
+                    {record
+                      ? String(record.delivery)
+                      : "Estimated after discovery; confirmed in your quote."}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Revisions</dt>
+                  <dd>
+                    {record
+                      ? String(record.revisions)
+                      : "Rounds and acceptance criteria agreed before work."}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Support</dt>
+                  <dd>
+                    Coverage and duration quoted separately unless included in
+                    writing.
+                  </dd>
+                </div>
+              </dl>
+              <Button secondary={i !== 1} href="/start-project">
+                {p.cta}
+              </Button>
+            </article>
+          );
+        })}
+      </div>
+    </>
   );
 }
 
@@ -362,7 +378,10 @@ export function PackagePage({
   records?: Record<string, unknown>[];
 }) {
   const fallback = packages.find((item) => item.slug === slug);
-  const record = records.find((item) => item.slug === slug && item.approved === 1 && item.status === "published");
+  const record = records.find(
+    (item) =>
+      item.slug === slug && item.approved === 1 && item.status === "published",
+  );
   const p =
     fallback && record
       ? {
@@ -388,15 +407,20 @@ export function PackagePage({
             ))}
           </ul>
           {records
-            .filter((r) => r.slug === slug && r.approved === 1 && r.status === "published")
+            .filter(
+              (r) =>
+                r.slug === slug && r.approved === 1 && r.status === "published",
+            )
             .map((r) => (
               <div key={String(r.id)} className="panel">
                 <h2>Approved package details</h2>
                 <p>
                   Price:{" "}
-                  {r.amount_minor !== null && r.billing !== "quote"
-                    ? <ConvertedPrice record={r} />
-                    : p.engagement}{" "}
+                  {r.amount_minor !== null && r.billing !== "quote" ? (
+                    <ConvertedPrice record={r} />
+                  ) : (
+                    p.engagement
+                  )}{" "}
                   · {String(r.billing).replaceAll("_", " ")}
                 </p>
                 <p>Delivery: {String(r.delivery)}</p>
@@ -467,16 +491,15 @@ export function PackagePage({
               process, not evidence of completed sales or gateway approval.
             </p>
             <p>
-              Online payment collection is disabled. No processor acceptance or
-              payment method is promised. Software-service invoices must not be
-              used to collect casino deposits, gambling funds, unrelated
-              third-party payments or other unapproved activity.
+              Payments are made through our website checkout and processed by a
+              licensed card payment processor, or by bank transfer against a
+              CodesBoxs invoice. Online card payment becomes available at
+              checkout once our processor account is activated. CodesBoxs
+              invoices are used only for CodesBoxs software services.
             </p>
-            <a href="/service-delivery-policy">
-              Delivery policy — review draft
-            </a>
+            <a href="/service-delivery-policy">Service delivery policy</a>
             {" · "}
-            <a href="/refund-policy">Refund & cancellation — review draft</a>
+            <a href="/refund-policy">Refund policy</a>
           </div>
           <div
             className="comparison-scroll"
@@ -559,7 +582,7 @@ export function PackagePage({
               ],
               [
                 "Can I pay online?",
-                "No. Website checkout remains disabled. No payment provider or collection method is promised before separate owner and processor approval.",
+                "Yes. Choose a package and complete checkout on our website. Card payments are processed securely by our licensed payment processor once our processor account is activated; until then we confirm your order and send an invoice for bank transfer.",
               ],
             ].map(([question, answer]) => (
               <details key={question}>

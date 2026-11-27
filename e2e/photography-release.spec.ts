@@ -117,9 +117,13 @@ test("complete photography release: all content, responsive layouts and successf
     readFileSync("public/images/photography/manifest.json", "utf8"),
   ) as { filename: string }[];
   for (let index = 0; index < manifest.length; index += 8) {
-    await Promise.all(manifest.slice(index, index + 8).map(async (item) => {
-      expect((await request.get(`/images/photography/${item.filename}`)).status()).toBe(200);
-    }));
+    await Promise.all(
+      manifest.slice(index, index + 8).map(async (item) => {
+        expect(
+          (await request.get(`/images/photography/${item.filename}`)).status(),
+        ).toBe(200);
+      }),
+    );
   }
   expect(failures).toEqual([]);
   expect(errors).toEqual([]);

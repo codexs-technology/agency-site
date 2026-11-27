@@ -28,7 +28,7 @@ describe("Pages deployment without production database", () => {
     }
   });
 
-  it("supports the requested terms URL while retaining the noindexed review draft", async () => {
+  it("supports the requested terms URL and serves the approved terms page", async () => {
     for (const path of ["/terms-and-conditions", "/terms-and-conditions/"]) {
       const redirect = await pages.fetch(
         new Request(`https://example.pages.dev${path}`),
@@ -45,7 +45,8 @@ describe("Pages deployment without production database", () => {
     );
     const html = await response.text();
     expect(html).toContain('content="noindex,follow"');
-    expect(html).toContain("OWNER / LEGAL REVIEW REQUIRED");
+    expect(html).toContain("Terms of Service");
+    expect(html).not.toContain("OWNER / LEGAL REVIEW REQUIRED");
   });
   it("renders the homepage with the deployment origin and hydration data", async () => {
     const response = await pages.fetch(

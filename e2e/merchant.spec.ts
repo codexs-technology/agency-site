@@ -13,6 +13,10 @@ test("business contacts, policy navigation and mobile layouts", async ({
     "/service-delivery-policy",
     "/cookie-policy",
     "/privacy-policy",
+    "/gdpr-compliance",
+    "/payment-policy",
+    "/cancellation-policy",
+    "/chargeback-dispute-policy",
     "/terms-and-conditions",
   ]) {
     await page.setViewportSize({ width: 390, height: 844 });
@@ -23,7 +27,9 @@ test("business contacts, policy navigation and mobile layouts", async ({
         .getByRole("link", { name: "support@codesboxs.com", exact: true }),
     ).toHaveAttribute("href", "mailto:support@codesboxs.com");
     await expect(page.locator("footer .social-links a")).toHaveCount(6);
-    await expect(page.locator("footer address")).toHaveText("Plot No. 1/1, Near Ghazi Overseas Employment Pakistan, Nursery, PECHS Block 6, Shahrah-e-Faisal, Karachi, Pakistan.");
+    await expect(page.locator("footer address")).toHaveText(
+      "Plot No. 1/1, Near Ghazi Overseas Employment Pakistan, Nursery, PECHS Block 6, Shahrah-e-Faisal, Karachi, Pakistan.",
+    );
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= window.innerWidth,
@@ -35,12 +41,12 @@ test("business contacts, policy navigation and mobile layouts", async ({
   }
   await page.goto("/refund-policy");
   await page
-    .getByRole("link", { name: "Cancellation before work begins", exact: true })
+    .getByRole("link", { name: "Before work begins", exact: true })
     .click();
   await expect(page).toHaveURL(/#policy-1$/);
 });
 
-test("terms alias redirects to the retained review draft on direct navigation", async ({
+test("terms alias redirects to the terms of service on direct navigation", async ({
   request,
 }) => {
   const response = await request.get("/terms-and-conditions", {

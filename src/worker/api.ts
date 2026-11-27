@@ -40,7 +40,10 @@ api.use(
 );
 api.post("/payments/rapidgateway/webhook", (c) => {
   c.header("Cache-Control", "no-store");
-  return c.json({ error: "RapidGateway webhook processing is not configured." }, 503);
+  return c.json(
+    { error: "RapidGateway webhook processing is not configured." },
+    503,
+  );
 });
 api.use("*", async (c, next) => {
   c.header("Cache-Control", "no-store");

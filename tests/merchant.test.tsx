@@ -40,12 +40,13 @@ describe("merchant content and security boundaries", () => {
     expect(details).toContain("google.com/maps");
     expect(business.addressVerified).toBe(false);
   });
-  it("provides complete, explicitly unapproved policy sections", () => {
-    expect(Object.keys(policySections)).toHaveLength(5);
+  it("provides complete, owner-approved policy sections", () => {
+    expect(Object.keys(policySections)).toHaveLength(9);
     for (const path of Object.keys(policySections)) {
       const html = renderToString(<PolicyPage path={path} />);
       expect(policySections[path].length).toBeGreaterThanOrEqual(5);
-      expect(html).toContain("OWNER / LEGAL REVIEW REQUIRED");
+      expect(html).toContain("Effective date");
+      expect(html).not.toContain("OWNER / LEGAL REVIEW REQUIRED");
       expect(html).toContain(business.supportEmail);
       expect(html).not.toContain('href="#"');
     }

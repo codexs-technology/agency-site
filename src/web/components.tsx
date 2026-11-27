@@ -338,9 +338,15 @@ export function Footer({ note }: { note?: string }) {
       ["FAQs", "/faq"],
     ],
     Legal: [
-      ["Privacy Draft", "/privacy-policy"],
-      ["Terms Draft", "/terms-of-service"],
-      ["Cookie Draft", "/cookie-policy"],
+      ["Privacy Policy", "/privacy-policy"],
+      ["Terms of Service", "/terms-of-service"],
+      ["Refund Policy", "/refund-policy"],
+      ["Cancellation Policy", "/cancellation-policy"],
+      ["Payment Policy", "/payment-policy"],
+      ["Chargeback Policy", "/chargeback-dispute-policy"],
+      ["Service Delivery", "/service-delivery-policy"],
+      ["GDPR Compliance", "/gdpr-compliance"],
+      ["Cookie Policy", "/cookie-policy"],
     ],
   };
   return (
