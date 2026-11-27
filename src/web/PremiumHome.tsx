@@ -282,7 +282,7 @@ export function PricingCards({
   records?: Record<string, unknown>[];
 }) {
   return (
-    <>
+    <div className="pricing-cards-panel">
       <CurrencySelector />
       <div className="premium-pricing-grid">
         {packages.map((fallback, i) => {
@@ -366,7 +366,7 @@ export function PricingCards({
           );
         })}
       </div>
-    </>
+    </div>
   );
 }
 
