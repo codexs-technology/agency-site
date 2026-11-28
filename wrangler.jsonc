@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "codesboxs-site",
+  "name": "agency-site",
   "main": "src/worker/index.tsx",
   "compatibility_date": "2026-10-13",
   "assets": { "directory": "./dist", "binding": "ASSETS", "run_worker_first": true },
@@ -8,12 +8,32 @@
   "vars": { "ENVIRONMENT": "development", "PUBLIC_SITE_URL": "http://localhost:8787" },
   "triggers": { "crons": ["*/10 * * * *"] },
   "observability": { "enabled": true },
+  "keep_vars": true,
+  "previews": {
+    "vars": {
+      "ENVIRONMENT": "preview",
+      "PUBLIC_SITE_URL": "https://codesboxs.com",
+      "LOCAL_TEST_MODE": "false",
+      "PAYMENTS_ENABLED": "false"
+    },
+    "d1_databases": []
+  },
   "env": {
     "production": {
       "name": "agency-site",
+      "workers_dev": true,
+      "preview_urls": true,
+      "routes": [{ "pattern": "admin.codesboxs.com", "custom_domain": true }],
+      "triggers": { "crons": ["*/10 * * * *"] },
       "vars": {
         "ENVIRONMENT": "production",
-        "PUBLIC_SITE_URL": "https://codesboxs.com"
+        "PUBLIC_SITE_URL": "https://codesboxs.com",
+        "PAYMENTS_ENABLED": "false",
+        "PAYMEGATE_MODE": "live",
+        "PAYMEGATE_API_BASE_URL": "https://api.codesboxs.com/v1",
+        "PAYMEGATE_CHECKOUT_ORIGIN": "https://pay.codesboxs.com",
+        "PAYMEGATE_WORKSPACE": "codesboxs-llc",
+        "PAYMEGATE_PAYMENT_METHODS": "*"
       },
       "d1_databases": [
         {
@@ -22,7 +42,16 @@
           "database_id": "a6095c86-021b-4409-85ae-c5e474389ca9",
           "migrations_dir": "migrations"
         }
-      ]
+      ],
+      "previews": {
+        "vars": {
+          "ENVIRONMENT": "preview",
+          "PUBLIC_SITE_URL": "https://codesboxs.com",
+          "LOCAL_TEST_MODE": "false",
+          "PAYMENTS_ENABLED": "false"
+        },
+        "d1_databases": []
+      }
     }
   }
 }

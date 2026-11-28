@@ -19,6 +19,14 @@ export type PaymentEvent = {
   state: "paid" | "failed" | "partially_refunded" | "refunded";
   /** Cumulative verified refunds, not the current refund delta. */
   refundedMinor: number;
+  /** For state "failed": provider reported the checkout expired or cancelled (no charge). */
+  outcome?: "expired" | "cancelled";
+  /** Provider settlement as exact decimal strings; may differ from amount/currency. */
+  settlement?: {
+    receivedAmount: string | null;
+    receivedCurrency: string | null;
+    transactionRef: string | null;
+  };
 };
 export interface VerifiedProviderAdapter {
   readonly name: string;

@@ -52,6 +52,23 @@ function readSelection(): Selection {
 function writeSelection(value: Selection) {
   sessionStorage.setItem(storageKey, JSON.stringify(value));
 }
+/** Private online-order reference kept in this tab only (survives the hosted checkout round trip). */
+const paymentRefKey = "cb_online_order";
+function readPaymentRef(): { id: string; accessKey: string } | null {
+  try {
+    const value = JSON.parse(sessionStorage.getItem(paymentRefKey) || "null");
+    return value &&
+      /^[a-f0-9]{64}$/.test(value.id) &&
+      /^[a-f0-9]{64}$/.test(value.accessKey)
+      ? { id: value.id, accessKey: value.accessKey }
+      : null;
+  } catch {
+    return null;
+  }
+}
+function writePaymentRef(value: { id: string; accessKey: string }) {
+  sessionStorage.setItem(paymentRefKey, JSON.stringify(value));
+}
 function add(service: string, packageId?: string) {
   const current = readSelection();
   if (!current.some((s) => s.service === service && s.packageId === packageId))
@@ -271,13 +288,41 @@ export function GuestCommercePage({ data }: { data: SiteData }) {
       message: string;
     } | null>(null),
     [status, setStatus] = useState<Record<string, unknown> | null>(null);
+  const [payments, setPayments] = useState<{
+      enabled: boolean;
+      mode?: string;
+    } | null>(null),
+    [paymentRef, setPaymentRef] = useState<{
+      id: string;
+      accessKey: string;
+    } | null>(null);
   useEffect(() => {
     const timer = window.setTimeout(() => {
       setItems(readSelection());
       setReady(true);
+      setPaymentRef(readPaymentRef());
     }, 0);
     return () => window.clearTimeout(timer);
   }, []);
+  useEffect(() => {
+    let active = true;
+    // Online payment is offered only when the server reports it is fully configured.
+    if (data.path === "/checkout")
+      request("/api/payments/readiness", undefined, "GET")
+        .then((r) => {
+          if (active)
+            setPayments({
+              enabled: r.enabled === true,
+              mode: typeof r.mode === "string" ? r.mode : undefined,
+            });
+        })
+        .catch(() => {
+          if (active) setPayments(null);
+        });
+    return () => {
+      active = false;
+    };
+  }, [data.path]);
   const selectionKey = JSON.stringify(items);
   useEffect(() => {
     let active = true;
@@ -309,10 +354,58 @@ export function GuestCommercePage({ data }: { data: SiteData }) {
             : "Checkout cancelled"
         }
       >
-        <p>
-          No payment is confirmed by this page or its URL. No online provider is
-          active.
-        </p>
+        {paymentRef ? (
+          <>
+            <p>
+              No payment is confirmed by this page or its URL. Status below
+              comes only from the verified payment record.
+            </p>
+            <p>
+              Save these private details securely. The access key is not emailed
+              or included in a URL.
+            </p>
+            <dl>
+              <dt>Order reference</dt>
+              <dd>
+                <code>{paymentRef.id}</code>
+              </dd>
+              <dt>Private access key</dt>
+              <dd>
+                <code>{paymentRef.accessKey}</code>
+              </dd>
+            </dl>
+            <button
+              type="button"
+              className="button"
+              disabled={busy}
+              onClick={async () => {
+                setBusy(true);
+                setError("");
+                try {
+                  setStatus(await request("/api/guest/status", paymentRef));
+                } catch (e) {
+                  setError((e as Error).message);
+                } finally {
+                  setBusy(false);
+                }
+              }}
+            >
+              Check payment status
+            </button>
+            {status && (
+              <div role="status">
+                <p>Status: {String(status.status)}</p>
+                <p>{String(status.message)}</p>
+              </div>
+            )}
+            {error && <p role="alert">{error}</p>}
+          </>
+        ) : (
+          <p>
+            No payment is confirmed by this page or its URL. No online provider
+            is active.
+          </p>
+        )}
         <a href="/order-status">Check a private reference</a> ·{" "}
         <a href="/cart">Return to selection</a>
       </Section>
@@ -530,6 +623,45 @@ export function GuestCommercePage({ data }: { data: SiteData }) {
                       setBusy(true);
                       setError("");
                       const f = new FormData(e.currentTarget);
+                      const submitter = (e.nativeEvent as SubmitEvent)
+                        .submitter;
+                      if (submitter?.getAttribute("value") === "pay") {
+                        try {
+                          // Server re-prices the cart; no client amount is sent.
+                          const r = await request("/api/checkout", {
+                            cartId: cart.id,
+                            cartKey: cart.key,
+                            name: f.get("name"),
+                            email: f.get("email"),
+                            consent: f.get("consent") === "on",
+                            turnstileToken: token,
+                            website: f.get("website"),
+                          });
+                          if (
+                            typeof r.orderId !== "string" ||
+                            typeof r.accessKey !== "string"
+                          )
+                            throw new Error(
+                              "Checkout could not be started. Contact support.",
+                            );
+                          writePaymentRef({
+                            id: r.orderId,
+                            accessKey: r.accessKey,
+                          });
+                          window.location.assign(
+                            r.paid === true ||
+                              typeof r.checkoutUrl !== "string" ||
+                              !r.checkoutUrl.startsWith("https://")
+                              ? "/checkout/success"
+                              : r.checkoutUrl,
+                          );
+                        } catch (e) {
+                          setError((e as Error).message);
+                          setBusy(false);
+                          setToken("");
+                        }
+                        return;
+                      }
                       try {
                         const r = await request("/api/guest/requests", {
                           cartId: cart.id,
@@ -640,6 +772,29 @@ export function GuestCommercePage({ data }: { data: SiteData }) {
                     >
                       {busy ? "Saving…" : "Submit request — no payment"}
                     </button>
+                    {payments?.enabled &&
+                      cart.items.every(
+                        (item) =>
+                          !!item.packageId &&
+                          item.amountMinor !== null &&
+                          item.billing === "one_time",
+                      ) && (
+                        <>
+                          <button
+                            className="button"
+                            name="intent"
+                            value="pay"
+                            disabled={busy || (!token && !data.localTestMode)}
+                          >
+                            {busy
+                              ? "Starting secure checkout…"
+                              : "Pay securely online"}
+                          </button>
+                          {payments.mode === "sandbox" && (
+                            <p>Test mode: sandbox checkout, no real charge.</p>
+                          )}
+                        </>
+                      )}
                     {!data.turnstileSiteKey && !data.localTestMode && (
                       <p>
                         Secure submission is unavailable. Email{" "}

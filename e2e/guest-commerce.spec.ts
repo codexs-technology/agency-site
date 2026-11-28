@@ -192,4 +192,14 @@ test("private commerce routes, mobile layout, a11y and fail-closed endpoints", a
     data: { status: "paid" },
   });
   expect(hook.status()).toBe(503);
+  // PayMeGate endpoints fail closed while unconfigured; nothing is stored or paid.
+  for (const path of [
+    "/webhooks/paymegate",
+    "/api/payments/paymegate/webhook",
+  ]) {
+    const paymegate = await request.post(path, {
+      data: { type: "order.paid", status: "PAID" },
+    });
+    expect(paymegate.status(), path).toBe(503);
+  }
 });

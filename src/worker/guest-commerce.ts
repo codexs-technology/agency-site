@@ -18,6 +18,7 @@ import { displayItems } from "../shared/commerce-display";
 import { servicePricing } from "../shared/service-pricing";
 import { digest, randomToken, rateLimit, verifyTurnstile } from "./security";
 import type { AppEnv } from "./types";
+import { onlineOrderStatus } from "./order-status";
 
 export const guestCommerce = new Hono<AppEnv>();
 type Package = {
@@ -42,7 +43,11 @@ async function packages(db: D1Database) {
       .all<Package>()
   ).results;
 }
-async function resolve(db: D1Database, input: Selection): Promise<CartItem[]> {
+/** Authoritative server-side pricing for a selection; reused by online checkout. */
+export async function resolve(
+  db: D1Database,
+  input: Selection,
+): Promise<CartItem[]> {
   const approved = await packages(db);
   return input.map((item) => {
     const service = services.find((s) => s.slug === item.service);
@@ -332,7 +337,12 @@ guestCommerce.post("/status", async (c) => {
   )
     .bind(body.id!, await digest(body.accessKey!))
     .first();
-  if (!row) return c.json({ error: "Request not found or access denied" }, 404);
+  if (!row) {
+    // Online orders use the same private reference + access-key lookup.
+    const order = await onlineOrderStatus(c.env.DB, body.id!, body.accessKey!);
+    if (order) return c.json(order);
+    return c.json({ error: "Request not found or access denied" }, 404);
+  }
   return c.json({
     ...row,
     paid: false,
