@@ -2,6 +2,12 @@ import { guestCommerce } from "./guest-commerce";
 import { Hono } from "hono";
 import { commerce } from "./commerce";
 import { paymentReadiness } from "./payments";
+import {
+  createCheckout,
+  createVerificationCheckout,
+  payMeGateWebhook,
+} from "./checkout";
+import { payMeGateDiagnostics } from "./paymegate";
 import { bodyLimit } from "hono/body-limit";
 import { getCookie, setCookie, deleteCookie } from "hono/cookie";
 import { z } from "zod";
@@ -45,6 +51,9 @@ api.post("/payments/rapidgateway/webhook", (c) => {
     503,
   );
 });
+// External provider callback: authenticated by HMAC signature, so it is mounted
+// before the same-site Origin/JSON middleware below (still under the 64 KB limit).
+api.post("/payments/paymegate/webhook", payMeGateWebhook);
 api.use("*", async (c, next) => {
   c.header("Cache-Control", "no-store");
   if (!["GET", "HEAD"].includes(c.req.method)) {
@@ -539,8 +548,15 @@ const adminTables: Record<string, string> = {
   audits: "audit_logs",
   emails: "email_outbox",
 };
-api.get("/payments/readiness", (c) => c.json(paymentReadiness()));
-api.post("/checkout", (c) => c.json({ error: paymentReadiness().reason }, 503));
+api.get("/payments/readiness", (c) => c.json(paymentReadiness(c.env)));
+// Administrator-only (session middleware above): read-only PayMeGate auth check, no orders.
+api.get("/admin/payments/diagnostics", async (c) =>
+  c.json(await payMeGateDiagnostics(c.env)),
+);
+// Administrator-only (session + CSRF): capped private live verification order.
+api.post("/admin/payments/verification", createVerificationCheckout);
+// Returns 503 with the readiness reason unless PAYMENTS_ENABLED and PayMeGate are configured.
+api.post("/checkout", createCheckout);
 api.route("/admin/commerce", commerce);
 api.get("/admin/dashboard", async (c) => {
   const counts: Record<string, number> = {};

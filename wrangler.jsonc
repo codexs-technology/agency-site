@@ -8,12 +8,23 @@
   "vars": { "ENVIRONMENT": "development", "PUBLIC_SITE_URL": "http://localhost:8787" },
   "triggers": { "crons": ["*/10 * * * *"] },
   "observability": { "enabled": true },
+  "keep_vars": true,
   "env": {
     "production": {
       "name": "agency-site",
+      "workers_dev": true,
+      "preview_urls": true,
+      "routes": [{ "pattern": "admin.codesboxs.com", "custom_domain": true }],
+      "triggers": { "crons": ["*/10 * * * *"] },
       "vars": {
         "ENVIRONMENT": "production",
-        "PUBLIC_SITE_URL": "https://codesboxs.com"
+        "PUBLIC_SITE_URL": "https://codesboxs.com",
+        "PAYMENTS_ENABLED": "false",
+        "PAYMEGATE_MODE": "live",
+        "PAYMEGATE_API_BASE_URL": "https://api.codesboxs.com/v1",
+        "PAYMEGATE_CHECKOUT_ORIGIN": "https://pay.codesboxs.com",
+        "PAYMEGATE_WORKSPACE": "codesboxs-llc",
+        "PAYMEGATE_PAYMENT_METHODS": "*"
       },
       "d1_databases": [
         {

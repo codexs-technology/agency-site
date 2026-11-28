@@ -12,6 +12,8 @@ import {
 import { api } from "./api";
 import { isLocal, randomToken } from "./security";
 import { processOutbox } from "./email";
+import { payMeGateWebhook, reconcilePayMeGate } from "./checkout";
+import { bodyLimit } from "hono/body-limit";
 import type { AppEnv, Env } from "./types";
 import { portfolioConcepts, mergeEditorial } from "../shared/portfolio";
 import { editorialArticles } from "../shared/editorial";
@@ -65,6 +67,16 @@ app.use("/api/*", async (c, next) => {
   }
   await next();
 });
+// Retained public PayMeGate endpoint registered in the merchant dashboard.
+// HMAC-authenticated; outside /api same-site middleware; same 64 KB body limit.
+app.post(
+  "/webhooks/paymegate",
+  bodyLimit({
+    maxSize: 65536,
+    onError: (c) => c.json({ error: "Request too large" }, 413),
+  }),
+  payMeGateWebhook,
+);
 app.route("/api/recruitment", recruitment);
 app.route("/api", api);
 app.get("/robots.txt", (c) =>
@@ -349,6 +361,8 @@ export default {
     ctx: ExecutionContext,
   ) {
     ctx.waitUntil(processOutbox(env));
+    // No-op unless PAYMENTS_ENABLED and PayMeGate are fully configured on this Worker.
+    ctx.waitUntil(reconcilePayMeGate(env));
     ctx.waitUntil(
       env.DB.batch([
         env.DB.prepare("DELETE FROM admin_sessions WHERE expires_at<?").bind(
